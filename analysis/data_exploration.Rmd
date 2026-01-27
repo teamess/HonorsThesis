@@ -1,0 +1,59 @@
+---
+title: "Data Exploration"
+author: "Your Name"
+date: "`r Sys.Date()`"
+output:
+  workflowr::wflow_html:
+    toc: true
+    toc_float: true
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+This analysis explores the Laconia Burial data from Gallou.
+
+## Load Libraries
+
+```{r setup, message=FALSE, warning=FALSE}
+library(readxl)
+library(dplyr)
+library(ggplot2)
+```
+
+## Load Data
+
+```{r load-data}
+# Load the data from the Data folder
+data_path <- here::here("Data", "Laconia_Burial_stats_Gallou.xlsx")
+burial_data <- read_excel(data_path)
+
+# Display first few rows
+head(burial_data)
+```
+
+## Data Overview
+
+```{r data-summary}
+# Get basic information about the dataset
+dim(burial_data)
+str(burial_data)
+summary(burial_data)
+```
+
+## Column Names
+
+```{r column-names}
+# See all column names
+colnames(burial_data)
+```
+
+## Next Steps
+
+This is a starting point for your analysis. You can:
+- Explore relationships between variables
+- Create visualizations
+- Perform statistical analyses
+- Generate summaries and tables
+
