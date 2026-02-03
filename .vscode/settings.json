@@ -1,0 +1,6 @@
+{
+  "r.plot.useHttpgd": true,
+  "r.rterm.mac": "/usr/local/bin/R",
+  "r.lsp.debug": false,
+  "r.lsp.diagnostics": true
+}

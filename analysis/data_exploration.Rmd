@@ -7,7 +7,7 @@ output:
     toc: true
     toc_float: true
 editor_options:
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 ## Introduction
@@ -26,7 +26,7 @@ library(ggplot2)
 
 ```{r load-data}
 # Load the data from the Data folder
-data_path <- here::here("Data", "Laconia_Burial_stats_Gallou.xlsx")
+data_path <- here::here("Data", "laconiaburialstatsgallou.xlsx")
 burial_data <- read_excel(data_path)
 
 # Display first few rows
