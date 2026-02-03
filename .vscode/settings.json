@@ -1,6 +1,8 @@
 {
   "r.plot.useHttpgd": true,
-  "r.rterm.mac": "/usr/local/bin/R",
   "r.lsp.debug": false,
-  "r.lsp.diagnostics": true
+  "r.lsp.diagnostics": true,
+  "r.alwaysUseActiveTerminal": true,
+  "r.bracketedPaste": false,
+  "r.sessionWatcher": true
 }
