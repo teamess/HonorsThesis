@@ -1,5 +1,5 @@
 ---
-title: "Data Exploration"
+title: "Data Exploration: Laconia Burial Data"
 author: "Your Name"
 date: "`r Sys.Date()`"
 output:
@@ -12,7 +12,7 @@ editor_options:
 
 ## Introduction
 
-This analysis explores the Laconia Burial data from Gallou.
+This analysis explores the Laconia Burial data from Gallou (2020). Archaeological datasets often come with challenges: column names may have extra whitespace, categorical data is recorded as text markers (like "X" or "-"), and measurements are embedded in descriptive strings. This document addresses these issues through data cleaning before exploration.
 
 ## Load Libraries
 
@@ -20,40 +20,361 @@ This analysis explores the Laconia Burial data from Gallou.
 library(readxl)
 library(dplyr)
 library(ggplot2)
+library(tidyr)
+library(stringr)
+library(janitor)  # for clean_names()
 ```
 
-## Load Data
+## Load and Clean Data
+
+### Load Raw Data
 
 ```{r load-data}
 # Load the data from the Data folder
 data_path <- here::here("Data", "laconiaburialstatsgallou.xlsx")
-burial_data <- read_excel(data_path)
+burial_raw <- read_excel(data_path)
 
-# Display first few rows
-head(burial_data)
+# Check original column names (note the trailing spaces!)
+colnames(burial_raw)
+```
+
+### Clean Column Names and Data Types
+
+```{r clean-data}
+burial_data <- burial_raw %>%
+  # Clean column names: remove spaces, make lowercase, use underscores
+  janitor::clean_names() %>%
+  
+  # Rename columns for clarity
+  rename(
+    site = site,
+    grave_type = type_of_grave,
+    grave_info = grave_number_info,
+    date_range = built_used,
+    burial_description = burials,
+    goods_general = goods,
+    goods_dromos = goods_dromos,
+    goods_chamber = goods_chamber_floor,
+    goods_cist = goods_cist,
+    dimensions = demensions,  # fix typo in original
+    cup_info = cup_yes_what_kind
+  ) %>%
+  
+  # Convert secondary/primary markers to logical (TRUE/FALSE)
+  # Original uses "X" or "x" for yes, "-" for no
+  mutate(
+    has_secondary = case_when(
+      tolower(secondary) == "x" ~ TRUE,
+      secondary == "-" | is.na(secondary) ~ FALSE,
+      TRUE ~ FALSE
+    ),
+    has_primary = case_when(
+      tolower(primary) == "x" ~ TRUE,
+      primary == "-" | is.na(primary) ~ FALSE,
+      TRUE ~ FALSE
+    )
+  ) %>%
+  
+  # Create a simplified grave type category
+  mutate(
+    grave_type_clean = case_when(
+      str_detect(tolower(grave_type), "tholos") ~ "Tholos",
+      str_detect(tolower(grave_type), "chamber") ~ "Chamber Tomb",
+      str_detect(tolower(grave_type), "cist") ~ "Cist Grave",
+      str_detect(tolower(grave_type), "pit") ~ "Pit Grave",
+      TRUE ~ "Other"
+    )
+  ) %>%
+  
+  # Extract broad period from date_range
+  mutate(
+    period = case_when(
+      str_detect(date_range, "MH") & !str_detect(date_range, "LH") ~ "Middle Helladic",
+      str_detect(date_range, "LH\\s*I(?!I)") ~ "LH I-II (Early Mycenaean)",
+      str_detect(date_range, "LH\\s*II(?!I)") ~ "LH I-II (Early Mycenaean)",
+      str_detect(date_range, "LHIII") | str_detect(date_range, "LH III") ~ "LH III (Palatial/Post-Palatial)",
+      str_detect(date_range, "LH") ~ "Late Helladic (general)",
+      TRUE ~ "Unknown/Unspecified"
+    )
+  ) %>%
+  
+  # Fill forward site names (they may be missing for multi-row sites)
+  fill(site, .direction = "down") %>%
+  
+  # Clean up site names (trim whitespace)
+  mutate(site = str_trim(site))
+
+# Show the cleaned structure
+glimpse(burial_data)
 ```
 
 ## Data Overview
 
+### Basic Statistics
+
 ```{r data-summary}
-# Get basic information about the dataset
-dim(burial_data)
-str(burial_data)
-summary(burial_data)
+# Dimensions of the dataset
+cat("Number of rows (graves):", nrow(burial_data), "\n")
+cat("Number of columns:", ncol(burial_data), "\n")
+
+# Count of non-missing values per column
+burial_data %>%
+  summarise(across(everything(), ~sum(!is.na(.) & . != "-" & . != ""))) %>%
+  pivot_longer(everything(), names_to = "column", values_to = "non_missing") %>%
+  arrange(desc(non_missing))
 ```
 
-## Column Names
+### Sites in the Dataset
 
-```{r column-names}
-# See all column names
-colnames(burial_data)
+```{r sites-overview}
+# Count graves per site
+site_counts <- burial_data %>%
+  filter(!is.na(site)) %>%
+  count(site, name = "n_graves") %>%
+  arrange(desc(n_graves))
+
+print(site_counts, n = 20)
+```
+
+## Burial Type Analysis
+
+### Primary vs Secondary Burials
+
+```{r burial-types}
+# Summary of primary and secondary burial presence
+burial_summary <- burial_data %>%
+  summarise(
+    total_graves = n(),
+    with_primary = sum(has_primary, na.rm = TRUE),
+    with_secondary = sum(has_secondary, na.rm = TRUE),
+    both_types = sum(has_primary & has_secondary, na.rm = TRUE),
+    neither = sum(!has_primary & !has_secondary, na.rm = TRUE)
+  )
+
+print(burial_summary)
+```
+
+```{r burial-plot, fig.width=8, fig.height=5}
+# Visualize burial types
+burial_type_data <- burial_data %>%
+  mutate(
+    burial_category = case_when(
+      has_primary & has_secondary ~ "Both Primary & Secondary",
+      has_primary ~ "Primary Only",
+      has_secondary ~ "Secondary Only",
+      TRUE ~ "Unknown/Not Specified"
+    )
+  ) %>%
+  count(burial_category)
+
+ggplot(burial_type_data, aes(x = reorder(burial_category, n), y = n, fill = burial_category)) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = "Distribution of Burial Types in Laconian Tombs",
+    x = "",
+    y = "Number of Graves",
+    fill = "Burial Type"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+## Grave Types
+
+```{r grave-types}
+# Distribution of grave types
+grave_type_summary <- burial_data %>%
+  count(grave_type_clean, name = "count") %>%
+  arrange(desc(count))
+
+print(grave_type_summary)
+```
+
+```{r grave-type-plot, fig.width=8, fig.height=5}
+ggplot(grave_type_summary, aes(x = reorder(grave_type_clean, count), y = count, fill = grave_type_clean)) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = "Distribution of Grave Types",
+    x = "",
+    y = "Count"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+## Chronological Distribution
+
+```{r chronology}
+# Period distribution
+period_summary <- burial_data %>%
+  count(period, name = "count") %>%
+  arrange(desc(count))
+
+print(period_summary)
+```
+
+```{r period-plot, fig.width=10, fig.height=5}
+ggplot(period_summary, aes(x = reorder(period, count), y = count, fill = period)) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = "Graves by Archaeological Period",
+    subtitle = "Based on date ranges in Gallou (2020)",
+    x = "",
+    y = "Number of Graves"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+## Grave Goods Analysis
+
+### Presence of Goods by Location
+
+```{r goods-presence}
+# Check which graves have goods recorded in different locations
+goods_summary <- burial_data %>%
+  summarise(
+    has_goods_general = sum(!is.na(goods_general) & goods_general != "-", na.rm = TRUE),
+    has_goods_dromos = sum(!is.na(goods_dromos) & goods_dromos != "-", na.rm = TRUE),
+    has_goods_chamber = sum(!is.na(goods_chamber) & goods_chamber != "-", na.rm = TRUE),
+    has_goods_cist = sum(!is.na(goods_cist) & goods_cist != "-", na.rm = TRUE)
+  ) %>%
+  pivot_longer(everything(), names_to = "location", values_to = "count") %>%
+  mutate(location = str_remove(location, "has_goods_"))
+
+print(goods_summary)
+```
+
+```{r goods-plot, fig.width=8, fig.height=5}
+ggplot(goods_summary, aes(x = reorder(location, count), y = count, fill = location)) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = "Grave Goods by Deposition Location",
+    x = "Location",
+    y = "Number of Graves with Goods Recorded"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+## Cross-tabulation: Burial Type by Grave Type
+
+```{r crosstab}
+# Cross-tabulation of burial type by grave type
+crosstab <- burial_data %>%
+  mutate(
+    burial_category = case_when(
+      has_primary & has_secondary ~ "Both",
+      has_primary ~ "Primary Only",
+      has_secondary ~ "Secondary Only",
+      TRUE ~ "Unknown"
+    )
+  ) %>%
+  count(grave_type_clean, burial_category) %>%
+  pivot_wider(names_from = burial_category, values_from = n, values_fill = 0)
+
+print(crosstab)
+```
+
+## Exploring the Text Data
+
+### Sample Burial Descriptions
+
+```{r sample-descriptions}
+# Look at some burial descriptions
+burial_data %>%
+  filter(!is.na(burial_description) & burial_description != "-") %>%
+  select(site, grave_type_clean, burial_description) %>%
+  slice_head(n = 5)
+```
+
+### Sample Goods Descriptions
+
+```{r sample-goods}
+# Look at chamber floor goods (often most detailed)
+burial_data %>%
+  filter(!is.na(goods_chamber) & goods_chamber != "-") %>%
+  select(site, grave_type_clean, goods_chamber) %>%
+  slice_head(n = 5)
+```
+
+## Looking for Drinking Vessels
+
+Based on the thesis focus on drinking vessels and funerary ritual, let's search for mentions of cups, kylikes, and other drinking vessels.
+
+```{r drinking-vessels}
+# Search for drinking vessel mentions across goods columns
+drinking_terms <- "cup|kylix|kylikes|bowl|goblet|ladle|mug"
+
+drinking_vessel_graves <- burial_data %>%
+  mutate(
+    has_drinking_vessel = str_detect(
+      paste(goods_general, goods_dromos, goods_chamber, goods_cist, sep = " "),
+      regex(drinking_terms, ignore_case = TRUE)
+    )
+  ) %>%
+  filter(has_drinking_vessel)
+
+cat("Number of graves with drinking vessel mentions:", nrow(drinking_vessel_graves), "\n")
+cat("Out of total graves:", nrow(burial_data), "\n")
+cat("Percentage:", round(nrow(drinking_vessel_graves)/nrow(burial_data)*100, 1), "%\n")
+```
+
+```{r drinking-by-burial-type}
+# Drinking vessels by burial type
+burial_data %>%
+  mutate(
+    has_drinking_vessel = str_detect(
+      paste(goods_general, goods_dromos, goods_chamber, goods_cist, sep = " "),
+      regex(drinking_terms, ignore_case = TRUE)
+    ),
+    burial_category = case_when(
+      has_primary & has_secondary ~ "Both",
+      has_primary ~ "Primary Only",
+      has_secondary ~ "Secondary Only",
+      TRUE ~ "Unknown"
+    )
+  ) %>%
+  group_by(burial_category) %>%
+  summarise(
+    total = n(),
+    with_drinking_vessels = sum(has_drinking_vessel, na.rm = TRUE),
+    pct = round(with_drinking_vessels/total*100, 1)
+  )
+```
+
+## Data Quality Notes
+
+```{r data-quality}
+# Check for common data quality issues
+cat("=== Data Quality Summary ===\n\n")
+
+cat("Missing site names:", sum(is.na(burial_data$site)), "\n")
+cat("Missing date ranges:", sum(is.na(burial_data$date_range) | burial_data$date_range == "-"), "\n")
+cat("Missing grave types:", sum(is.na(burial_data$grave_type)), "\n")
+
+# Show unique values in key categorical columns
+cat("\n=== Unique Values ===\n")
+cat("Orientations:", paste(unique(burial_data$orientation), collapse = ", "), "\n")
+```
+
+## Export Cleaned Data
+
+```{r export, eval=FALSE}
+# Optionally export the cleaned data for further analysis
+write.csv(burial_data, here::here("Data", "laconia_burial_cleaned.csv"), row.names = FALSE)
 ```
 
 ## Next Steps
 
-This is a starting point for your analysis. You can:
-- Explore relationships between variables
-- Create visualizations
-- Perform statistical analyses
-- Generate summaries and tables
+With the cleaned data, you can now:
 
+1. **Analyze spatial patterns**: Compare burial practices across different sites
+2. **Temporal analysis**: Track changes in burial practices across LH periods  
+3. **Goods analysis**: Text-mine the goods descriptions to categorize artifact types
+4. **Test hypotheses**: Examine relationships between secondary burial and drinking vessel presence
+5. **Extract dimensions**: Parse the dimension strings to get numeric measurements for chamber/stomion sizes

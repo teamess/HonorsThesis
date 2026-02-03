@@ -11,9 +11,9 @@
 
 <meta name="author" content="Your Name" />
 
-<meta name="date" content="2026-01-27" />
+<meta name="date" content="2026-02-03" />
 
-<title>Data Exploration</title>
+<title>Data Exploration: Laconia Burial Data</title>
 
 <script src="site_libs/header-attrs-2.30/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -351,9 +351,9 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Data Exploration</h1>
+<h1 class="title toc-ignore">Data Exploration: Laconia Burial Data</h1>
 <h4 class="author">Your Name</h4>
-<h4 class="date">2026-01-27</h4>
+<h4 class="date">2026-02-03</h4>
 
 </div>
 
@@ -382,7 +382,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-01-27
+<strong>Last updated:</strong> 2026-02-03
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -420,10 +420,10 @@ changes </a>
 <div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R
-Markdown file created these results, you’ll want to first commit it to
-the Git repo. If you’re still working on the analysis, you can ignore
-this warning. When you’re finished, you can run
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
 <code>wflow_publish</code> to commit the R Markdown file and build the
 HTML.</p>
 </div>
@@ -516,15 +516,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomteamessHonorsThesistreea6b448f2199c54ddcbbc77eabfc9c4361ebcfeb0targetblanka6b448fa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomteamessHonorsThesistree16128ad35cd5d29c476bd0baa83a6743cc24a446targetblank16128ada">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/teamess/HonorsThesis/tree/a6b448f2199c54ddcbbc77eabfc9c4361ebcfeb0" target="_blank">a6b448f</a>
+<a href="https://github.com/teamess/HonorsThesis/tree/16128ad35cd5d29c476bd0baa83a6743cc24a446" target="_blank">16128ad</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomteamessHonorsThesistreea6b448f2199c54ddcbbc77eabfc9c4361ebcfeb0targetblanka6b448fa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomteamessHonorsThesistree16128ad35cd5d29c476bd0baa83a6743cc24a446targetblank16128ada"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -534,7 +534,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/teamess/HonorsThesis/tree/a6b448f2199c54ddcbbc77eabfc9c4361ebcfeb0" target="_blank">a6b448f</a>.
+<a href="https://github.com/teamess/HonorsThesis/tree/16128ad35cd5d29c476bd0baa83a6743cc24a446" target="_blank">16128ad</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -550,12 +550,17 @@ were generated:
 <pre><code>
 Ignored files:
     Ignored:    renv/library/
+    Ignored:    renv/staging/
 
 Untracked files:
-    Untracked:  analysis/data_exploration.Rmd
+    Untracked:  .vscode/extensions.json
 
 Unstaged changes:
-    Modified:   renv.lock
+    Modified:   .DS_Store
+    Modified:   .vscode/settings.json
+    Modified:   Data/.DS_Store
+    Modified:   README.md
+    Modified:   analysis/data_exploration.Rmd
 
 </code></pre>
 <p>
@@ -571,90 +576,121 @@ have uncommitted changes.
 </div>
 <div id="versions" class="tab-pane fade">
 <p>
-There are no past versions. Publish this analysis with
-<code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/data_exploration.Rmd</code>) and
+HTML (<code>docs/data_exploration.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/teamess/HonorsThesis/blob/16128ad35cd5d29c476bd0baa83a6743cc24a446/analysis/data_exploration.Rmd" target="_blank">16128ad</a>
+</td>
+<td>
+teamess
+</td>
+<td>
+2026-02-03
+</td>
+<td>
+Add jQuery UI docs, data files, and Rmd tweaks
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/teamess/HonorsThesis/blob/90a08fa16c7ac8cb4599aa6cb9434302579f45e2/analysis/data_exploration.Rmd" target="_blank">90a08fa</a>
+</td>
+<td>
+teamess
+</td>
+<td>
+2026-01-27
+</td>
+<td>
+Add first analysis: data exploration
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/teamess/HonorsThesis/90a08fa16c7ac8cb4599aa6cb9434302579f45e2/docs/data_exploration.html" target="_blank">90a08fa</a>
+</td>
+<td>
+teamess
+</td>
+<td>
+2026-01-27
+</td>
+<td>
+Add first analysis: data exploration
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
 </div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>This analysis explores the Laconia Burial data from Gallou.</p>
+<p>This analysis explores the Laconia Burial data from Gallou (2020).
+Archaeological datasets often come with challenges: column names may
+have extra whitespace, categorical data is recorded as text markers
+(like “X” or “-”), and measurements are embedded in descriptive strings.
+This document addresses these issues through data cleaning before
+exploration.</p>
 </div>
 <div id="load-libraries" class="section level2">
 <h2>Load Libraries</h2>
 <pre class="r"><code>library(readxl)
 library(dplyr)
-library(ggplot2)</code></pre>
+library(ggplot2)
+library(tidyr)
+library(stringr)
+library(janitor)  # for clean_names()</code></pre>
 </div>
-<div id="load-data" class="section level2">
-<h2>Load Data</h2>
+<div id="load-and-clean-data" class="section level2">
+<h2>Load and Clean Data</h2>
+<div id="load-raw-data" class="section level3">
+<h3>Load Raw Data</h3>
 <pre class="r"><code># Load the data from the Data folder
-data_path &lt;- here::here(&quot;Data&quot;, &quot;Laconia_Burial_stats_Gallou.xlsx&quot;)
-burial_data &lt;- read_excel(data_path)
+data_path &lt;- here::here(&quot;Data&quot;, &quot;laconiaburialstatsgallou.xlsx&quot;)
+burial_raw &lt;- read_excel(data_path)
 
-# Display first few rows
-head(burial_data)</code></pre>
-<pre><code># A tibble: 6 × 16
-  site     `type of grave` `grave number/ info` `Built/used` burials sex   age  
-  &lt;chr&gt;    &lt;chr&gt;           &lt;chr&gt;                &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;
-1 Vapheio  tholos          the biggest in the … built LH II… &quot;scatt… -     -    
-2 Arkynes  Tholos A        small tholos tomb    LH IIIA-may… &quot;small… -     -    
-3 &lt;NA&gt;     Tholos B        small colapsed thol… LHIII        &quot;\&quot;few… -     -    
-4 &lt;NA&gt;     Tholos C        medium sized tholos  LHIIIA-B, r… &quot;Secon… -     -    
-5 Sparti:… Tholos          small colapsed but … LHIIA-LHIII… &quot;5 pri… -     -    
-6 &lt;NA&gt;     dromos of thol… &lt;NA&gt;                 LHIIB/LHIII… &quot;-&quot;     -     &lt;NA&gt; 
-# ℹ 9 more variables: goods &lt;chr&gt;, `goods: dromos` &lt;chr&gt;,
-#   `goods: chamber floor` &lt;chr&gt;, `goods: cist` &lt;chr&gt;, secondary &lt;chr&gt;,
-#   primary &lt;chr&gt;, demensions &lt;chr&gt;, orientation &lt;chr&gt;,
-#   `Cup Yes, what kind` &lt;lgl&gt;</code></pre>
-</div>
-<div id="data-overview" class="section level2">
-<h2>Data Overview</h2>
-<pre class="r"><code># Get basic information about the dataset
-dim(burial_data)</code></pre>
-<pre><code>[1] 153  16</code></pre>
-<pre class="r"><code>str(burial_data)</code></pre>
-<pre><code>tibble [153 × 16] (S3: tbl_df/tbl/data.frame)
- $ site                : chr [1:153] &quot;Vapheio&quot; &quot;Arkynes&quot; NA NA ...
- $ type of grave       : chr [1:153] &quot;tholos&quot; &quot;Tholos A&quot; &quot;Tholos B&quot; &quot;Tholos C&quot; ...
- $ grave number/ info  : chr [1:153] &quot;the biggest in the aegean&quot; &quot;small tholos tomb&quot; &quot;small colapsed tholos&quot; &quot;medium sized tholos&quot; ...
- $ Built/used          : chr [1:153] &quot;built LH IIA, used until LHIIB-IIIA1&quot; &quot;LH IIIA-maybe LHIIIB&quot; &quot;LHIII&quot; &quot;LHIIIA-B, reused PG/G&quot; ...
- $ burials             : chr [1:153] &quot;scattered bones (human or animal) teeth of several dogs&quot; &quot;small heap of disarticulated human remains, placed next to the stomion&quot; &quot;\&quot;few decaying bones of single burial\&quot;&quot; &quot;Secondary only&quot; ...
- $ sex                 : chr [1:153] &quot;-&quot; &quot;-&quot; &quot;-&quot; &quot;-&quot; ...
- $ age                 : chr [1:153] &quot;-&quot; &quot;-&quot; &quot;-&quot; &quot;-&quot; ...
- $ goods               : chr [1:153] NA &quot;5 \&quot;whitish-stone\&quot; beads, small bronze nail, agate stone (seal?), gold relief ornament in shape of jug&quot; &quot;potsherds&quot; &quot;LHIII-pottery: piriform jar, bronze knives, bronze razor, Geometric: 2 pins with bird head finial&quot; ...
- $ goods: dromos       : chr [1:153] &quot;2 pieces of gold foil, a broken amber bead, pottery fragments, evidence of burning&quot; &quot;-&quot; &quot;-&quot; &quot;-&quot; ...
- $ goods: chamber floor: chr [1:153] &quot;charcoal, 13 seals, 1 gold signet ring, amethyst scarab w/out engraving, gold minurature tube, gold buttons, go&quot;| __truncated__ &quot;-&quot; NA &quot;-&quot; ...
- $ goods: cist         : chr [1:153] &quot;2 gold Vapheio cups with bull hunt scenes, 1 silver cup with relief on gold plated rim, 2 silver Vapheio  cups,&quot;| __truncated__ &quot;-&quot; NA &quot;-&quot; ...
- $ secondary           : chr [1:153] &quot;-&quot; &quot;-&quot; NA &quot;X&quot; ...
- $ primary             : chr [1:153] &quot;-&quot; &quot;-&quot; NA &quot;-&quot; ...
- $ demensions          : chr [1:153] &quot;83.28m^2. dromos: L 29.8m x w3.18-3.45, stomion: L 4.56m x w1.93m x h4.2m, pit in somion: l1.93m x w1.6-1.8m x &quot;| __truncated__ &quot;dromos: L2.65m, stomion:d2.8m, w0.78m, h1.16-1.3m; chamber:o4.7m, h3.75m&quot; &quot;dromos: h0.75m&quot; &quot;stomion: d.2-3m, w1.2-1.3, h1.5m chamber: o6m, h1.5m&quot; ...
- $ orientation         : chr [1:153] &quot;NE-SW&quot; &quot;SE-NW&quot; &quot;-&quot; &quot;-&quot; ...
- $ Cup Yes, what kind  : logi [1:153] NA NA NA NA NA NA ...</code></pre>
-<pre class="r"><code>summary(burial_data)</code></pre>
-<pre><code>     site           type of grave      grave number/ info  Built/used       
- Length:153         Length:153         Length:153         Length:153        
- Class :character   Class :character   Class :character   Class :character  
- Mode  :character   Mode  :character   Mode  :character   Mode  :character  
-   burials              sex                age               goods          
- Length:153         Length:153         Length:153         Length:153        
- Class :character   Class :character   Class :character   Class :character  
- Mode  :character   Mode  :character   Mode  :character   Mode  :character  
- goods: dromos      goods: chamber floor goods: cist         secondary        
- Length:153         Length:153           Length:153         Length:153        
- Class :character   Class :character     Class :character   Class :character  
- Mode  :character   Mode  :character     Mode  :character   Mode  :character  
-   primary           demensions        orientation        Cup Yes, what kind
- Length:153         Length:153         Length:153         Mode:logical      
- Class :character   Class :character   Class :character   NA&#39;s:153          
- Mode  :character   Mode  :character   Mode  :character                     </code></pre>
-</div>
-<div id="column-names" class="section level2">
-<h2>Column Names</h2>
-<pre class="r"><code># See all column names
-colnames(burial_data)</code></pre>
+# Check original column names (note the trailing spaces!)
+colnames(burial_raw)</code></pre>
 <pre><code> [1] &quot;site&quot;                 &quot;type of grave&quot;        &quot;grave number/ info&quot;  
  [4] &quot;Built/used&quot;           &quot;burials&quot;              &quot;sex&quot;                 
  [7] &quot;age&quot;                  &quot;goods&quot;                &quot;goods: dromos&quot;       
@@ -662,11 +698,459 @@ colnames(burial_data)</code></pre>
 [13] &quot;primary&quot;              &quot;demensions&quot;           &quot;orientation&quot;         
 [16] &quot;Cup Yes, what kind&quot;  </code></pre>
 </div>
+<div id="clean-column-names-and-data-types" class="section level3">
+<h3>Clean Column Names and Data Types</h3>
+<pre class="r"><code>burial_data &lt;- burial_raw %&gt;%
+  # Clean column names: remove spaces, make lowercase, use underscores
+  janitor::clean_names() %&gt;%
+  
+  # Rename columns for clarity
+  rename(
+    site = site,
+    grave_type = type_of_grave,
+    grave_info = grave_number_info,
+    date_range = built_used,
+    burial_description = burials,
+    goods_general = goods,
+    goods_dromos = goods_dromos,
+    goods_chamber = goods_chamber_floor,
+    goods_cist = goods_cist,
+    dimensions = demensions,  # fix typo in original
+    cup_info = cup_yes_what_kind
+  ) %&gt;%
+  
+  # Convert secondary/primary markers to logical (TRUE/FALSE)
+  # Original uses &quot;X&quot; or &quot;x&quot; for yes, &quot;-&quot; for no
+  mutate(
+    has_secondary = case_when(
+      tolower(secondary) == &quot;x&quot; ~ TRUE,
+      secondary == &quot;-&quot; | is.na(secondary) ~ FALSE,
+      TRUE ~ FALSE
+    ),
+    has_primary = case_when(
+      tolower(primary) == &quot;x&quot; ~ TRUE,
+      primary == &quot;-&quot; | is.na(primary) ~ FALSE,
+      TRUE ~ FALSE
+    )
+  ) %&gt;%
+  
+  # Create a simplified grave type category
+  mutate(
+    grave_type_clean = case_when(
+      str_detect(tolower(grave_type), &quot;tholos&quot;) ~ &quot;Tholos&quot;,
+      str_detect(tolower(grave_type), &quot;chamber&quot;) ~ &quot;Chamber Tomb&quot;,
+      str_detect(tolower(grave_type), &quot;cist&quot;) ~ &quot;Cist Grave&quot;,
+      str_detect(tolower(grave_type), &quot;pit&quot;) ~ &quot;Pit Grave&quot;,
+      TRUE ~ &quot;Other&quot;
+    )
+  ) %&gt;%
+  
+  # Extract broad period from date_range
+  mutate(
+    period = case_when(
+      str_detect(date_range, &quot;MH&quot;) &amp; !str_detect(date_range, &quot;LH&quot;) ~ &quot;Middle Helladic&quot;,
+      str_detect(date_range, &quot;LH\\s*I(?!I)&quot;) ~ &quot;LH I-II (Early Mycenaean)&quot;,
+      str_detect(date_range, &quot;LH\\s*II(?!I)&quot;) ~ &quot;LH I-II (Early Mycenaean)&quot;,
+      str_detect(date_range, &quot;LHIII&quot;) | str_detect(date_range, &quot;LH III&quot;) ~ &quot;LH III (Palatial/Post-Palatial)&quot;,
+      str_detect(date_range, &quot;LH&quot;) ~ &quot;Late Helladic (general)&quot;,
+      TRUE ~ &quot;Unknown/Unspecified&quot;
+    )
+  ) %&gt;%
+  
+  # Fill forward site names (they may be missing for multi-row sites)
+  fill(site, .direction = &quot;down&quot;) %&gt;%
+  
+  # Clean up site names (trim whitespace)
+  mutate(site = str_trim(site))
+
+# Show the cleaned structure
+glimpse(burial_data)</code></pre>
+<pre><code>Rows: 153
+Columns: 20
+$ site               &lt;chr&gt; &quot;Vapheio&quot;, &quot;Arkynes&quot;, &quot;Arkynes&quot;, &quot;Arkynes&quot;, &quot;Sparti…
+$ grave_type         &lt;chr&gt; &quot;tholos&quot;, &quot;Tholos A&quot;, &quot;Tholos B&quot;, &quot;Tholos C&quot;, &quot;Thol…
+$ grave_info         &lt;chr&gt; &quot;the biggest in the aegean&quot;, &quot;small tholos tomb&quot;, &quot;…
+$ date_range         &lt;chr&gt; &quot;built LH IIA, used until LHIIB-IIIA1&quot;, &quot;LH IIIA-ma…
+$ burial_description &lt;chr&gt; &quot;scattered bones (human or animal) teeth of several…
+$ sex                &lt;chr&gt; &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;…
+$ age                &lt;chr&gt; &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, NA, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-…
+$ goods_general      &lt;chr&gt; NA, &quot;5 \&quot;whitish-stone\&quot; beads, small bronze nail, …
+$ goods_dromos       &lt;chr&gt; &quot;2 pieces of gold foil, a broken amber bead, potter…
+$ goods_chamber      &lt;chr&gt; &quot;charcoal, 13 seals, 1 gold signet ring, amethyst s…
+$ goods_cist         &lt;chr&gt; &quot;2 gold Vapheio cups with bull hunt scenes, 1 silve…
+$ secondary          &lt;chr&gt; &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;X&quot;, &quot;X&quot;, &quot;-&quot;, &quot;-&quot;, &quot;X&quot;, &quot;-&quot;, &quot;X&quot;, &quot;…
+$ primary            &lt;chr&gt; &quot;-&quot;, &quot;-&quot;, &quot;X&quot;, &quot;-&quot;, &quot;X&quot;, &quot;-&quot;, &quot;-&quot;, &quot;X&quot;, &quot;-&quot;, &quot;-&quot;, &quot;…
+$ dimensions         &lt;chr&gt; &quot;83.28m^2. dromos: L 29.8m x w3.18-3.45, stomion: L…
+$ orientation        &lt;chr&gt; &quot;NE-SW&quot;, &quot;SE-NW&quot;, &quot;-&quot;, &quot;-&quot;, &quot;E-W&quot;, &quot;N-S&quot;, &quot;W-E&quot;, &quot;W…
+$ cup_info           &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ has_secondary      &lt;lgl&gt; FALSE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE…
+$ has_primary        &lt;lgl&gt; FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE…
+$ grave_type_clean   &lt;chr&gt; &quot;Tholos&quot;, &quot;Tholos&quot;, &quot;Tholos&quot;, &quot;Tholos&quot;, &quot;Tholos&quot;, &quot;…
+$ period             &lt;chr&gt; &quot;LH I-II (Early Mycenaean)&quot;, &quot;LH III (Palatial/Post…</code></pre>
+</div>
+</div>
+<div id="data-overview" class="section level2">
+<h2>Data Overview</h2>
+<div id="basic-statistics" class="section level3">
+<h3>Basic Statistics</h3>
+<pre class="r"><code># Dimensions of the dataset
+cat(&quot;Number of rows (graves):&quot;, nrow(burial_data), &quot;\n&quot;)</code></pre>
+<pre><code>Number of rows (graves): 153 </code></pre>
+<pre class="r"><code>cat(&quot;Number of columns:&quot;, ncol(burial_data), &quot;\n&quot;)</code></pre>
+<pre><code>Number of columns: 20 </code></pre>
+<pre class="r"><code># Count of non-missing values per column
+burial_data %&gt;%
+  summarise(across(everything(), ~sum(!is.na(.) &amp; . != &quot;-&quot; &amp; . != &quot;&quot;))) %&gt;%
+  pivot_longer(everything(), names_to = &quot;column&quot;, values_to = &quot;non_missing&quot;) %&gt;%
+  arrange(desc(non_missing))</code></pre>
+<pre><code># A tibble: 20 × 2
+   column             non_missing
+   &lt;chr&gt;                    &lt;int&gt;
+ 1 site                       153
+ 2 has_secondary              153
+ 3 has_primary                153
+ 4 grave_type_clean           153
+ 5 period                     153
+ 6 grave_info                 152
+ 7 date_range                 128
+ 8 grave_type                 104
+ 9 burial_description         102
+10 primary                     85
+11 goods_general               75
+12 age                         71
+13 secondary                   56
+14 dimensions                  35
+15 orientation                 34
+16 sex                         26
+17 goods_chamber               25
+18 goods_dromos                 8
+19 goods_cist                   2
+20 cup_info                     0</code></pre>
+</div>
+<div id="sites-in-the-dataset" class="section level3">
+<h3>Sites in the Dataset</h3>
+<pre class="r"><code># Count graves per site
+site_counts &lt;- burial_data %&gt;%
+  filter(!is.na(site)) %&gt;%
+  count(site, name = &quot;n_graves&quot;) %&gt;%
+  arrange(desc(n_graves))
+
+print(site_counts, n = 20)</code></pre>
+<pre><code># A tibble: 23 × 2
+   site                                      n_graves
+   &lt;chr&gt;                                        &lt;int&gt;
+ 1 Agios Stephanos                                 63
+ 2 Xerokambi: Agios Vasileios North Cemetery       25
+ 3 Epidavros Limera:PAL1                           10
+ 4 Pellana                                          7
+ 5 Skoura: malathria                                6
+ 6 Pellana: pelekete and Palaiokastro               5
+ 7 Peristeri: Solakos                               5
+ 8 Sparti: Polydendron                              4
+ 9 Sykea                                            4
+10 Amyklai: Spelakia                                3
+11 Amyklaion                                        3
+12 Arkynes                                          3
+13 Geraki: Acropolis                                3
+14 Daphi: Louria                                    2
+15 Daphni: Louria 3                                 2
+16 Agios Georgios Voion                             1
+17 Agios Vasileios:North Cemetery                   1
+18 Angelona: Bastiza                                1
+19 Epidavros Limera                                 1
+20 Kambos Voion                                     1
+# ℹ 3 more rows</code></pre>
+</div>
+</div>
+<div id="burial-type-analysis" class="section level2">
+<h2>Burial Type Analysis</h2>
+<div id="primary-vs-secondary-burials" class="section level3">
+<h3>Primary vs Secondary Burials</h3>
+<pre class="r"><code># Summary of primary and secondary burial presence
+burial_summary &lt;- burial_data %&gt;%
+  summarise(
+    total_graves = n(),
+    with_primary = sum(has_primary, na.rm = TRUE),
+    with_secondary = sum(has_secondary, na.rm = TRUE),
+    both_types = sum(has_primary &amp; has_secondary, na.rm = TRUE),
+    neither = sum(!has_primary &amp; !has_secondary, na.rm = TRUE)
+  )
+
+print(burial_summary)</code></pre>
+<pre><code># A tibble: 1 × 5
+  total_graves with_primary with_secondary both_types neither
+         &lt;int&gt;        &lt;int&gt;          &lt;int&gt;      &lt;int&gt;   &lt;int&gt;
+1          153           85             56         23      35</code></pre>
+<pre class="r"><code># Visualize burial types
+burial_type_data &lt;- burial_data %&gt;%
+  mutate(
+    burial_category = case_when(
+      has_primary &amp; has_secondary ~ &quot;Both Primary &amp; Secondary&quot;,
+      has_primary ~ &quot;Primary Only&quot;,
+      has_secondary ~ &quot;Secondary Only&quot;,
+      TRUE ~ &quot;Unknown/Not Specified&quot;
+    )
+  ) %&gt;%
+  count(burial_category)
+
+ggplot(burial_type_data, aes(x = reorder(burial_category, n), y = n, fill = burial_category)) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = &quot;Distribution of Burial Types in Laconian Tombs&quot;,
+    x = &quot;&quot;,
+    y = &quot;Number of Graves&quot;,
+    fill = &quot;Burial Type&quot;
+  ) +
+  theme_minimal() +
+  theme(legend.position = &quot;none&quot;)</code></pre>
+<p><img src="figure/data_exploration.Rmd/burial-plot-1.png" alt="" width="768" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="grave-types" class="section level2">
+<h2>Grave Types</h2>
+<pre class="r"><code># Distribution of grave types
+grave_type_summary &lt;- burial_data %&gt;%
+  count(grave_type_clean, name = &quot;count&quot;) %&gt;%
+  arrange(desc(count))
+
+print(grave_type_summary)</code></pre>
+<pre><code># A tibble: 5 × 2
+  grave_type_clean count
+  &lt;chr&gt;            &lt;int&gt;
+1 Other               57
+2 Cist Grave          38
+3 Chamber Tomb        34
+4 Pit Grave           18
+5 Tholos               6</code></pre>
+<pre class="r"><code>ggplot(grave_type_summary, aes(x = reorder(grave_type_clean, count), y = count, fill = grave_type_clean)) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = &quot;Distribution of Grave Types&quot;,
+    x = &quot;&quot;,
+    y = &quot;Count&quot;
+  ) +
+  theme_minimal() +
+  theme(legend.position = &quot;none&quot;)</code></pre>
+<p><img src="figure/data_exploration.Rmd/grave-type-plot-1.png" alt="" width="768" style="display: block; margin: auto;" /></p>
+</div>
+<div id="chronological-distribution" class="section level2">
+<h2>Chronological Distribution</h2>
+<pre class="r"><code># Period distribution
+period_summary &lt;- burial_data %&gt;%
+  count(period, name = &quot;count&quot;) %&gt;%
+  arrange(desc(count))
+
+print(period_summary)</code></pre>
+<pre><code># A tibble: 5 × 2
+  period                          count
+  &lt;chr&gt;                           &lt;int&gt;
+1 LH I-II (Early Mycenaean)          63
+2 LH III (Palatial/Post-Palatial)    54
+3 Unknown/Unspecified                27
+4 Late Helladic (general)             5
+5 Middle Helladic                     4</code></pre>
+<pre class="r"><code>ggplot(period_summary, aes(x = reorder(period, count), y = count, fill = period)) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = &quot;Graves by Archaeological Period&quot;,
+    subtitle = &quot;Based on date ranges in Gallou (2020)&quot;,
+    x = &quot;&quot;,
+    y = &quot;Number of Graves&quot;
+  ) +
+  theme_minimal() +
+  theme(legend.position = &quot;none&quot;)</code></pre>
+<p><img src="figure/data_exploration.Rmd/period-plot-1.png" alt="" width="960" style="display: block; margin: auto;" /></p>
+</div>
+<div id="grave-goods-analysis" class="section level2">
+<h2>Grave Goods Analysis</h2>
+<div id="presence-of-goods-by-location" class="section level3">
+<h3>Presence of Goods by Location</h3>
+<pre class="r"><code># Check which graves have goods recorded in different locations
+goods_summary &lt;- burial_data %&gt;%
+  summarise(
+    has_goods_general = sum(!is.na(goods_general) &amp; goods_general != &quot;-&quot;, na.rm = TRUE),
+    has_goods_dromos = sum(!is.na(goods_dromos) &amp; goods_dromos != &quot;-&quot;, na.rm = TRUE),
+    has_goods_chamber = sum(!is.na(goods_chamber) &amp; goods_chamber != &quot;-&quot;, na.rm = TRUE),
+    has_goods_cist = sum(!is.na(goods_cist) &amp; goods_cist != &quot;-&quot;, na.rm = TRUE)
+  ) %&gt;%
+  pivot_longer(everything(), names_to = &quot;location&quot;, values_to = &quot;count&quot;) %&gt;%
+  mutate(location = str_remove(location, &quot;has_goods_&quot;))
+
+print(goods_summary)</code></pre>
+<pre><code># A tibble: 4 × 2
+  location count
+  &lt;chr&gt;    &lt;int&gt;
+1 general     75
+2 dromos       8
+3 chamber     25
+4 cist         2</code></pre>
+<pre class="r"><code>ggplot(goods_summary, aes(x = reorder(location, count), y = count, fill = location)) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = &quot;Grave Goods by Deposition Location&quot;,
+    x = &quot;Location&quot;,
+    y = &quot;Number of Graves with Goods Recorded&quot;
+  ) +
+  theme_minimal() +
+  theme(legend.position = &quot;none&quot;)</code></pre>
+<p><img src="figure/data_exploration.Rmd/goods-plot-1.png" alt="" width="768" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="cross-tabulation-burial-type-by-grave-type"
+class="section level2">
+<h2>Cross-tabulation: Burial Type by Grave Type</h2>
+<pre class="r"><code># Cross-tabulation of burial type by grave type
+crosstab &lt;- burial_data %&gt;%
+  mutate(
+    burial_category = case_when(
+      has_primary &amp; has_secondary ~ &quot;Both&quot;,
+      has_primary ~ &quot;Primary Only&quot;,
+      has_secondary ~ &quot;Secondary Only&quot;,
+      TRUE ~ &quot;Unknown&quot;
+    )
+  ) %&gt;%
+  count(grave_type_clean, burial_category) %&gt;%
+  pivot_wider(names_from = burial_category, values_from = n, values_fill = 0)
+
+print(crosstab)</code></pre>
+<pre><code># A tibble: 5 × 5
+  grave_type_clean  Both `Secondary Only` Unknown `Primary Only`
+  &lt;chr&gt;            &lt;int&gt;            &lt;int&gt;   &lt;int&gt;          &lt;int&gt;
+1 Chamber Tomb        11                6      17              0
+2 Cist Grave           7                5       1             25
+3 Other                2               19      13             23
+4 Pit Grave            2                2       1             13
+5 Tholos               1                1       3              1</code></pre>
+</div>
+<div id="exploring-the-text-data" class="section level2">
+<h2>Exploring the Text Data</h2>
+<div id="sample-burial-descriptions" class="section level3">
+<h3>Sample Burial Descriptions</h3>
+<pre class="r"><code># Look at some burial descriptions
+burial_data %&gt;%
+  filter(!is.na(burial_description) &amp; burial_description != &quot;-&quot;) %&gt;%
+  select(site, grave_type_clean, burial_description) %&gt;%
+  slice_head(n = 5)</code></pre>
+<pre><code># A tibble: 5 × 3
+  site                grave_type_clean burial_description                       
+  &lt;chr&gt;               &lt;chr&gt;            &lt;chr&gt;                                    
+1 Vapheio             Tholos           &quot;scattered bones (human or animal) teeth…
+2 Arkynes             Tholos           &quot;small heap of disarticulated human rema…
+3 Arkynes             Tholos           &quot;\&quot;few decaying bones of single burial\&quot;&quot;
+4 Arkynes             Tholos           &quot;Secondary only&quot;                         
+5 Sparti: Polydendron Tholos           &quot;5 primary west side infront of stomion,…</code></pre>
+</div>
+<div id="sample-goods-descriptions" class="section level3">
+<h3>Sample Goods Descriptions</h3>
+<pre class="r"><code># Look at chamber floor goods (often most detailed)
+burial_data %&gt;%
+  filter(!is.na(goods_chamber) &amp; goods_chamber != &quot;-&quot;) %&gt;%
+  select(site, grave_type_clean, goods_chamber) %&gt;%
+  slice_head(n = 5)</code></pre>
+<pre><code># A tibble: 5 × 3
+  site              grave_type_clean goods_chamber                              
+  &lt;chr&gt;             &lt;chr&gt;            &lt;chr&gt;                                      
+1 Vapheio           Tholos           &quot;charcoal, 13 seals, 1 gold signet ring, a…
+2 Pellana           Chamber Tomb     &quot;animal bones from post-mycenaean activity…
+3 Pellana           Chamber Tomb     &quot;1 handleless jar, pottery sherds and huma…
+4 Amyklai: Spelakia Chamber Tomb     &quot;1 feeding bottle, 2 cups, 3 jugs, 3 ampho…
+5 Amyklai: Spelakia Chamber Tomb     &quot;lekythos?, jar, feeding bottle, small jar…</code></pre>
+</div>
+</div>
+<div id="looking-for-drinking-vessels" class="section level2">
+<h2>Looking for Drinking Vessels</h2>
+<p>Based on the thesis focus on drinking vessels and funerary ritual,
+let’s search for mentions of cups, kylikes, and other drinking
+vessels.</p>
+<pre class="r"><code># Search for drinking vessel mentions across goods columns
+drinking_terms &lt;- &quot;cup|kylix|kylikes|bowl|goblet|ladle|mug&quot;
+
+drinking_vessel_graves &lt;- burial_data %&gt;%
+  mutate(
+    has_drinking_vessel = str_detect(
+      paste(goods_general, goods_dromos, goods_chamber, goods_cist, sep = &quot; &quot;),
+      regex(drinking_terms, ignore_case = TRUE)
+    )
+  ) %&gt;%
+  filter(has_drinking_vessel)
+
+cat(&quot;Number of graves with drinking vessel mentions:&quot;, nrow(drinking_vessel_graves), &quot;\n&quot;)</code></pre>
+<pre><code>Number of graves with drinking vessel mentions: 26 </code></pre>
+<pre class="r"><code>cat(&quot;Out of total graves:&quot;, nrow(burial_data), &quot;\n&quot;)</code></pre>
+<pre><code>Out of total graves: 153 </code></pre>
+<pre class="r"><code>cat(&quot;Percentage:&quot;, round(nrow(drinking_vessel_graves)/nrow(burial_data)*100, 1), &quot;%\n&quot;)</code></pre>
+<pre><code>Percentage: 17 %</code></pre>
+<pre class="r"><code># Drinking vessels by burial type
+burial_data %&gt;%
+  mutate(
+    has_drinking_vessel = str_detect(
+      paste(goods_general, goods_dromos, goods_chamber, goods_cist, sep = &quot; &quot;),
+      regex(drinking_terms, ignore_case = TRUE)
+    ),
+    burial_category = case_when(
+      has_primary &amp; has_secondary ~ &quot;Both&quot;,
+      has_primary ~ &quot;Primary Only&quot;,
+      has_secondary ~ &quot;Secondary Only&quot;,
+      TRUE ~ &quot;Unknown&quot;
+    )
+  ) %&gt;%
+  group_by(burial_category) %&gt;%
+  summarise(
+    total = n(),
+    with_drinking_vessels = sum(has_drinking_vessel, na.rm = TRUE),
+    pct = round(with_drinking_vessels/total*100, 1)
+  )</code></pre>
+<pre><code># A tibble: 4 × 4
+  burial_category total with_drinking_vessels   pct
+  &lt;chr&gt;           &lt;int&gt;                 &lt;int&gt; &lt;dbl&gt;
+1 Both               23                    10  43.5
+2 Primary Only       62                     4   6.5
+3 Secondary Only     33                     7  21.2
+4 Unknown            35                     5  14.3</code></pre>
+</div>
+<div id="data-quality-notes" class="section level2">
+<h2>Data Quality Notes</h2>
+<pre class="r"><code># Check for common data quality issues
+cat(&quot;=== Data Quality Summary ===\n\n&quot;)</code></pre>
+<pre><code>=== Data Quality Summary ===</code></pre>
+<pre class="r"><code>cat(&quot;Missing site names:&quot;, sum(is.na(burial_data$site)), &quot;\n&quot;)</code></pre>
+<pre><code>Missing site names: 0 </code></pre>
+<pre class="r"><code>cat(&quot;Missing date ranges:&quot;, sum(is.na(burial_data$date_range) | burial_data$date_range == &quot;-&quot;), &quot;\n&quot;)</code></pre>
+<pre><code>Missing date ranges: 25 </code></pre>
+<pre class="r"><code>cat(&quot;Missing grave types:&quot;, sum(is.na(burial_data$grave_type)), &quot;\n&quot;)</code></pre>
+<pre><code>Missing grave types: 42 </code></pre>
+<pre class="r"><code># Show unique values in key categorical columns
+cat(&quot;\n=== Unique Values ===\n&quot;)</code></pre>
+<pre><code>
+=== Unique Values ===</code></pre>
+<pre class="r"><code>cat(&quot;Orientations:&quot;, paste(unique(burial_data$orientation), collapse = &quot;, &quot;), &quot;\n&quot;)</code></pre>
+<pre><code>Orientations: NE-SW, SE-NW, -, E-W, N-S, W-E, NW-SE, W-E?, NA, N/NE-S/SW, S-N, W/NW-E/SE </code></pre>
+</div>
+<div id="export-cleaned-data" class="section level2">
+<h2>Export Cleaned Data</h2>
+<pre class="r"><code># Optionally export the cleaned data for further analysis
+write.csv(burial_data, here::here(&quot;Data&quot;, &quot;laconia_burial_cleaned.csv&quot;), row.names = FALSE)</code></pre>
+</div>
 <div id="next-steps" class="section level2">
 <h2>Next Steps</h2>
-<p>This is a starting point for your analysis. You can: - Explore
-relationships between variables - Create visualizations - Perform
-statistical analyses - Generate summaries and tables</p>
+<p>With the cleaned data, you can now:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Analyze spatial patterns</strong>: Compare burial practices
+across different sites</li>
+<li><strong>Temporal analysis</strong>: Track changes in burial
+practices across LH periods<br />
+</li>
+<li><strong>Goods analysis</strong>: Text-mine the goods descriptions to
+categorize artifact types</li>
+<li><strong>Test hypotheses</strong>: Examine relationships between
+secondary burial and drinking vessel presence</li>
+<li><strong>Extract dimensions</strong>: Parse the dimension strings to
+get numeric measurements for chamber/stomion sizes</li>
+</ol>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -678,7 +1162,7 @@ Session information
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 4.5.2 (2025-10-31)
 Platform: aarch64-apple-darwin20
-Running under: macOS Monterey 12.3
+Running under: macOS Tahoe 26.2
 
 Matrix products: default
 BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
@@ -694,22 +1178,24 @@ attached base packages:
 [1] stats     graphics  grDevices datasets  utils     methods   base     
 
 other attached packages:
-[1] ggplot2_4.0.1 dplyr_1.1.4   readxl_1.4.5 
+[1] janitor_2.2.1 stringr_1.6.0 tidyr_1.3.2   ggplot2_4.0.1 dplyr_1.1.4  
+[6] readxl_1.4.5 
 
 loaded via a namespace (and not attached):
- [1] gtable_0.3.6       jsonlite_2.0.0     compiler_4.5.2     renv_1.1.6        
- [5] promises_1.5.0     tidyselect_1.2.1   Rcpp_1.1.1         stringr_1.6.0     
- [9] git2r_0.36.2       later_1.4.5        jquerylib_0.1.4    scales_1.4.0      
-[13] yaml_2.3.12        fastmap_1.2.0      here_1.0.2         R6_2.6.1          
-[17] generics_0.1.4     workflowr_1.7.2    knitr_1.51         tibble_3.3.1      
-[21] rprojroot_2.1.1    RColorBrewer_1.1-3 bslib_0.10.0       pillar_1.11.1     
-[25] rlang_1.1.7        utf8_1.2.6         cachem_1.1.0       stringi_1.8.7     
-[29] httpuv_1.6.16      xfun_0.56          S7_0.2.1           fs_1.6.6          
-[33] sass_0.4.10        otel_0.2.0         cli_3.6.5          withr_3.0.2       
-[37] magrittr_2.0.4     grid_4.5.2         digest_0.6.39      lifecycle_1.0.5   
-[41] vctrs_0.7.1        evaluate_1.0.5     glue_1.8.0         farver_2.1.2      
-[45] cellranger_1.1.0   rmarkdown_2.30     tools_4.5.2        pkgconfig_2.0.3   
-[49] htmltools_0.5.9   </code></pre>
+ [1] utf8_1.2.6         sass_0.4.10        generics_0.1.4     renv_1.1.6        
+ [5] stringi_1.8.7      digest_0.6.39      magrittr_2.0.4     evaluate_1.0.5    
+ [9] grid_4.5.2         timechange_0.4.0   RColorBrewer_1.1-3 fastmap_1.2.0     
+[13] cellranger_1.1.0   rprojroot_2.1.1    workflowr_1.7.2    jsonlite_2.0.0    
+[17] whisker_0.4.1      promises_1.5.0     purrr_1.2.1        scales_1.4.0      
+[21] jquerylib_0.1.4    cli_3.6.5          rlang_1.1.7        withr_3.0.2       
+[25] cachem_1.1.0       yaml_2.3.12        otel_0.2.0         tools_4.5.2       
+[29] httpuv_1.6.16      here_1.0.2         vctrs_0.7.1        R6_2.6.1          
+[33] lifecycle_1.0.5    lubridate_1.9.4    git2r_0.36.2       snakecase_0.11.1  
+[37] fs_1.6.6           pkgconfig_2.0.3    pillar_1.11.1      bslib_0.10.0      
+[41] later_1.4.5        gtable_0.3.6       glue_1.8.0         Rcpp_1.1.1        
+[45] xfun_0.56          tibble_3.3.1       tidyselect_1.2.1   knitr_1.51        
+[49] farver_2.1.2       htmltools_0.5.9    labeling_0.4.3     rmarkdown_2.30    
+[53] compiler_4.5.2     S7_0.2.1          </code></pre>
 </div>
 </div>
 </div>
