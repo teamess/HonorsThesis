@@ -30,8 +30,8 @@ library(janitor)  # for clean_names()
 ### Load Raw Data
 
 ```{r load-data}
-# Load the data from the Data folder
-data_path <- here::here("Data", "laconiaburialstatsgallou.xlsx")
+# Load the data from the data folder
+data_path <- here::here("data", "laconiaburialstatsgallou.xlsx")
 burial_raw <- read_excel(data_path)
 
 # Check original column names (note the trailing spaces!)
@@ -45,17 +45,14 @@ burial_data <- burial_raw %>%
   # Clean column names: remove spaces, make lowercase, use underscores
   janitor::clean_names() %>%
   
-  # Rename columns for clarity
+  # Rename columns for clarity (only columns that need new names)
   rename(
-    site = site,
     grave_type = type_of_grave,
     grave_info = grave_number_info,
     date_range = built_used,
     burial_description = burials,
     goods_general = goods,
-    goods_dromos = goods_dromos,
     goods_chamber = goods_chamber_floor,
-    goods_cist = goods_cist,
     dimensions = demensions,  # fix typo in original
     cup_info = cup_yes_what_kind
   ) %>%
@@ -129,7 +126,7 @@ burial_data %>%
 ```{r sites-overview}
 # Count graves per site
 site_counts <- burial_data %>%
-  filter(!is.na(site)) %>%
+  dplyr::filter(!is.na(site)) %>%
   count(site, name = "n_graves") %>%
   arrange(desc(n_graves))
 
@@ -287,7 +284,7 @@ print(crosstab)
 ```{r sample-descriptions}
 # Look at some burial descriptions
 burial_data %>%
-  filter(!is.na(burial_description) & burial_description != "-") %>%
+  dplyr::filter(!is.na(burial_description) & burial_description != "-") %>%
   select(site, grave_type_clean, burial_description) %>%
   slice_head(n = 5)
 ```
@@ -297,7 +294,7 @@ burial_data %>%
 ```{r sample-goods}
 # Look at chamber floor goods (often most detailed)
 burial_data %>%
-  filter(!is.na(goods_chamber) & goods_chamber != "-") %>%
+  dplyr::filter(!is.na(goods_chamber) & goods_chamber != "-") %>%
   select(site, grave_type_clean, goods_chamber) %>%
   slice_head(n = 5)
 ```
@@ -317,7 +314,7 @@ drinking_vessel_graves <- burial_data %>%
       regex(drinking_terms, ignore_case = TRUE)
     )
   ) %>%
-  filter(has_drinking_vessel)
+  dplyr::filter(has_drinking_vessel)
 
 cat("Number of graves with drinking vessel mentions:", nrow(drinking_vessel_graves), "\n")
 cat("Out of total graves:", nrow(burial_data), "\n")
@@ -366,7 +363,7 @@ cat("Orientations:", paste(unique(burial_data$orientation), collapse = ", "), "\
 
 ```{r export, eval=FALSE}
 # Optionally export the cleaned data for further analysis
-write.csv(burial_data, here::here("Data", "laconia_burial_cleaned.csv"), row.names = FALSE)
+write.csv(burial_data, here::here("data", "laconia_burial_cleaned.csv"), row.names = FALSE)
 ```
 
 ## Next Steps
