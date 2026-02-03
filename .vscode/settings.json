@@ -4,5 +4,7 @@
   "r.lsp.diagnostics": true,
   "r.alwaysUseActiveTerminal": true,
   "r.bracketedPaste": false,
-  "r.sessionWatcher": true
+  "r.sessionWatcher": true,
+  "r.rterm.mac": "/usr/local/bin/R",
+  "r.customRender": true
 }
