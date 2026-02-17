@@ -527,15 +527,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomteamessHonorsThesistreec592bd352a4784b957374a19fd5ede1fd24abfa9targetblankc592bd3a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomteamessHonorsThesistreed6895664ee8fa0ca78bb81d9e211a2705327062ftargetblankd689566a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/teamess/HonorsThesis/tree/c592bd352a4784b957374a19fd5ede1fd24abfa9" target="_blank">c592bd3</a>
+<a href="https://github.com/teamess/HonorsThesis/tree/d6895664ee8fa0ca78bb81d9e211a2705327062f" target="_blank">d689566</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomteamessHonorsThesistreec592bd352a4784b957374a19fd5ede1fd24abfa9targetblankc592bd3a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomteamessHonorsThesistreed6895664ee8fa0ca78bb81d9e211a2705327062ftargetblankd689566a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -545,7 +545,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/teamess/HonorsThesis/tree/c592bd352a4784b957374a19fd5ede1fd24abfa9" target="_blank">c592bd3</a>.
+<a href="https://github.com/teamess/HonorsThesis/tree/d6895664ee8fa0ca78bb81d9e211a2705327062f" target="_blank">d689566</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -560,6 +560,7 @@ were generated:
 </p>
 <pre><code>
 Ignored files:
+    Ignored:    .DS_Store
     Ignored:    .claude/
     Ignored:    renv/library/
     Ignored:    renv/staging/
@@ -621,6 +622,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/teamess/HonorsThesis/blob/d6895664ee8fa0ca78bb81d9e211a2705327062f/analysis/cups_and_skulls_analysis.Rmd" target="_blank">d689566</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-17
+</td>
+<td>
+Add color customization and region-based faceted plots
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/teamess/HonorsThesis/2f9f6dc69217c874641e1f8d5c958649ee592433/docs/cups_and_skulls_analysis.html" target="_blank">2f9f6dc</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-17
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/teamess/HonorsThesis/blob/c592bd352a4784b957374a19fd5ede1fd24abfa9/analysis/cups_and_skulls_analysis.Rmd" target="_blank">c592bd3</a>
 </td>
 <td>
@@ -656,6 +691,22 @@ library(tidyr)
 library(stringr)
 library(janitor)
 library(knitr)</code></pre>
+</div>
+<div id="color-customization" class="section level2">
+<h2>Color Customization</h2>
+<p>Customize colors for the analyses. Edit the values below to use your
+preferred colors:</p>
+<pre class="r"><code># Set your color palette here
+colors &lt;- list(
+  laconia = &quot;#1B9E77&quot;,      # Laconia color (default: teal/green)
+  messenia = &quot;#D95F02&quot;,     # Messenia color (default: orange)
+  drinking_vessel = &quot;#7570B3&quot;,  # Drinking vessels (default: purple)
+  skulls = &quot;#E7298A&quot;,        # Skulls (default: pink)
+  background = &quot;#FFFFCC&quot;     # Background/neutral (default: light yellow)
+)
+
+# These colors will be used throughout all plots
+# Change the hex codes to your preferred colors</code></pre>
 </div>
 <div id="load-data" class="section level2">
 <h2>Load Data</h2>
@@ -883,30 +934,74 @@ cat(&quot;Number of sites:&quot;, n_distinct(cups_skulls_clean$site), &quot;\n&q
 <div id="grave-type-distribution" class="section level2">
 <h2>Grave Type Distribution</h2>
 <pre class="r"><code>grave_type_summary &lt;- cups_skulls_clean %&gt;%
-  count(grave_type_simple, name = &quot;count&quot;) %&gt;%
-  arrange(desc(count))
+  count(region, grave_type_simple, name = &quot;count&quot;) %&gt;%
+  arrange(region, desc(count))
 
 print(grave_type_summary)</code></pre>
-<pre><code># A tibble: 5 × 2
-  grave_type_simple count
-  &lt;chr&gt;             &lt;int&gt;
-1 Chamber Tomb         82
-2 Cist Grave           74
-3 Tholos               54
-4 Pit Grave            47
-5 Other                39</code></pre>
-<pre class="r"><code>ggplot(grave_type_summary, aes(x = reorder(grave_type_simple, count), y = count, fill = grave_type_simple)) +
-  geom_col() +
+<pre><code># A tibble: 10 × 3
+   region   grave_type_simple count
+   &lt;chr&gt;    &lt;chr&gt;             &lt;int&gt;
+ 1 laconia  Cist Grave           63
+ 2 laconia  Chamber Tomb         44
+ 3 laconia  Pit Grave            22
+ 4 laconia  Other                18
+ 5 laconia  Tholos                6
+ 6 messenia Tholos               48
+ 7 messenia Chamber Tomb         38
+ 8 messenia Pit Grave            25
+ 9 messenia Other                21
+10 messenia Cist Grave           11</code></pre>
+<pre class="r"><code>ggplot(grave_type_summary, aes(x = reorder(grave_type_simple, count), y = count, fill = region)) +
+  geom_col(position = &quot;dodge&quot;) +
   coord_flip() +
-  geom_text(aes(label = count), hjust = -0.1, size = 4) +
+  scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
+  facet_wrap(~region, scales = &quot;free_x&quot;) +
   labs(
-    title = &quot;Distribution of Grave Types&quot;,
+    title = &quot;Distribution of Grave Types by Region&quot;,
     x = &quot;&quot;,
-    y = &quot;Number of Graves&quot;
+    y = &quot;Number of Graves&quot;,
+    fill = &quot;Region&quot;
   ) +
   theme_minimal() +
-  theme(legend.position = &quot;none&quot;)</code></pre>
-<p><img src="figure/cups_and_skulls_analysis.Rmd/grave-type-plot-1.png" width="768" style="display: block; margin: auto;" /></p>
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="figure/cups_and_skulls_analysis.Rmd/grave-type-plot-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-grave-type-plot-1">
+Past versions of grave-type-plot-1.png
+</button>
+</p>
+<div id="fig-grave-type-plot-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/teamess/HonorsThesis/blob/2f9f6dc69217c874641e1f8d5c958649ee592433/docs/figure/cups_and_skulls_analysis.Rmd/grave-type-plot-1.png" target="_blank">2f9f6dc</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="burial-types" class="section level2">
 <h2>Burial Types</h2>
@@ -933,22 +1028,61 @@ print(burial_type_summary)</code></pre>
   &lt;int&gt;        &lt;int&gt;          &lt;int&gt; &lt;int&gt;   &lt;int&gt;   &lt;int&gt;       &lt;dbl&gt;
 1   296          135            118    57     100       0        45.6
 # ℹ 2 more variables: pct_secondary &lt;dbl&gt;, pct_both &lt;dbl&gt;</code></pre>
-<pre class="r"><code>burial_category_data &lt;- cups_skulls_clean %&gt;%
-  count(burial_category) %&gt;%
-  arrange(desc(n))
+<pre class="r"><code>burial_category_data_region &lt;- cups_skulls_clean %&gt;%
+  count(region, burial_category) %&gt;%
+  arrange(region, desc(n))
 
-ggplot(burial_category_data, aes(x = reorder(burial_category, n), y = n, fill = burial_category)) +
-  geom_col() +
+ggplot(burial_category_data_region, aes(x = reorder(burial_category, n), y = n, fill = region)) +
+  geom_col(position = &quot;dodge&quot;) +
   coord_flip() +
-  geom_text(aes(label = n), hjust = -0.1, size = 4) +
+  scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
+  facet_wrap(~region, scales = &quot;free_x&quot;) +
   labs(
-    title = &quot;Distribution of Burial Types&quot;,
+    title = &quot;Distribution of Burial Types by Region&quot;,
     x = &quot;&quot;,
-    y = &quot;Count&quot;
+    y = &quot;Count&quot;,
+    fill = &quot;Region&quot;
   ) +
   theme_minimal() +
-  theme(legend.position = &quot;none&quot;)</code></pre>
-<p><img src="figure/cups_and_skulls_analysis.Rmd/burial-plot-1.png" width="768" style="display: block; margin: auto;" /></p>
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="figure/cups_and_skulls_analysis.Rmd/burial-plot-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-burial-plot-1">
+Past versions of burial-plot-1.png
+</button>
+</p>
+<div id="fig-burial-plot-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/teamess/HonorsThesis/blob/2f9f6dc69217c874641e1f8d5c958649ee592433/docs/figure/cups_and_skulls_analysis.Rmd/burial-plot-1.png" target="_blank">2f9f6dc</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="drinking-vessels-analysis" class="section level2">
@@ -995,18 +1129,68 @@ print(dv_by_type)</code></pre>
 3 Other                39            8             20.5             1.25
 4 Pit Grave            47            8             17               1.14
 5 Cist Grave           74            6              8.1             1.33</code></pre>
-<pre class="r"><code>ggplot(dv_by_type, aes(x = reorder(grave_type_simple, with_vessels), y = with_vessels, fill = grave_type_simple)) +
-  geom_col() +
+<pre class="r"><code>dv_by_type_region &lt;- cups_skulls_clean %&gt;%
+  group_by(region, grave_type_simple) %&gt;%
+  summarise(
+    total = n(),
+    with_vessels = sum(has_drinking_vessel == TRUE, na.rm = TRUE),
+    pct_with_vessels = round(with_vessels / total * 100, 1),
+    avg_vessel_count = round(mean(drinking_vessel_number, na.rm = TRUE), 2),
+    .groups = &quot;drop&quot;
+  ) %&gt;%
+  arrange(region, desc(with_vessels))
+
+ggplot(dv_by_type_region, aes(x = reorder(grave_type_simple, with_vessels), y = with_vessels, fill = region)) +
+  geom_col(position = &quot;dodge&quot;) +
   coord_flip() +
-  geom_text(aes(label = paste0(with_vessels, &quot; (&quot;, pct_with_vessels, &quot;%)&quot;)), hjust = -0.1, size = 4) +
+  scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
+  facet_wrap(~region, scales = &quot;free_x&quot;) +
   labs(
-    title = &quot;Graves with Drinking Vessels by Grave Type&quot;,
+    title = &quot;Graves with Drinking Vessels by Grave Type and Region&quot;,
     x = &quot;&quot;,
-    y = &quot;Number of Graves with Drinking Vessels&quot;
+    y = &quot;Number of Graves with Drinking Vessels&quot;,
+    fill = &quot;Region&quot;
   ) +
   theme_minimal() +
-  theme(legend.position = &quot;none&quot;)</code></pre>
-<p><img src="figure/cups_and_skulls_analysis.Rmd/dv-by-type-plot-1.png" width="864" style="display: block; margin: auto;" /></p>
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="figure/cups_and_skulls_analysis.Rmd/dv-by-type-plot-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-dv-by-type-plot-1">
+Past versions of dv-by-type-plot-1.png
+</button>
+</p>
+<div id="fig-dv-by-type-plot-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/teamess/HonorsThesis/blob/2f9f6dc69217c874641e1f8d5c958649ee592433/docs/figure/cups_and_skulls_analysis.Rmd/dv-by-type-plot-1.png" target="_blank">2f9f6dc</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="drinking-vessels-by-burial-type" class="section level3">
 <h3>Drinking Vessels by Burial Type</h3>
@@ -1028,18 +1212,68 @@ print(dv_by_burial)</code></pre>
 2 Secondary Only              61           20             32.8             1.83
 3 Unknown/Not Recorded       100           19             19               1.88
 4 Primary Only                78            9             11.5             1   </code></pre>
-<pre class="r"><code>ggplot(dv_by_burial, aes(x = reorder(burial_category, with_vessels), y = with_vessels, fill = burial_category)) +
-  geom_col() +
+<pre class="r"><code>dv_by_burial_region &lt;- cups_skulls_clean %&gt;%
+  group_by(region, burial_category) %&gt;%
+  summarise(
+    total = n(),
+    with_vessels = sum(has_drinking_vessel == TRUE, na.rm = TRUE),
+    pct_with_vessels = round(with_vessels / total * 100, 1),
+    avg_vessel_count = round(mean(drinking_vessel_number, na.rm = TRUE), 2),
+    .groups = &quot;drop&quot;
+  ) %&gt;%
+  arrange(region, desc(with_vessels))
+
+ggplot(dv_by_burial_region, aes(x = reorder(burial_category, with_vessels), y = with_vessels, fill = region)) +
+  geom_col(position = &quot;dodge&quot;) +
   coord_flip() +
-  geom_text(aes(label = paste0(with_vessels, &quot; (&quot;, pct_with_vessels, &quot;%)&quot;)), hjust = -0.1, size = 4) +
+  scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
+  facet_wrap(~region, scales = &quot;free_x&quot;) +
   labs(
-    title = &quot;Graves with Drinking Vessels by Burial Type&quot;,
+    title = &quot;Graves with Drinking Vessels by Burial Type and Region&quot;,
     x = &quot;&quot;,
-    y = &quot;Number of Graves with Drinking Vessels&quot;
+    y = &quot;Number of Graves with Drinking Vessels&quot;,
+    fill = &quot;Region&quot;
   ) +
   theme_minimal() +
-  theme(legend.position = &quot;none&quot;)</code></pre>
-<p><img src="figure/cups_and_skulls_analysis.Rmd/dv-by-burial-plot-1.png" width="864" style="display: block; margin: auto;" /></p>
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="figure/cups_and_skulls_analysis.Rmd/dv-by-burial-plot-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-dv-by-burial-plot-1">
+Past versions of dv-by-burial-plot-1.png
+</button>
+</p>
+<div id="fig-dv-by-burial-plot-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/teamess/HonorsThesis/blob/2f9f6dc69217c874641e1f8d5c958649ee592433/docs/figure/cups_and_skulls_analysis.Rmd/dv-by-burial-plot-1.png" target="_blank">2f9f6dc</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="skeletal-remains-analysis" class="section level2">
@@ -1181,6 +1415,43 @@ ggplot(vessels_skulls_data, aes(x = drinking_vessel_number, y = skulls_number, c
   theme(legend.position = &quot;bottom&quot;)</code></pre>
 <pre><code>`geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
 <p><img src="figure/cups_and_skulls_analysis.Rmd/vessels-skulls-scatter-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-vessels-skulls-scatter-1">
+Past versions of vessels-skulls-scatter-1.png
+</button>
+</p>
+<div id="fig-vessels-skulls-scatter-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/teamess/HonorsThesis/blob/2f9f6dc69217c874641e1f8d5c958649ee592433/docs/figure/cups_and_skulls_analysis.Rmd/vessels-skulls-scatter-1.png" target="_blank">2f9f6dc</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="regional-analysis" class="section level2">
@@ -1300,97 +1571,222 @@ cat(&quot;Chamber Area Summary (m²):\n&quot;)</code></pre>
 <pre class="r"><code>skulls_area_data &lt;- cups_skulls_clean %&gt;%
   filter(!is.na(area_of_chamber_estimated) &amp; !is.na(skulls_number))
 
-# Calculate correlation
-cor_skulls_area &lt;- cor(skulls_area_data$area_of_chamber_estimated, skulls_area_data$skulls_number, use = &quot;complete.obs&quot;)
-
-ggplot(skulls_area_data, aes(x = area_of_chamber_estimated, y = skulls_number)) +
-  geom_point(size = 3, alpha = 0.6, color = &quot;steelblue&quot;) +
-  geom_smooth(method = &quot;lm&quot;, se = TRUE, color = &quot;red&quot;, alpha = 0.2) +
+ggplot(skulls_area_data, aes(x = area_of_chamber_estimated, y = skulls_number, color = region)) +
+  geom_point(size = 3, alpha = 0.6) +
+  geom_smooth(method = &quot;lm&quot;, se = TRUE, alpha = 0.2) +
+  scale_color_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
+  facet_wrap(~region) +
   labs(
-    title = &quot;Relationship: Chamber Area vs Number of Skulls&quot;,
-    subtitle = paste0(&quot;Pearson r = &quot;, round(cor_skulls_area, 3)),
+    title = &quot;Relationship: Chamber Area vs Number of Skulls by Region&quot;,
     x = &quot;Chamber Area Estimated (m²)&quot;,
     y = &quot;Number of Skulls&quot;,
-    caption = &quot;Red line shows linear trend with 95% confidence interval&quot;
+    color = &quot;Region&quot;
   ) +
   theme_minimal() +
-  theme(plot.subtitle = element_text(size = 10))</code></pre>
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
 <pre><code>`geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="figure/cups_and_skulls_analysis.Rmd/skulls-area-scatter-1.png" width="960" style="display: block; margin: auto;" /></p>
-<pre class="r"><code># Statistical test
-skulls_lm &lt;- lm(skulls_number ~ area_of_chamber_estimated, data = skulls_area_data)
-skulls_summary &lt;- summary(skulls_lm)
+<p><img src="figure/cups_and_skulls_analysis.Rmd/skulls-area-scatter-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-skulls-area-scatter-1">
+Past versions of skulls-area-scatter-1.png
+</button>
+</p>
+<div id="fig-skulls-area-scatter-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/teamess/HonorsThesis/blob/2f9f6dc69217c874641e1f8d5c958649ee592433/docs/figure/cups_and_skulls_analysis.Rmd/skulls-area-scatter-1.png" target="_blank">2f9f6dc</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code># By region
+for (reg in unique(skulls_area_data$region)) {
+  region_data &lt;- skulls_area_data %&gt;% filter(region == reg)
+  cor_val &lt;- cor(region_data$area_of_chamber_estimated, region_data$skulls_number, use = &quot;complete.obs&quot;)
+  lm_result &lt;- lm(skulls_number ~ area_of_chamber_estimated, data = region_data)
 
-cat(&quot;Linear Model: Skulls ~ Chamber Area\n&quot;)</code></pre>
-<pre><code>Linear Model: Skulls ~ Chamber Area</code></pre>
-<pre class="r"><code>print(skulls_summary)</code></pre>
+  cat(&quot;\n===&quot;, toupper(reg), &quot;===\n&quot;)
+  cat(&quot;Pearson correlation (r):&quot;, round(cor_val, 3), &quot;\n&quot;)
+  print(summary(lm_result))
+}</code></pre>
 <pre><code>
+=== LACONIA ===
+Pearson correlation (r): -0.267 
+
 Call:
-lm(formula = skulls_number ~ area_of_chamber_estimated, data = skulls_area_data)
+lm(formula = skulls_number ~ area_of_chamber_estimated, data = region_data)
+
+Residuals:
+      1       2       3       4 
+  6.281  -8.208 -10.682  12.609 
+
+Coefficients:
+                          Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)                14.8606    11.0108   1.350    0.310
+area_of_chamber_estimated  -0.3307     0.8450  -0.391    0.733
+
+Residual standard error: 13.78 on 2 degrees of freedom
+Multiple R-squared:  0.07112,   Adjusted R-squared:  -0.3933 
+F-statistic: 0.1531 on 1 and 2 DF,  p-value: 0.7333
+
+
+=== MESSENIA ===
+Pearson correlation (r): 0.009 
+
+Call:
+lm(formula = skulls_number ~ area_of_chamber_estimated, data = region_data)
 
 Residuals:
    Min     1Q Median     3Q    Max 
--9.929 -7.978 -3.274  2.823 36.249 
+-9.542 -7.653 -3.103  1.409 36.389 
 
 Coefficients:
-                          Estimate Std. Error t value Pr(&gt;|t|)   
-(Intercept)               11.06009    3.65712   3.024   0.0067 **
-area_of_chamber_estimated -0.01857    0.17576  -0.106   0.9169   
+                           Estimate Std. Error t value Pr(&gt;|t|)  
+(Intercept)               10.491027   4.206518   2.494    0.024 *
+area_of_chamber_estimated  0.007211   0.189755   0.038    0.970  
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
-Residual standard error: 11.47 on 20 degrees of freedom
-Multiple R-squared:  0.0005579, Adjusted R-squared:  -0.04941 
-F-statistic: 0.01116 on 1 and 20 DF,  p-value: 0.9169</code></pre>
+Residual standard error: 11.78 on 16 degrees of freedom
+Multiple R-squared:  9.024e-05, Adjusted R-squared:  -0.0624 
+F-statistic: 0.001444 on 1 and 16 DF,  p-value: 0.9702</code></pre>
 </div>
 <div id="drinking-vessels-vs-chamber-area" class="section level4">
 <h4>Drinking Vessels vs Chamber Area</h4>
 <pre class="r"><code>vessels_area_data &lt;- cups_skulls_clean %&gt;%
   filter(!is.na(area_of_chamber_estimated) &amp; !is.na(drinking_vessel_number))
 
-# Calculate correlation
-cor_vessels_area &lt;- cor(vessels_area_data$area_of_chamber_estimated, vessels_area_data$drinking_vessel_number, use = &quot;complete.obs&quot;)
-
-ggplot(vessels_area_data, aes(x = area_of_chamber_estimated, y = drinking_vessel_number)) +
-  geom_point(size = 3, alpha = 0.6, color = &quot;darkgreen&quot;) +
-  geom_smooth(method = &quot;lm&quot;, se = TRUE, color = &quot;red&quot;, alpha = 0.2) +
+ggplot(vessels_area_data, aes(x = area_of_chamber_estimated, y = drinking_vessel_number, color = region)) +
+  geom_point(size = 3, alpha = 0.6) +
+  geom_smooth(method = &quot;lm&quot;, se = TRUE, alpha = 0.2) +
+  scale_color_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
+  facet_wrap(~region) +
   labs(
-    title = &quot;Relationship: Chamber Area vs Number of Drinking Vessels&quot;,
-    subtitle = paste0(&quot;Pearson r = &quot;, round(cor_vessels_area, 3)),
+    title = &quot;Relationship: Chamber Area vs Number of Drinking Vessels by Region&quot;,
     x = &quot;Chamber Area Estimated (m²)&quot;,
     y = &quot;Number of Drinking Vessels&quot;,
-    caption = &quot;Red line shows linear trend with 95% confidence interval&quot;
+    color = &quot;Region&quot;
   ) +
   theme_minimal() +
-  theme(plot.subtitle = element_text(size = 10))</code></pre>
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
 <pre><code>`geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="figure/cups_and_skulls_analysis.Rmd/vessels-area-scatter-1.png" width="960" style="display: block; margin: auto;" /></p>
-<pre class="r"><code># Statistical test
-vessels_lm &lt;- lm(drinking_vessel_number ~ area_of_chamber_estimated, data = vessels_area_data)
-vessels_summary &lt;- summary(vessels_lm)
+<p><img src="figure/cups_and_skulls_analysis.Rmd/vessels-area-scatter-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-vessels-area-scatter-1">
+Past versions of vessels-area-scatter-1.png
+</button>
+</p>
+<div id="fig-vessels-area-scatter-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/teamess/HonorsThesis/blob/2f9f6dc69217c874641e1f8d5c958649ee592433/docs/figure/cups_and_skulls_analysis.Rmd/vessels-area-scatter-1.png" target="_blank">2f9f6dc</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code># By region
+for (reg in unique(vessels_area_data$region)) {
+  region_data &lt;- vessels_area_data %&gt;% filter(region == reg)
+  cor_val &lt;- cor(region_data$area_of_chamber_estimated, region_data$drinking_vessel_number, use = &quot;complete.obs&quot;)
+  lm_result &lt;- lm(drinking_vessel_number ~ area_of_chamber_estimated, data = region_data)
 
-cat(&quot;Linear Model: Drinking Vessels ~ Chamber Area\n&quot;)</code></pre>
-<pre><code>Linear Model: Drinking Vessels ~ Chamber Area</code></pre>
-<pre class="r"><code>print(vessels_summary)</code></pre>
+  cat(&quot;\n===&quot;, toupper(reg), &quot;===\n&quot;)
+  cat(&quot;Pearson correlation (r):&quot;, round(cor_val, 3), &quot;\n&quot;)
+  print(summary(lm_result))
+}</code></pre>
 <pre><code>
+=== LACONIA ===
+Pearson correlation (r): 0.406 
+
 Call:
 lm(formula = drinking_vessel_number ~ area_of_chamber_estimated, 
-    data = vessels_area_data)
+    data = region_data)
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--3.0646 -1.5264 -0.4705  0.6802 11.8807 
+-2.4141 -1.4954 -0.6643  0.0692 10.5935 
 
 Coefficients:
-                          Estimate Std. Error t value Pr(&gt;|t|)   
-(Intercept)                2.19238    0.64999   3.373  0.00169 **
-area_of_chamber_estimated  0.03678    0.02693   1.366  0.17982   
+                          Estimate Std. Error t value Pr(&gt;|t|)  
+(Intercept)                2.72350    1.35122   2.016   0.0715 .
+area_of_chamber_estimated  0.06679    0.04750   1.406   0.1900  
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
-Residual standard error: 2.777 on 39 degrees of freedom
-Multiple R-squared:  0.04565,   Adjusted R-squared:  0.02118 
-F-statistic: 1.865 on 1 and 39 DF,  p-value: 0.1798</code></pre>
+Residual standard error: 3.643 on 10 degrees of freedom
+Multiple R-squared:  0.1651,    Adjusted R-squared:  0.08157 
+F-statistic: 1.977 on 1 and 10 DF,  p-value: 0.19
+
+
+=== MESSENIA ===
+Pearson correlation (r): 0 
+
+Call:
+lm(formula = drinking_vessel_number ~ area_of_chamber_estimated, 
+    data = region_data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-1.4161 -1.4137 -1.4127  0.5868  8.5861 
+
+Coefficients:
+                           Estimate Std. Error t value Pr(&gt;|t|)   
+(Intercept)               2.413e+00  7.226e-01   3.339  0.00247 **
+area_of_chamber_estimated 7.082e-05  3.268e-02   0.002  0.99829   
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 2.253 on 27 degrees of freedom
+Multiple R-squared:  1.739e-07, Adjusted R-squared:  -0.03704 
+F-statistic: 4.695e-06 on 1 and 27 DF,  p-value: 0.9983</code></pre>
 </div>
 <div id="both-skulls-and-vessels-vs-chamber-area"
 class="section level4">
@@ -1400,14 +1796,53 @@ class="section level4">
 
 ggplot(both_area_data, aes(x = area_of_chamber_estimated, y = skulls_number)) +
   geom_point(aes(color = drinking_vessel_number), size = 4, alpha = 0.7) +
-  scale_color_gradient(name = &quot;Drinking\nVessels&quot;, low = &quot;yellow&quot;, high = &quot;darkred&quot;) +
+  scale_color_gradient(name = &quot;Drinking\nVessels&quot;, low = colors$background, high = colors$drinking_vessel) +
+  facet_wrap(~region) +
   labs(
-    title = &quot;Chamber Area vs Skulls (colored by Drinking Vessels)&quot;,
+    title = &quot;Chamber Area vs Skulls (colored by Drinking Vessels) by Region&quot;,
     x = &quot;Chamber Area Estimated (m²)&quot;,
     y = &quot;Number of Skulls&quot;
   ) +
-  theme_minimal()</code></pre>
-<p><img src="figure/cups_and_skulls_analysis.Rmd/both-area-scatter-1.png" width="960" style="display: block; margin: auto;" /></p>
+  theme_minimal() +
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="figure/cups_and_skulls_analysis.Rmd/both-area-scatter-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-both-area-scatter-1">
+Past versions of both-area-scatter-1.png
+</button>
+</p>
+<div id="fig-both-area-scatter-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/teamess/HonorsThesis/blob/2f9f6dc69217c874641e1f8d5c958649ee592433/docs/figure/cups_and_skulls_analysis.Rmd/both-area-scatter-1.png" target="_blank">2f9f6dc</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <hr />
 </div>
 </div>
