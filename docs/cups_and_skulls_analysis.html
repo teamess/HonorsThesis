@@ -527,15 +527,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomteamessHonorsThesistree2410c8dc7d465590a1dd6fe2f31dcc68680d1ac0targetblank2410c8da">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomteamessHonorsThesistree27b3161f75d14f35e6d0017b58c571def36734f8targetblank27b3161a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/teamess/HonorsThesis/tree/2410c8dc7d465590a1dd6fe2f31dcc68680d1ac0" target="_blank">2410c8d</a>
+<a href="https://github.com/teamess/HonorsThesis/tree/27b3161f75d14f35e6d0017b58c571def36734f8" target="_blank">27b3161</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomteamessHonorsThesistree2410c8dc7d465590a1dd6fe2f31dcc68680d1ac0targetblank2410c8da"
+id="strongRepositoryversionstrongahrefhttpsgithubcomteamessHonorsThesistree27b3161f75d14f35e6d0017b58c571def36734f8targetblank27b3161a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -545,7 +545,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/teamess/HonorsThesis/tree/2410c8dc7d465590a1dd6fe2f31dcc68680d1ac0" target="_blank">2410c8d</a>.
+<a href="https://github.com/teamess/HonorsThesis/tree/27b3161f75d14f35e6d0017b58c571def36734f8" target="_blank">27b3161</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -562,7 +562,6 @@ were generated:
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .claude/
-    Ignored:    analysis/figure/
     Ignored:    renv/library/
     Ignored:    renv/staging/
 
@@ -618,6 +617,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/teamess/HonorsThesis/blob/27b3161f75d14f35e6d0017b58c571def36734f8/analysis/cups_and_skulls_analysis.Rmd" target="_blank">27b3161</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-17
+</td>
+<td>
+Add comprehensive guiding comments for student customization
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/teamess/HonorsThesis/01b0d462420a012e75bd7e6923181376d2268eb8/docs/cups_and_skulls_analysis.html" target="_blank">01b0d46</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-17
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -710,6 +743,59 @@ Add data dictionary worksheet and chamber space analysis
 </div>
 </div>
 </div>
+<div id="how-to-use-this-analysis" class="section level2">
+<h2>How to Use This Analysis</h2>
+<p><strong>THIS IS A TEMPLATE</strong> that you’ll customize as you
+complete your data dictionaries.</p>
+<div id="what-you-need-to-do" class="section level3">
+<h3>What You Need to Do:</h3>
+<ol style="list-style-type: decimal">
+<li><strong>Complete <code>data/period_dictionary.csv</code>:</strong>
+<ul>
+<li>Assign chronological order to each period (1 = earliest, higher =
+latest)</li>
+<li>For range periods (e.g., “LHIIA-LHIIIB”), identify the earliest and
+latest components</li>
+<li>See <code>analysis/data_dictionary.Rmd</code> for detailed
+instructions</li>
+</ul></li>
+<li><strong>Complete
+<code>data/tomb_type_dictionary.csv</code>:</strong>
+<ul>
+<li>Decide how to rank the 5 tomb types (Tholos, Chamber Tomb, Cist
+Grave, Pit Grave, Other)</li>
+<li>Choose: by complexity, labor investment, or frequency</li>
+<li>See <code>analysis/data_dictionary.Rmd</code> for guidance</li>
+</ul></li>
+<li><strong>Enable the Dictionary Loading Code:</strong>
+<ul>
+<li>Once dictionaries are complete, find the “Import and Process Data
+Dictionaries” section</li>
+<li>Change <code>eval=FALSE</code> to <code>eval=TRUE</code></li>
+<li>This activates the ordinal factors and enables temporal/complexity
+analyses</li>
+</ul></li>
+</ol>
+</div>
+<div id="what-this-analysis-will-show-once-dictionaries-are-complete"
+class="section level3">
+<h3>What This Analysis Will Show (Once Dictionaries Are Complete):</h3>
+<ul>
+<li><strong>Distribution comparisons</strong> between Laconia and
+Messenia</li>
+<li><strong>Temporal trends</strong> in drinking vessel deposition
+across periods</li>
+<li><strong>Complexity patterns</strong> in tomb types and burial
+practices</li>
+<li><strong>Regional differences</strong> in how graves are used</li>
+<li><strong>Relationships</strong> between chamber size, drinking
+vessels, and skeletal remains</li>
+</ul>
+<p>Your decisions in the dictionaries will shape these findings — so
+think carefully about your ranking logic!</p>
+<hr />
+</div>
+</div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
 <p>This analysis examines the relationship between drinking vessels and
@@ -729,8 +815,13 @@ library(knitr)</code></pre>
 </div>
 <div id="color-customization" class="section level2">
 <h2>Color Customization</h2>
-<p>Customize colors for the analyses. Edit the values below to use your
-preferred colors:</p>
+<p><strong>YOU CAN EDIT THIS SECTION:</strong> Customize colors for the
+analyses. Edit the hex codes below to use your preferred colors.</p>
+<p>All plots throughout this analysis will use these colors, so if you
+change them here, the change applies everywhere automatically.</p>
+<p><strong>Color choices affect:</strong> - Regional comparisons
+(Laconia vs Messenia) - Visualization clarity and accessibility - How
+different variables stand out in plots</p>
 <pre class="r"><code># Set your color palette here
 colors &lt;- list(
   laconia = &quot;#1B9E77&quot;,      # Laconia color (default: teal/green)
@@ -780,6 +871,11 @@ $ region                      &lt;chr&gt; &quot;laconia&quot;, &quot;laconia&quo
 </div>
 <div id="data-cleaning" class="section level2">
 <h2>Data Cleaning</h2>
+<p><strong>NOTE:</strong> The code below simplifies the complex grave
+type names into broader categories. If you want to group grave types
+differently, you can edit the <code>case_when()</code> statements in
+this chunk. For example, you might want to keep “Pit Grave” and “Cist
+Grave” separate, or group them together.</p>
 <pre class="r"><code>cups_skulls_clean &lt;- cups_skulls %&gt;%
   # Clean column names
   janitor::clean_names() %&gt;%
@@ -822,6 +918,9 @@ $ region                      &lt;chr&gt; &quot;laconia&quot;, &quot;laconia&quo
   ) %&gt;%
 
   # Simplify grave type
+  # ** YOU CAN CUSTOMIZE THIS SECTION **
+  # If you want different groupings, edit the patterns here
+  # Current grouping is based on archaeological complexity
   mutate(
     grave_type_simple = case_when(
       str_detect(tolower(type), &quot;tholos&quot;) ~ &quot;Tholos&quot;,
@@ -860,8 +959,33 @@ $ grave_type_simple         &lt;chr&gt; &quot;Tholos&quot;, &quot;Tholos&quot;, 
 </div>
 <div id="import-and-process-data-dictionaries" class="section level2">
 <h2>Import and Process Data Dictionaries</h2>
-<p><strong>After the student completes the dictionaries</strong>, this
-section will load and apply ordinal rankings:</p>
+<div id="when-youre-ready" class="section level3">
+<h3>WHEN YOU’RE READY:</h3>
+<ol style="list-style-type: decimal">
+<li><p>Complete both dictionary files in <code>/data/</code>:</p>
+<ul>
+<li><code>period_dictionary.csv</code> — add chronological order +
+period components</li>
+<li><code>tomb_type_dictionary.csv</code> — add your tomb type
+ranking</li>
+</ul></li>
+<li><p>Come back here and change the code chunk to
+<code>eval=TRUE</code> (line below says
+<code>eval=FALSE</code>)</p></li>
+<li><p>Re-run the analysis — this chunk will automatically:</p>
+<ul>
+<li>Load your dictionaries</li>
+<li>Match range periods to their earliest/latest components</li>
+<li>Create <code>period_start_order</code>,
+<code>period_end_order</code>, <code>period_midpoint_order</code></li>
+<li>Create ordered factors for statistical tests</li>
+</ul></li>
+</ol>
+<p><strong>What this enables:</strong> - Testing whether drinking vessel
+deposition changes over time - Comparing tomb complexity with burial
+practices - Temporal and complexity-based statistical models</p>
+<p><strong>After dictionaries are complete</strong>, this section will
+load and apply ordinal rankings:</p>
 <pre class="r"><code># NOTE: Set eval=TRUE once the student has completed the dictionaries
 
 # Load period dictionary
@@ -926,10 +1050,14 @@ cat(&quot;  - period_midpoint_order: midpoint between start and end\n&quot;)
 cat(&quot;  - tomb_type_ordered: ordered factor for tomb types\n&quot;)
 cat(&quot;  - period_ordered: ordered factor for periods\n&quot;)</code></pre>
 </div>
+</div>
 <div id="data-overview" class="section level2">
 <h2>Data Overview</h2>
 <div id="basic-statistics" class="section level3">
 <h3>Basic Statistics</h3>
+<p>These are descriptive statistics of your dataset. They won’t change
+based on your dictionaries, but they provide context for all analyses
+below.</p>
 <pre class="r"><code>cat(&quot;=== Dataset Summary ===\n\n&quot;)</code></pre>
 <pre><code>=== Dataset Summary ===</code></pre>
 <pre class="r"><code>cat(&quot;Total graves:&quot;, nrow(cups_skulls_clean), &quot;\n&quot;)</code></pre>
@@ -1036,6 +1164,12 @@ cat(&quot;Number of sites:&quot;, n_distinct(cups_skulls_clean$site), &quot;\n&q
 </div>
 <div id="grave-type-distribution" class="section level2">
 <h2>Grave Type Distribution</h2>
+<p><strong>HOW YOUR CHOICES AFFECT THIS:</strong> - The groupings in the
+“Data Cleaning” section determine what you see here - If you edit
+<code>grave_type_simple</code> to create different categories, these
+plots will change - Once you complete
+<code>tomb_type_dictionary.csv</code>, you can run additional analyses
+on tomb complexity</p>
 <pre class="r"><code>grave_type_summary &lt;- cups_skulls_clean %&gt;%
   count(region, grave_type_simple, name = &quot;count&quot;) %&gt;%
   arrange(region, desc(count))
@@ -1089,6 +1223,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/teamess/HonorsThesis/blob/01b0d462420a012e75bd7e6923181376d2268eb8/docs/figure/cups_and_skulls_analysis.Rmd/grave-type-plot-1.png" target="_blank">01b0d46</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/teamess/HonorsThesis/blob/8d3e1c7c0d4c10ed29212b107f44e7dbb83e512f/docs/figure/cups_and_skulls_analysis.Rmd/grave-type-plot-1.png" target="_blank">8d3e1c7</a>
@@ -1180,6 +1325,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/teamess/HonorsThesis/blob/01b0d462420a012e75bd7e6923181376d2268eb8/docs/figure/cups_and_skulls_analysis.Rmd/burial-plot-1.png" target="_blank">01b0d46</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/teamess/HonorsThesis/blob/8d3e1c7c0d4c10ed29212b107f44e7dbb83e512f/docs/figure/cups_and_skulls_analysis.Rmd/burial-plot-1.png" target="_blank">8d3e1c7</a>
@@ -1301,6 +1457,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/teamess/HonorsThesis/blob/01b0d462420a012e75bd7e6923181376d2268eb8/docs/figure/cups_and_skulls_analysis.Rmd/dv-by-type-plot-1.png" target="_blank">01b0d46</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/teamess/HonorsThesis/blob/8d3e1c7c0d4c10ed29212b107f44e7dbb83e512f/docs/figure/cups_and_skulls_analysis.Rmd/dv-by-type-plot-1.png" target="_blank">8d3e1c7</a>
 </td>
 <td>
@@ -1393,6 +1560,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/teamess/HonorsThesis/blob/01b0d462420a012e75bd7e6923181376d2268eb8/docs/figure/cups_and_skulls_analysis.Rmd/dv-by-burial-plot-1.png" target="_blank">01b0d46</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/teamess/HonorsThesis/blob/8d3e1c7c0d4c10ed29212b107f44e7dbb83e512f/docs/figure/cups_and_skulls_analysis.Rmd/dv-by-burial-plot-1.png" target="_blank">8d3e1c7</a>
@@ -1691,6 +1869,11 @@ class="section level3">
 <h3>Do larger chambers have more skulls and drinking vessels?</h3>
 <p>This section explores whether the estimated chamber area relates to
 the number of skulls and drinking vessels found.</p>
+<p><strong>HOW YOUR PERIOD DICTIONARY WILL ENHANCE THIS:</strong> - Once
+you complete <code>period_dictionary.csv</code> and enable the
+dictionary loading code, we can add temporal layers - You’ll be able to
+see if these relationships change across periods - Time-based patterns
+can reveal ritual practice evolution</p>
 <div id="data-availability" class="section level4">
 <h4>Data Availability</h4>
 <pre class="r"><code>space_analysis_data &lt;- cups_skulls_clean %&gt;%
@@ -2023,6 +2206,54 @@ tinalasisi
 </div>
 <hr />
 </div>
+</div>
+</div>
+<div id="next-steps-for-your-research" class="section level2">
+<h2>NEXT STEPS FOR YOUR RESEARCH</h2>
+<div id="you-control-these-decisions" class="section level3">
+<h3>You Control These Decisions:</h3>
+<ol style="list-style-type: decimal">
+<li><strong>Period Chronology</strong>
+(<code>period_dictionary.csv</code>):
+<ul>
+<li>How you order periods affects temporal trend detection</li>
+<li>Range periods (e.g., “LHIIA-LHIIIB”) can span 50+ years</li>
+<li>Your finest/coarsest periodization choices determine analysis
+granularity</li>
+</ul></li>
+<li><strong>Tomb Type Ranking</strong>
+(<code>tomb_type_dictionary.csv</code>):
+<ul>
+<li>Complexity ranking reveals whether complex tombs get more/different
+goods</li>
+<li>Labor investment ranking shows resource correlation with
+practices</li>
+<li>Frequency ranking reveals site-specific burial patterns</li>
+</ul></li>
+<li><strong>Grave Type Grouping</strong> (edit the
+<code>case_when()</code> in Data Cleaning):
+<ul>
+<li>Should Pit and Cist graves be separate or grouped?</li>
+<li>Is “Other” too vague, or does it represent genuinely mixed
+practices?</li>
+<li>Your grouping should reflect your research questions</li>
+</ul></li>
+</ol>
+</div>
+<div id="possible-extensions-once-dictionaries-are-complete"
+class="section level3">
+<h3>Possible Extensions (Once Dictionaries Are Complete):</h3>
+<ul>
+<li>Test whether temporal trends differ between Laconia and
+Messenia</li>
+<li>Model drinking vessel count as a function of period + tomb
+complexity</li>
+<li>Compare primary vs secondary burial practices across time and tomb
+type</li>
+<li>Investigate whether larger chambers are preferred in certain
+periods</li>
+</ul>
+<p>Your research questions should drive these decisions!</p>
 </div>
 </div>
 <div id="session-info" class="section level2">
