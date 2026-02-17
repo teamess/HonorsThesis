@@ -1,0 +1,552 @@
+---
+title: "Drinking Vessels and Skeletal Remains Analysis"
+subtitle: "Laconia and Messinia Burial Data"
+author: "Your Name"
+date: "`r Sys.Date()`"
+output:
+  workflowr::wflow_html:
+    toc: true
+    toc_float: true
+    code_folding: hide
+editor_options:
+  chunk_output_type: inline
+---
+
+## Introduction
+
+This analysis examines the relationship between drinking vessels and human skeletal remains in Laconian and Messinian tholos and chamber tombs. The data focuses on grave contexts where drinking vessels are recorded alongside information about primary and secondary burials.
+
+## Load Libraries
+
+```{r setup, message=FALSE, warning=FALSE}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(stringr)
+library(janitor)
+library(knitr)
+```
+
+## Load Data
+
+```{r load-data}
+# Load the CSV data
+data_path <- here::here("data", "laconia_messinia_cups_skulls.csv")
+cups_skulls <- read_csv(data_path)
+
+# Display dimensions
+cat("Dataset dimensions:", nrow(cups_skulls), "graves ×", ncol(cups_skulls), "columns\n")
+
+# Show column names
+glimpse(cups_skulls)
+```
+
+## Data Cleaning
+
+```{r clean-data}
+cups_skulls_clean <- cups_skulls %>%
+  # Clean column names
+  janitor::clean_names() %>%
+
+  # Trim whitespace from character columns
+  mutate(across(where(is.character), str_trim)) %>%
+
+  # Standardize yes/no values in drinking vessel column
+  mutate(
+    has_drinking_vessel = case_when(
+      tolower(drinking_vessel) == "yes" ~ TRUE,
+      tolower(drinking_vessel) == "no" ~ FALSE,
+      TRUE ~ NA
+    ),
+    has_remains = case_when(
+      tolower(remains) == "yes" ~ TRUE,
+      tolower(remains) == "no" ~ FALSE,
+      TRUE ~ NA
+    ),
+    primary_burial = case_when(
+      tolower(primary) == "present" ~ TRUE,
+      tolower(primary) == "absent" ~ FALSE,
+      TRUE ~ NA
+    ),
+    secondary_burial = case_when(
+      tolower(secondary) == "present" ~ TRUE,
+      tolower(secondary) == "absent" ~ FALSE,
+      TRUE ~ NA
+    )
+  ) %>%
+
+  # Create burial category
+  mutate(
+    burial_category = case_when(
+      primary_burial & secondary_burial ~ "Both Primary & Secondary",
+      primary_burial & !secondary_burial ~ "Primary Only",
+      !primary_burial & secondary_burial ~ "Secondary Only",
+      TRUE ~ "Unknown/Not Recorded"
+    )
+  ) %>%
+
+  # Simplify grave type
+  mutate(
+    grave_type_simple = case_when(
+      str_detect(tolower(type), "tholos") ~ "Tholos",
+      str_detect(tolower(type), "chamber") ~ "Chamber Tomb",
+      str_detect(tolower(type), "cist") ~ "Cist Grave",
+      str_detect(tolower(type), "pit") ~ "Pit Grave",
+      str_detect(tolower(type), "dromos") ~ "Dromos Only",
+      TRUE ~ "Other"
+    )
+  )
+
+# Show cleaned data structure
+glimpse(cups_skulls_clean)
+```
+
+## Data Overview
+
+### Basic Statistics
+
+```{r summary-stats}
+cat("=== Dataset Summary ===\n\n")
+cat("Total graves:", nrow(cups_skulls_clean), "\n")
+cat("Graves with drinking vessels recorded:", sum(cups_skulls_clean$has_drinking_vessel == TRUE, na.rm = TRUE), "\n")
+cat("Graves with human remains:", sum(cups_skulls_clean$has_remains == TRUE, na.rm = TRUE), "\n")
+cat("\n")
+
+# Missing data summary
+cat("=== Missing Data ===\n")
+cups_skulls_clean %>%
+  summarise(across(everything(), ~sum(is.na(.)))) %>%
+  pivot_longer(everything(), names_to = "column", values_to = "missing_count") %>%
+  filter(missing_count > 0) %>%
+  arrange(desc(missing_count)) %>%
+  kable()
+```
+
+### Sites Represented
+
+```{r sites-overview}
+sites_summary <- cups_skulls_clean %>%
+  count(site, region, name = "n_graves") %>%
+  arrange(desc(n_graves))
+
+cat("Number of sites:", n_distinct(cups_skulls_clean$site), "\n")
+cat("Sites represented:\n\n")
+print(sites_summary, n = 30)
+```
+
+## Grave Type Distribution
+
+```{r grave-types}
+grave_type_summary <- cups_skulls_clean %>%
+  count(grave_type_simple, name = "count") %>%
+  arrange(desc(count))
+
+print(grave_type_summary)
+```
+
+```{r grave-type-plot, fig.width=8, fig.height=5}
+ggplot(grave_type_summary, aes(x = reorder(grave_type_simple, count), y = count, fill = grave_type_simple)) +
+  geom_col() +
+  coord_flip() +
+  geom_text(aes(label = count), hjust = -0.1, size = 4) +
+  labs(
+    title = "Distribution of Grave Types",
+    x = "",
+    y = "Number of Graves"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+## Burial Types
+
+### Primary vs Secondary Burials
+
+```{r burial-type-summary}
+burial_type_summary <- cups_skulls_clean %>%
+  summarise(
+    total = n(),
+    with_primary = sum(primary_burial == TRUE, na.rm = TRUE),
+    with_secondary = sum(secondary_burial == TRUE, na.rm = TRUE),
+    both = sum(primary_burial == TRUE & secondary_burial == TRUE, na.rm = TRUE),
+    neither = sum(primary_burial == FALSE & secondary_burial == FALSE, na.rm = TRUE),
+    unknown = sum(is.na(primary_burial) | is.na(secondary_burial))
+  ) %>%
+  mutate(
+    pct_primary = round(with_primary / total * 100, 1),
+    pct_secondary = round(with_secondary / total * 100, 1),
+    pct_both = round(both / total * 100, 1)
+  )
+
+print(burial_type_summary)
+```
+
+```{r burial-plot, fig.width=8, fig.height=5}
+burial_category_data <- cups_skulls_clean %>%
+  count(burial_category) %>%
+  arrange(desc(n))
+
+ggplot(burial_category_data, aes(x = reorder(burial_category, n), y = n, fill = burial_category)) +
+  geom_col() +
+  coord_flip() +
+  geom_text(aes(label = n), hjust = -0.1, size = 4) +
+  labs(
+    title = "Distribution of Burial Types",
+    x = "",
+    y = "Count"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+## Drinking Vessels Analysis
+
+### Overall Drinking Vessel Presence
+
+```{r drinking-vessel-summary}
+dv_summary <- cups_skulls_clean %>%
+  summarise(
+    total_graves = n(),
+    with_vessels = sum(has_drinking_vessel == TRUE, na.rm = TRUE),
+    without_vessels = sum(has_drinking_vessel == FALSE, na.rm = TRUE),
+    unknown_vessel_status = sum(is.na(has_drinking_vessel))
+  ) %>%
+  mutate(
+    pct_with = round(with_vessels / total_graves * 100, 1),
+    avg_vessels_recorded = round(mean(cups_skulls_clean$drinking_vessel_number, na.rm = TRUE), 2)
+  )
+
+print(dv_summary)
+```
+
+### Drinking Vessels by Grave Type
+
+```{r dv-by-grave-type}
+dv_by_type <- cups_skulls_clean %>%
+  group_by(grave_type_simple) %>%
+  summarise(
+    total = n(),
+    with_vessels = sum(has_drinking_vessel == TRUE, na.rm = TRUE),
+    pct_with_vessels = round(with_vessels / total * 100, 1),
+    avg_vessel_count = round(mean(drinking_vessel_number, na.rm = TRUE), 2)
+  ) %>%
+  arrange(desc(with_vessels))
+
+print(dv_by_type)
+```
+
+```{r dv-by-type-plot, fig.width=9, fig.height=5}
+ggplot(dv_by_type, aes(x = reorder(grave_type_simple, with_vessels), y = with_vessels, fill = grave_type_simple)) +
+  geom_col() +
+  coord_flip() +
+  geom_text(aes(label = paste0(with_vessels, " (", pct_with_vessels, "%)")), hjust = -0.1, size = 4) +
+  labs(
+    title = "Graves with Drinking Vessels by Grave Type",
+    x = "",
+    y = "Number of Graves with Drinking Vessels"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+### Drinking Vessels by Burial Type
+
+```{r dv-by-burial-type}
+dv_by_burial <- cups_skulls_clean %>%
+  group_by(burial_category) %>%
+  summarise(
+    total = n(),
+    with_vessels = sum(has_drinking_vessel == TRUE, na.rm = TRUE),
+    pct_with_vessels = round(with_vessels / total * 100, 1),
+    avg_vessel_count = round(mean(drinking_vessel_number, na.rm = TRUE), 2)
+  ) %>%
+  arrange(desc(with_vessels))
+
+print(dv_by_burial)
+```
+
+```{r dv-by-burial-plot, fig.width=9, fig.height=5}
+ggplot(dv_by_burial, aes(x = reorder(burial_category, with_vessels), y = with_vessels, fill = burial_category)) +
+  geom_col() +
+  coord_flip() +
+  geom_text(aes(label = paste0(with_vessels, " (", pct_with_vessels, "%)")), hjust = -0.1, size = 4) +
+  labs(
+    title = "Graves with Drinking Vessels by Burial Type",
+    x = "",
+    y = "Number of Graves with Drinking Vessels"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+## Skeletal Remains Analysis
+
+### Remains Distribution
+
+```{r remains-summary}
+remains_summary <- cups_skulls_clean %>%
+  summarise(
+    total_graves = n(),
+    with_remains = sum(has_remains == TRUE, na.rm = TRUE),
+    without_remains = sum(has_remains == FALSE, na.rm = TRUE),
+    unknown_remains = sum(is.na(has_remains))
+  ) %>%
+  mutate(pct_with_remains = round(with_remains / total_graves * 100, 1))
+
+print(remains_summary)
+```
+
+### Skulls Recorded
+
+```{r skulls-analysis}
+skulls_stats <- cups_skulls_clean %>%
+  filter(!is.na(skulls_number)) %>%
+  summarise(
+    graves_with_skull_count = n(),
+    total_skulls = sum(skulls_number, na.rm = TRUE),
+    avg_skulls = round(mean(skulls_number, na.rm = TRUE), 2),
+    min_skulls = min(skulls_number, na.rm = TRUE),
+    max_skulls = max(skulls_number, na.rm = TRUE)
+  )
+
+print(skulls_stats)
+```
+
+```{r skulls-distribution}
+skulls_by_count <- cups_skulls_clean %>%
+  filter(!is.na(skulls_number)) %>%
+  count(skulls_number, name = "graves") %>%
+  arrange(skulls_number)
+
+print(skulls_by_count)
+```
+
+## Cross-Analysis: Drinking Vessels and Remains
+
+### Do graves with drinking vessels tend to have remains?
+
+```{r vessels-and-remains}
+vessels_remains_cross <- cups_skulls_clean %>%
+  filter(!is.na(has_drinking_vessel) & !is.na(has_remains)) %>%
+  count(has_drinking_vessel, has_remains) %>%
+  pivot_wider(names_from = has_remains, values_from = n, values_fill = 0) %>%
+  rename(no_remains = `FALSE`, with_remains = `TRUE`)
+
+rownames(vessels_remains_cross) <- c("No Drinking Vessels", "With Drinking Vessels")
+print(vessels_remains_cross)
+```
+
+```{r vessels-and-remains-analysis}
+# Calculate cross-tabulation with percentages
+cross_analysis <- cups_skulls_clean %>%
+  filter(!is.na(has_drinking_vessel) & !is.na(has_remains)) %>%
+  group_by(has_drinking_vessel) %>%
+  summarise(
+    total = n(),
+    with_remains = sum(has_remains == TRUE, na.rm = TRUE),
+    pct_with_remains = round(with_remains / total * 100, 1)
+  ) %>%
+  mutate(vessel_status = ifelse(has_drinking_vessel, "With Drinking Vessels", "Without Drinking Vessels"))
+
+kable(select(cross_analysis, vessel_status, total, with_remains, pct_with_remains))
+```
+
+### Drinking Vessels and Skull Count
+
+```{r vessels-skulls-scatter}
+vessels_skulls_data <- cups_skulls_clean %>%
+  filter(!is.na(drinking_vessel_number) & !is.na(skulls_number)) %>%
+  mutate(has_vessels_label = ifelse(has_drinking_vessel, "With Vessels", "No Vessels"))
+
+ggplot(vessels_skulls_data, aes(x = drinking_vessel_number, y = skulls_number, color = has_vessels_label)) +
+  geom_jitter(size = 3, alpha = 0.6, width = 0.2, height = 0.2) +
+  geom_smooth(method = "lm", se = FALSE, alpha = 0.2) +
+  labs(
+    title = "Relationship: Drinking Vessels vs Skull Count",
+    x = "Number of Drinking Vessels Recorded",
+    y = "Number of Skulls",
+    color = ""
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+## Regional Analysis
+
+### Laconia vs Other Regions
+
+```{r regional-summary}
+regional_summary <- cups_skulls_clean %>%
+  group_by(region) %>%
+  summarise(
+    total_graves = n(),
+    with_drinking_vessels = sum(has_drinking_vessel == TRUE, na.rm = TRUE),
+    pct_with_vessels = round(with_drinking_vessels / total_graves * 100, 1),
+    with_remains = sum(has_remains == TRUE, na.rm = TRUE),
+    pct_with_remains = round(with_remains / total_graves * 100, 1),
+    avg_skulls = round(mean(skulls_number, na.rm = TRUE), 2)
+  )
+
+print(regional_summary)
+```
+
+## Chronological Overview
+
+### Periods Represented
+
+```{r period-distribution}
+period_summary <- cups_skulls_clean %>%
+  mutate(
+    period_category = case_when(
+      str_detect(tolower(period), "mh") ~ "Middle Helladic",
+      str_detect(tolower(period), "lh\\s*i(?!i)")  | str_detect(tolower(period), "lh i-") ~ "LH I-II",
+      str_detect(tolower(period), "lh\\s*ii") & !str_detect(tolower(period), "lh\\s*ii") ~ "LH II",
+      str_detect(tolower(period), "lh\\s*iii") ~ "LH III",
+      str_detect(tolower(period), "lh") ~ "Late Helladic (general)",
+      is.na(period) | period == "" ~ "Unrecorded",
+      TRUE ~ "Other"
+    )
+  ) %>%
+  count(period_category, name = "graves") %>%
+  arrange(desc(graves))
+
+print(period_summary)
+```
+
+## Key Findings Summary
+
+```{r findings}
+cat("=== KEY FINDINGS ===\n\n")
+
+cat("1. Drinking Vessel Prevalence:\n")
+cat("   -", sum(cups_skulls_clean$has_drinking_vessel == TRUE, na.rm = TRUE),
+    "graves (", round(sum(cups_skulls_clean$has_drinking_vessel == TRUE, na.rm = TRUE) / nrow(cups_skulls_clean) * 100, 1),
+    "%) have drinking vessels recorded\n\n")
+
+cat("2. Skeletal Remains:\n")
+cat("   -", sum(cups_skulls_clean$has_remains == TRUE, na.rm = TRUE),
+    "graves (", round(sum(cups_skulls_clean$has_remains == TRUE, na.rm = TRUE) / nrow(cups_skulls_clean) * 100, 1),
+    "%) have human remains\n")
+cat("   - Skull counts recorded in", sum(!is.na(cups_skulls_clean$skulls_number)), "graves\n\n")
+
+cat("3. Burial Type Association:\n")
+burial_counts <- cups_skulls_clean %>%
+  count(burial_category) %>%
+  arrange(desc(n))
+for (i in 1:nrow(burial_counts)) {
+  cat("   -", burial_counts$burial_category[i], ":", burial_counts$n[i], "graves\n")
+}
+```
+
+## Chamber Space and Burial Goods
+
+### Do larger chambers have more skulls and drinking vessels?
+
+This section explores whether the estimated chamber area relates to the number of skulls and drinking vessels found.
+
+#### Data Availability
+
+```{r space-data-summary}
+space_analysis_data <- cups_skulls_clean %>%
+  filter(!is.na(area_of_chamber_estimated))
+
+cat("Graves with chamber area estimated:", nrow(space_analysis_data), "\n")
+cat("Graves with area AND skull count:", sum(!is.na(space_analysis_data$skulls_number)), "\n")
+cat("Graves with area AND vessel count:", sum(!is.na(space_analysis_data$drinking_vessel_number)), "\n\n")
+
+# Summary statistics for chamber area
+cat("Chamber Area Summary (m²):\n")
+print(space_analysis_data %>%
+  pull(area_of_chamber_estimated) %>%
+  summary())
+```
+
+#### Skulls vs Chamber Area
+
+```{r skulls-area-scatter, fig.width=10, fig.height=6}
+skulls_area_data <- cups_skulls_clean %>%
+  filter(!is.na(area_of_chamber_estimated) & !is.na(skulls_number))
+
+# Calculate correlation
+cor_skulls_area <- cor(skulls_area_data$area_of_chamber_estimated, skulls_area_data$skulls_number, use = "complete.obs")
+
+ggplot(skulls_area_data, aes(x = area_of_chamber_estimated, y = skulls_number)) +
+  geom_point(size = 3, alpha = 0.6, color = "steelblue") +
+  geom_smooth(method = "lm", se = TRUE, color = "red", alpha = 0.2) +
+  labs(
+    title = "Relationship: Chamber Area vs Number of Skulls",
+    subtitle = paste0("Pearson r = ", round(cor_skulls_area, 3)),
+    x = "Chamber Area Estimated (m²)",
+    y = "Number of Skulls",
+    caption = "Red line shows linear trend with 95% confidence interval"
+  ) +
+  theme_minimal() +
+  theme(plot.subtitle = element_text(size = 10))
+```
+
+```{r skulls-area-correlation}
+# Statistical test
+skulls_lm <- lm(skulls_number ~ area_of_chamber_estimated, data = skulls_area_data)
+skulls_summary <- summary(skulls_lm)
+
+cat("Linear Model: Skulls ~ Chamber Area\n")
+print(skulls_summary)
+```
+
+#### Drinking Vessels vs Chamber Area
+
+```{r vessels-area-scatter, fig.width=10, fig.height=6}
+vessels_area_data <- cups_skulls_clean %>%
+  filter(!is.na(area_of_chamber_estimated) & !is.na(drinking_vessel_number))
+
+# Calculate correlation
+cor_vessels_area <- cor(vessels_area_data$area_of_chamber_estimated, vessels_area_data$drinking_vessel_number, use = "complete.obs")
+
+ggplot(vessels_area_data, aes(x = area_of_chamber_estimated, y = drinking_vessel_number)) +
+  geom_point(size = 3, alpha = 0.6, color = "darkgreen") +
+  geom_smooth(method = "lm", se = TRUE, color = "red", alpha = 0.2) +
+  labs(
+    title = "Relationship: Chamber Area vs Number of Drinking Vessels",
+    subtitle = paste0("Pearson r = ", round(cor_vessels_area, 3)),
+    x = "Chamber Area Estimated (m²)",
+    y = "Number of Drinking Vessels",
+    caption = "Red line shows linear trend with 95% confidence interval"
+  ) +
+  theme_minimal() +
+  theme(plot.subtitle = element_text(size = 10))
+```
+
+```{r vessels-area-correlation}
+# Statistical test
+vessels_lm <- lm(drinking_vessel_number ~ area_of_chamber_estimated, data = vessels_area_data)
+vessels_summary <- summary(vessels_lm)
+
+cat("Linear Model: Drinking Vessels ~ Chamber Area\n")
+print(vessels_summary)
+```
+
+#### Both Skulls and Vessels vs Chamber Area
+
+```{r both-area-scatter, fig.width=10, fig.height=6}
+both_area_data <- cups_skulls_clean %>%
+  filter(!is.na(area_of_chamber_estimated) & !is.na(skulls_number) & !is.na(drinking_vessel_number))
+
+ggplot(both_area_data, aes(x = area_of_chamber_estimated, y = skulls_number)) +
+  geom_point(aes(color = drinking_vessel_number), size = 4, alpha = 0.7) +
+  scale_color_gradient(name = "Drinking\nVessels", low = "yellow", high = "darkred") +
+  labs(
+    title = "Chamber Area vs Skulls (colored by Drinking Vessels)",
+    x = "Chamber Area Estimated (m²)",
+    y = "Number of Skulls"
+  ) +
+  theme_minimal()
+```
+
+---
+
+## Session Info
+
+```{r session-info}
+sessionInfo()
+```

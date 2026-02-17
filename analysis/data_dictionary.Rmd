@@ -1,0 +1,215 @@
+---
+title: "Period and Tomb Type Dictionary"
+subtitle: "Instructions for Filling in Ordinal Variables"
+author: "Your Name"
+date: "`r Sys.Date()`"
+output:
+  workflowr::wflow_html:
+    toc: true
+    toc_float: true
+editor_options:
+  chunk_output_type: inline
+---
+
+## Overview
+
+This worksheet helps you define two key ordinal variables for analysis:
+
+1. **Archaeological Periods** — arrange chronologically from earliest to latest
+2. **Tomb Types** — arrange by complexity, labor investment, or prevalence
+
+The dictionaries you complete here will be imported automatically into your analysis files.
+
+---
+
+## Period Dictionary (`data/period_dictionary.csv`)
+
+### What to Fill In
+
+Three columns need your input:
+
+| Column | What to Enter | Example |
+|--------|---------------|---------|
+| `chronological_order` | A number ranking this period chronologically (1 = earliest, higher = latest) | 1, 2, 3, 4... |
+| `earliest_component` | If this is a range period, the earliest single period it includes | For "LHIIA-LHIIIB", enter "LHIIA" |
+| `latest_component` | If this is a range period, the latest single period it includes | For "LHIIA-LHIIIB", enter "LHIIIB" |
+
+### Examples
+
+**Single Periods** — entry columns are the same:
+
+```
+period_code,period_name,chronological_order,earliest_component,latest_component
+LHIIA,Late Helladic IIA,5,LHIIA,LHIIA
+LHIIIB,Late Helladic IIIB,11,LHIIIB,LHIIIB
+```
+
+**Range Periods** — earliest and latest differ:
+
+```
+period_code,period_name,chronological_order,earliest_component,latest_component
+LHIIA-LHIIIB,Late Helladic IIA to IIIB,8,LHIIA,LHIIIB
+MH-LHIII,Middle Helladic to LHIII,15,MH,LHIII
+```
+
+**What this means:**
+- The range "LHIIA-LHIIIB" spans from period 5 (LHIIA) to period 11 (LHIIIB)
+- R will later extract both the start and end period for analysis
+- This lets you analyze: "When did this grave context start?", "When did it end?", or "What's the span?"
+
+### Filling It In
+
+1. **Determine chronological order:** Arrange all periods from earliest (1) to latest (highest number)
+   - See standard Aegean chronologies (Rutter, Manning, etc.)
+   - MH typically comes before LH
+   - Within LH: LHI → LHII → LHIII
+   - Subdivisions (IIA, IIB) fit sequentially
+
+2. **For single periods:** Copy the period code to both `earliest_component` and `latest_component`
+
+3. **For range periods:** Identify the start and end, then copy them to the respective columns
+   - "LHIIA-LHIIIB" → earliest = LHIIA, latest = LHIIIB
+   - "MH-LHIII" → earliest = MH, latest = LHIII
+
+---
+
+## Tomb Type Dictionary (`data/tomb_type_dictionary.csv`)
+
+### What to Fill In
+
+One column needs your input:
+
+| Column | What to Enter | Example |
+|--------|---------------|---------|
+| `tomb_type_order` | A number ranking this tomb type (1 = first, higher = last) | You decide the ordering criterion |
+
+### How to Rank Tomb Types
+
+Choose **one** ranking system and apply it consistently:
+
+**Option A: Architectural Complexity** (simplest → most complex)
+- Simple grave (1)
+- Pit (2)
+- Cist (3)
+- Chamber tomb (4)
+- Tholos (5)
+
+**Option B: Labor/Resource Investment** (least → most)
+- Natural crevices (1)
+- Simple grave (2)
+- Pit grave (3)
+- Cist grave (4)
+- Built chamber tomb (5)
+- Tholos (6)
+
+**Option C: Frequency in Dataset** (rarest → most common)
+- Count which tomb types appear most often
+- Rank accordingly
+
+### Your Tomb Types
+
+Here are the actual tomb types in your dataset. Choose **one** ranking system and assign each a number:
+
+| Tomb Type | Option A (Complexity) | Option B (Labor) | Option C (Frequency) | Your Choice |
+|-----------|----------------------|------------------|----------------------|-------------|
+| natural crevices | 1 (simplest) | 1 (least labor) | ? (count in data) | |
+| simple grave | 2 | 2 | ? | |
+| grave | 2-3 | 2-3 | ? | |
+| circle | ? | ? | ? | |
+| pithoi/pithos/Pithos | 2-3 | 2-3 | ? | |
+| pit/pits | 3 | 3 | ? | |
+| cist | 4 | 4 | ? | |
+| dromos of tholos | varies | 4-5 | ? | |
+| shaft grave | 3-4 | 4 | ? | |
+| chamber tomb | 5 | 5 | ? | |
+| build/built chamber tomb | 5 | 5-6 | ? | |
+| tholos | 5-6 (most complex) | 6 (most labor) | ? | |
+| mound | ? | ? | ? | |
+| Grave peribolos | ? | ? | ? | |
+| graves in settlement context | 2-3 | 2-3 | ? | |
+
+**Notes:**
+- Some types are unclear from the dataset — use archaeological knowledge to rank them
+- "grave" and "simple grave" are probably similar (assign similar ranks)
+- "build chamber tomb" and "built chamber tomb" are likely the same (assign same rank)
+- "pithoi/pithos/Pithos" (burial in large storage jars) is relatively simple
+- If you choose **Option C (Frequency)**, count how many graves of each type appear in the dataset and rank from rarest to most common
+
+### Decision
+
+**Which ranking system are you using?** ___________________
+
+**Why did you choose this?**
+
+_________________________________________________________________
+
+### Filling in Your CSV
+
+Once you've decided on a ranking system, fill in the **"Your Choice"** column above, then copy those numbers into `data/tomb_type_dictionary.csv` in the `tomb_type_order` column.
+
+**Example (using Option A: Complexity):**
+
+```
+tomb_type,tomb_type_order
+natural crevices,1
+simple grave,2
+grave,2
+circle,3
+pithoi,2
+pit,3
+cist,4
+shaft grave,4
+dromos of tholos,4
+chamber tomb,5
+build chamber tomb,5
+built chamber tomb,5
+tholos,6
+mound,3
+Grave peribolos,4
+graves in settlement context,2
+```
+
+**Key points:**
+- You can use the same number twice (e.g., "simple grave" and "grave" both = 2)
+- Numbers don't have to count up perfectly (e.g., you can go 1, 2, 2, 3, 4, 4, 5, 6)
+- But they should be sequential overall (no gaps like 1, 2, 5, 6)
+- The actual numbers don't matter — R only cares about the relative order
+
+---
+
+## How These Will Be Used in Analysis
+
+Once you've filled these in, the analysis code will:
+
+1. **For periods:** Automatically match range periods to their earliest/latest components
+2. **Create new columns:** `period_start_order`, `period_end_order`, and `period_midpoint_order`
+3. **For tomb types:** Use your ranking to create an ordinal factor for statistical tests
+
+This lets you analyze relationships across time and tomb architecture!
+
+---
+
+## Checklist Before Submitting
+
+**Period Dictionary:**
+- ☐ All periods have a chronological order number
+- ☐ Numbers count up (1, 2, 3... no gaps, no duplicates unless periods occur simultaneously)
+- ☐ Single periods have matching `earliest_component` and `latest_component`
+- ☐ Range periods have different start and end components
+- ☐ Start component chronologically precedes end component
+
+**Tomb Type Dictionary:**
+- ☐ All tomb types have a ranking order number
+- ☐ Ranking is consistent across all types (you can see your logic)
+- ☐ Numbers are sequential (1, 2, 3... or in logical order)
+- ☐ You documented your ranking system and rationale
+
+---
+
+## Questions?
+
+If you're unsure about:
+- **Period dating:** Check archaeological chronology tables (Rutter 2014, Manning 2010)
+- **Period sequences:** Look at the period names — Roman numerals usually help (I before II before III)
+- **Tomb types:** Consider what makes sense for your research question about drinking vessels and burial practices
+
