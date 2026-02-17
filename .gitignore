@@ -34,3 +34,6 @@ analysis/site_libs
 
 # renv cache (keep renv/ folder but ignore cache)
 renv/library/
+
+# Claude Code worktrees and cache
+.claude/
