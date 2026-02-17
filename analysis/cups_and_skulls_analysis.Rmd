@@ -12,6 +12,39 @@ editor_options:
   chunk_output_type: inline
 ---
 
+## How to Use This Analysis
+
+**THIS IS A TEMPLATE** that you'll customize as you complete your data dictionaries.
+
+### What You Need to Do:
+
+1. **Complete `data/period_dictionary.csv`:**
+   - Assign chronological order to each period (1 = earliest, higher = latest)
+   - For range periods (e.g., "LHIIA-LHIIIB"), identify the earliest and latest components
+   - See `analysis/data_dictionary.Rmd` for detailed instructions
+
+2. **Complete `data/tomb_type_dictionary.csv`:**
+   - Decide how to rank the 5 tomb types (Tholos, Chamber Tomb, Cist Grave, Pit Grave, Other)
+   - Choose: by complexity, labor investment, or frequency
+   - See `analysis/data_dictionary.Rmd` for guidance
+
+3. **Enable the Dictionary Loading Code:**
+   - Once dictionaries are complete, find the "Import and Process Data Dictionaries" section
+   - Change `eval=FALSE` to `eval=TRUE`
+   - This activates the ordinal factors and enables temporal/complexity analyses
+
+### What This Analysis Will Show (Once Dictionaries Are Complete):
+
+- **Distribution comparisons** between Laconia and Messenia
+- **Temporal trends** in drinking vessel deposition across periods
+- **Complexity patterns** in tomb types and burial practices
+- **Regional differences** in how graves are used
+- **Relationships** between chamber size, drinking vessels, and skeletal remains
+
+Your decisions in the dictionaries will shape these findings — so think carefully about your ranking logic!
+
+---
+
 ## Introduction
 
 This analysis examines the relationship between drinking vessels and human skeletal remains in Laconian and Messinian tholos and chamber tombs. The data focuses on grave contexts where drinking vessels are recorded alongside information about primary and secondary burials.
@@ -30,7 +63,14 @@ library(knitr)
 
 ## Color Customization
 
-Customize colors for the analyses. Edit the values below to use your preferred colors:
+**YOU CAN EDIT THIS SECTION:** Customize colors for the analyses. Edit the hex codes below to use your preferred colors.
+
+All plots throughout this analysis will use these colors, so if you change them here, the change applies everywhere automatically.
+
+**Color choices affect:**
+- Regional comparisons (Laconia vs Messenia)
+- Visualization clarity and accessibility
+- How different variables stand out in plots
 
 ```{r color-palette}
 # Set your color palette here
@@ -61,6 +101,8 @@ glimpse(cups_skulls)
 ```
 
 ## Data Cleaning
+
+**NOTE:** The code below simplifies the complex grave type names into broader categories. If you want to group grave types differently, you can edit the `case_when()` statements in this chunk. For example, you might want to keep "Pit Grave" and "Cist Grave" separate, or group them together.
 
 ```{r clean-data}
 cups_skulls_clean <- cups_skulls %>%
@@ -105,6 +147,9 @@ cups_skulls_clean <- cups_skulls %>%
   ) %>%
 
   # Simplify grave type
+  # ** YOU CAN CUSTOMIZE THIS SECTION **
+  # If you want different groupings, edit the patterns here
+  # Current grouping is based on archaeological complexity
   mutate(
     grave_type_simple = case_when(
       str_detect(tolower(type), "tholos") ~ "Tholos",
@@ -122,7 +167,26 @@ glimpse(cups_skulls_clean)
 
 ## Import and Process Data Dictionaries
 
-**After the student completes the dictionaries**, this section will load and apply ordinal rankings:
+### WHEN YOU'RE READY:
+
+1. Complete both dictionary files in `/data/`:
+   - `period_dictionary.csv` — add chronological order + period components
+   - `tomb_type_dictionary.csv` — add your tomb type ranking
+
+2. Come back here and change the code chunk to `eval=TRUE` (line below says `eval=FALSE`)
+
+3. Re-run the analysis — this chunk will automatically:
+   - Load your dictionaries
+   - Match range periods to their earliest/latest components
+   - Create `period_start_order`, `period_end_order`, `period_midpoint_order`
+   - Create ordered factors for statistical tests
+
+**What this enables:**
+- Testing whether drinking vessel deposition changes over time
+- Comparing tomb complexity with burial practices
+- Temporal and complexity-based statistical models
+
+**After dictionaries are complete**, this section will load and apply ordinal rankings:
 
 ```{r load-dictionaries, eval=FALSE}
 # NOTE: Set eval=TRUE once the student has completed the dictionaries
@@ -194,6 +258,8 @@ cat("  - period_ordered: ordered factor for periods\n")
 
 ### Basic Statistics
 
+These are descriptive statistics of your dataset. They won't change based on your dictionaries, but they provide context for all analyses below.
+
 ```{r summary-stats}
 cat("=== Dataset Summary ===\n\n")
 cat("Total graves:", nrow(cups_skulls_clean), "\n")
@@ -224,6 +290,11 @@ print(sites_summary, n = 30)
 ```
 
 ## Grave Type Distribution
+
+**HOW YOUR CHOICES AFFECT THIS:**
+- The groupings in the "Data Cleaning" section determine what you see here
+- If you edit `grave_type_simple` to create different categories, these plots will change
+- Once you complete `tomb_type_dictionary.csv`, you can run additional analyses on tomb complexity
 
 ```{r grave-types}
 grave_type_summary <- cups_skulls_clean %>%
@@ -561,6 +632,11 @@ for (i in 1:nrow(burial_counts)) {
 
 This section explores whether the estimated chamber area relates to the number of skulls and drinking vessels found.
 
+**HOW YOUR PERIOD DICTIONARY WILL ENHANCE THIS:**
+- Once you complete `period_dictionary.csv` and enable the dictionary loading code, we can add temporal layers
+- You'll be able to see if these relationships change across periods
+- Time-based patterns can reveal ritual practice evolution
+
 #### Data Availability
 
 ```{r space-data-summary}
@@ -666,6 +742,34 @@ ggplot(both_area_data, aes(x = area_of_chamber_estimated, y = skulls_number)) +
 ```
 
 ---
+
+## NEXT STEPS FOR YOUR RESEARCH
+
+### You Control These Decisions:
+
+1. **Period Chronology** (`period_dictionary.csv`):
+   - How you order periods affects temporal trend detection
+   - Range periods (e.g., "LHIIA-LHIIIB") can span 50+ years
+   - Your finest/coarsest periodization choices determine analysis granularity
+
+2. **Tomb Type Ranking** (`tomb_type_dictionary.csv`):
+   - Complexity ranking reveals whether complex tombs get more/different goods
+   - Labor investment ranking shows resource correlation with practices
+   - Frequency ranking reveals site-specific burial patterns
+
+3. **Grave Type Grouping** (edit the `case_when()` in Data Cleaning):
+   - Should Pit and Cist graves be separate or grouped?
+   - Is "Other" too vague, or does it represent genuinely mixed practices?
+   - Your grouping should reflect your research questions
+
+### Possible Extensions (Once Dictionaries Are Complete):
+
+- Test whether temporal trends differ between Laconia and Messenia
+- Model drinking vessel count as a function of period + tomb complexity
+- Compare primary vs secondary burial practices across time and tomb type
+- Investigate whether larger chambers are preferred in certain periods
+
+Your research questions should drive these decisions!
 
 ## Session Info
 

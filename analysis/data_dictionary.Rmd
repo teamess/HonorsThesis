@@ -20,6 +20,14 @@ This worksheet helps you define two key ordinal variables for analysis:
 
 The dictionaries you complete here will be imported automatically into your analysis files.
 
+**Important:** Your decisions here will directly affect:
+- Which analyses are possible in your main analysis file
+- How temporal trends are interpreted
+- Whether tomb type complexity correlates with burial practices
+- Regional comparisons and statistical tests
+
+You may have your own ideas about how to group periods or rank tomb types based on your archaeological knowledge. This is YOUR research — make the decisions that make sense for your thesis questions!
+
 ---
 
 ## Period Dictionary (`data/period_dictionary.csv`)
