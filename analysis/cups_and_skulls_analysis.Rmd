@@ -120,6 +120,76 @@ cups_skulls_clean <- cups_skulls %>%
 glimpse(cups_skulls_clean)
 ```
 
+## Import and Process Data Dictionaries
+
+**After the student completes the dictionaries**, this section will load and apply ordinal rankings:
+
+```{r load-dictionaries, eval=FALSE}
+# NOTE: Set eval=TRUE once the student has completed the dictionaries
+
+# Load period dictionary
+period_dict <- read_csv(here::here("data", "period_dictionary.csv"))
+
+# Load tomb type dictionary
+tomb_dict <- read_csv(here::here("data", "tomb_type_dictionary.csv"))
+
+# Join period dictionary and extract period components
+cups_skulls_clean <- cups_skulls_clean %>%
+  left_join(
+    period_dict %>% select(period_code, chronological_order, earliest_component, latest_component),
+    by = c("period" = "period_code")
+  ) %>%
+
+  # Get ordinal values for earliest component
+  left_join(
+    period_dict %>% select(period_code, chronological_order) %>% rename(start_order = chronological_order),
+    by = c("earliest_component" = "period_code")
+  ) %>%
+
+  # Get ordinal values for latest component
+  left_join(
+    period_dict %>% select(period_code, chronological_order) %>% rename(end_order = chronological_order),
+    by = c("latest_component" = "period_code")
+  ) %>%
+
+  # For single periods (where start = end), use that value
+  # For ranges, create midpoint
+  mutate(
+    period_start_order = start_order,
+    period_end_order = end_order,
+    period_midpoint_order = (start_order + end_order) / 2
+  )
+
+# Join tomb type dictionary
+cups_skulls_clean <- cups_skulls_clean %>%
+  left_join(
+    tomb_dict %>% select(tomb_type, tomb_type_order),
+    by = c("grave_type_simple" = "tomb_type")
+  ) %>%
+
+  # Convert to ordered factors
+  mutate(
+    tomb_type_ordered = factor(
+      grave_type_simple,
+      levels = arrange(tomb_dict, tomb_type_order) %>% pull(tomb_type),
+      ordered = TRUE
+    ),
+    period_ordered = factor(
+      period,
+      levels = arrange(period_dict, chronological_order) %>% pull(period_code),
+      ordered = TRUE
+    )
+  )
+
+cat("✓ Dictionaries successfully loaded and applied!\n")
+cat("New columns created:\n")
+cat("  - period_start_order: chronological order of earliest period component\n")
+cat("  - period_end_order: chronological order of latest period component\n")
+cat("  - period_midpoint_order: midpoint between start and end\n")
+cat("  - tomb_type_ordered: ordered factor for tomb types\n")
+cat("  - period_ordered: ordered factor for periods\n")
+```
+
 ## Data Overview
 
 ### Basic Statistics
@@ -163,20 +233,19 @@ grave_type_summary <- cups_skulls_clean %>%
 print(grave_type_summary)
 ```
 
-```{r grave-type-plot, fig.width=14, fig.height=5}
-ggplot(grave_type_summary, aes(x = reorder(grave_type_simple, count), y = count, fill = region)) +
-  geom_col(position = "dodge") +
-  coord_flip() +
+```{r grave-type-plot, fig.width=12, fig.height=6}
+ggplot(grave_type_summary, aes(x = reorder(grave_type_simple, -count), y = count, fill = region)) +
+  geom_col(position = "dodge", width = 0.7) +
   scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
-  facet_wrap(~region, scales = "free_x") +
+  geom_text(aes(label = count), position = position_dodge(width = 0.7), vjust = -0.3, size = 4) +
   labs(
     title = "Distribution of Grave Types by Region",
-    x = "",
+    x = "Grave Type",
     y = "Number of Graves",
     fill = "Region"
   ) +
   theme_minimal() +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom", axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
 ## Burial Types
@@ -202,24 +271,23 @@ burial_type_summary <- cups_skulls_clean %>%
 print(burial_type_summary)
 ```
 
-```{r burial-plot, fig.width=14, fig.height=5}
+```{r burial-plot, fig.width=12, fig.height=6}
 burial_category_data_region <- cups_skulls_clean %>%
   count(region, burial_category) %>%
   arrange(region, desc(n))
 
-ggplot(burial_category_data_region, aes(x = reorder(burial_category, n), y = n, fill = region)) +
-  geom_col(position = "dodge") +
-  coord_flip() +
+ggplot(burial_category_data_region, aes(x = reorder(burial_category, -n), y = n, fill = region)) +
+  geom_col(position = "dodge", width = 0.7) +
   scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
-  facet_wrap(~region, scales = "free_x") +
+  geom_text(aes(label = n), position = position_dodge(width = 0.7), vjust = -0.3, size = 4) +
   labs(
     title = "Distribution of Burial Types by Region",
-    x = "",
+    x = "Burial Type",
     y = "Count",
     fill = "Region"
   ) +
   theme_minimal() +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom", axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
 ## Drinking Vessels Analysis
@@ -258,7 +326,7 @@ dv_by_type <- cups_skulls_clean %>%
 print(dv_by_type)
 ```
 
-```{r dv-by-type-plot, fig.width=14, fig.height=5}
+```{r dv-by-type-plot, fig.width=12, fig.height=6}
 dv_by_type_region <- cups_skulls_clean %>%
   group_by(region, grave_type_simple) %>%
   summarise(
@@ -270,19 +338,19 @@ dv_by_type_region <- cups_skulls_clean %>%
   ) %>%
   arrange(region, desc(with_vessels))
 
-ggplot(dv_by_type_region, aes(x = reorder(grave_type_simple, with_vessels), y = with_vessels, fill = region)) +
-  geom_col(position = "dodge") +
-  coord_flip() +
+ggplot(dv_by_type_region, aes(x = reorder(grave_type_simple, -with_vessels), y = with_vessels, fill = region)) +
+  geom_col(position = "dodge", width = 0.7) +
   scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
-  facet_wrap(~region, scales = "free_x") +
+  geom_text(aes(label = paste0(with_vessels, " (", pct_with_vessels, "%)")),
+            position = position_dodge(width = 0.7), vjust = -0.3, size = 3.5) +
   labs(
     title = "Graves with Drinking Vessels by Grave Type and Region",
-    x = "",
+    x = "Grave Type",
     y = "Number of Graves with Drinking Vessels",
     fill = "Region"
   ) +
   theme_minimal() +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom", axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
 ### Drinking Vessels by Burial Type
@@ -301,7 +369,7 @@ dv_by_burial <- cups_skulls_clean %>%
 print(dv_by_burial)
 ```
 
-```{r dv-by-burial-plot, fig.width=14, fig.height=5}
+```{r dv-by-burial-plot, fig.width=12, fig.height=6}
 dv_by_burial_region <- cups_skulls_clean %>%
   group_by(region, burial_category) %>%
   summarise(
@@ -313,19 +381,19 @@ dv_by_burial_region <- cups_skulls_clean %>%
   ) %>%
   arrange(region, desc(with_vessels))
 
-ggplot(dv_by_burial_region, aes(x = reorder(burial_category, with_vessels), y = with_vessels, fill = region)) +
-  geom_col(position = "dodge") +
-  coord_flip() +
+ggplot(dv_by_burial_region, aes(x = reorder(burial_category, -with_vessels), y = with_vessels, fill = region)) +
+  geom_col(position = "dodge", width = 0.7) +
   scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
-  facet_wrap(~region, scales = "free_x") +
+  geom_text(aes(label = paste0(with_vessels, " (", pct_with_vessels, "%)")),
+            position = position_dodge(width = 0.7), vjust = -0.3, size = 3.5) +
   labs(
     title = "Graves with Drinking Vessels by Burial Type and Region",
-    x = "",
+    x = "Burial Type",
     y = "Number of Graves with Drinking Vessels",
     fill = "Region"
   ) +
   theme_minimal() +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom", axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
 ## Skeletal Remains Analysis
