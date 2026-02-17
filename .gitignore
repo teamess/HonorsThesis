@@ -3,9 +3,34 @@
 .RData
 .Ruserdata
 .Rapp.history
+
+# macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+.apdisk
+.Spotlight-V100
+.Trashes
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.sublime-project
+.sublime-workspace
+
+# Temporary files
+*.tmp
+*.bak
+
+# Generated folders
 analysis/figure
 analysis/*png
 analysis/*html
 analysis/*_cache
 analysis/site_libs
+
+# renv cache (keep renv/ folder but ignore cache)
+renv/library/

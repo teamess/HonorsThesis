@@ -1,0 +1,297 @@
+Grave ID,site,type ,period ,secondary,primary ,dimensions ,orientation,drinking vessel ,remains,drinking vessel number,skulls number ,area of chamber estimated,region
+vapheio_tholos,Vapheio ,tholos, LHIIA-LHIIIA1,absent ,absent ,"83.28m^2. dromos: L 29.8m x w3.18-3.45, stomion: L 4.56m x w1.93m x h4.2m, pit in somion: l1.93m x w1.6-1.8m x d1.9m, chamber: o10.12-10.35m x h3-3.5 preserved, cist: l2.25m x w1.1m x d1m",NE-SW,yes,yes,6,NA,84.13,laconia 
+arkynes_tholos_A,Arkynes ,tholos ,LHIIIA- LHIIIB,absent ,absent ,"dromos: L2.65m, stomion:d2.8m, w0.78m, h1.16-1.3m; chamber:o4.7m, h3.75m",SE-NW,no,yes,NA,NA,17.35,laconia 
+arkynes_tholos_B,Arkynes ,tholos ,LHIII,absent ,present,dromos: h0.75m,NA,no,yes,NA,NA,NA,laconia 
+arkynes_tholos_C,Arkynes ,tholos ,LHIIIA-LHIIIB,present,absent ,"stomion: d.2-3m, w1.2-1.3, h1.5m chamber: o6m, h1.5m ",NA,no,yes,NA,NA,28.274,laconia 
+SpartiPolytholos_tholos,Sparti: Polydendron ,tholos,LHIIA-LHIIIA2,present,present,"Dromos: l2.25m: stomion: d0.7m. Chamber: o3.15m and 4.3m(external), h 1m preserved, thickness of tholos walls: .6m",E-W,no,yes,NA,NA,7.793,laconia 
+dromos_of_tholos_sparti,Sparti: Polydendron ,dromos of tholos,LHIIB-LHIIIA,absent ,absent ,NA,N-S,no,no,NA,NA,NA,laconia 
+1pellanaplundered,Pellana ,chamber tomb ,LH,absent ,absent ,"chamber: o4.83m, h c 4m",W-E,no,no,NA,NA,18.322,laconia 
+2pellanaplundered,Pellana ,chamber tomb ,LHIIA- submycenaean,present,present,"dromos: l4.5m, w2m, h up to 2.5m. stomion: h2.5m, chamber: o 5.67m, h c 5m",W-E,yes,yes,4,NA,25.25,laconia 
+3pellanabaddamage,Pellana ,chamber tomb ,LH,absent ,absent ,NA,NA,no,no,NA,NA,NA,laconia 
+4greattombpellana,Pellana ,chamber tomb,LHIIA-LHIIIB,present,absent ,"dromos: l12.8m (left wall) 13.5m (right wall) w2.55m and 2.3m at outer end, h5.4m Stomion:h5.4m chamber: o10.1m, h c 6m(perhaps 10+) ",NW-SE,no,yes,NA,NA,80.12,laconia 
+5pellanachamber,Pellana ,chamber tomb,LHIIIA2-LHIIIB,present,present,"Dromos: l.6.5m w1.7m h up to 2.5m Stomion: w1.2m d1.6m Chamber: o6.3-6.35m Pit:1:l1.13m,w0.85-1.7m d1.3m Ledge: w0.18m-.2m",NW-SE,yes,yes,5,NA,31.67,laconia 
+6pellanaplundered,Pellana ,chamber tomb,LHIIIA1-LHIIIB,present,present,"dromos: l6.5m,w1.7m, h up to2.5m. stomion: w1.2m, d1.6m. Chamber: 06,27m. Pit 1: l2.2m, w0.6m d1.2m. Pit 2: l1.25m, w0.6m, d0.55m. pit 3: l1.1m, w0.45m, d0.48m. Pit 4: l1.15m w0.65m, d0.45m. Pit-niche: l1.9m, w1.1m, d0.48m",W-E,no,yes,NA,NA,30.876,laconia 
+7pellanadromos,Pellana ,chamber tomb,LHIIA-LHIIIB1,absent ,absent ,"dromos: l18.5m, w1.12-1.4m, d >6m",W-E,no,no,NA,NA,NA,laconia 
+1AS_smallchamber,Amyklai: Spelakia,chamber tomb ,LHIIIA-LHIIIB,absent ,absent ,"stomion: w0.77m, h1.07m. Burial chamber: l1.9m, w2.77m, h1.85m",NA,yes,no,7,NA,NA,laconia 
+2AS_smallchamber,Amyklai: Spelakia,chamber tomb ,LHIIIA-LHIIIB,absent ,absent ,"dromos: l2.59m, w1.18m. stomion: w1.08m, h1.62m, d0.66m. Burial chamber: l2.37m, w2.96m, h2.15m.",NW-SE,no,no,NA,NA,7.015,laconia 
+3AS_chamber,Amyklai: Spelakia,chamber tomb,LHIIIA-LHIIIC1,absent ,absent ,"dromos: l2.28m, w1.11m. Stomion: w1m, h1.43m d0.43m. Burial chamber: l2.5m, w2.3m, h1.5m",NA,yes,no,2,NA,5.75,laconia 
+sigma1,Skoura: malathria ,chamber tomb,LHIIIA1-LHIIIB1,present,present,"dromos: l1m, w1.6m. chamber: 2.6m x 3.3m, h2.7m  Pit: l1m, w0.63m, d.3m",W-E,yes,yes,1,NA,8.58,laconia 
+sigma2 ,Skoura: malathria ,chamber tomb ,LHIIIA1-LHIIIB1,present,absent ,"chamber: 2.4m x3.15m. pit: l2.3m, w.8m, d1.3m",W-E,yes,yes,2,NA,7.56,laconia 
+sigma3,Skoura: malathria ,chamber tomb,NA,absent ,absent ,collapsed,W-E,no,no,NA,NA,NA,laconia 
+sigma4,Skoura: malathria ,chamber tomb,LHIII,absent ,absent ,"dromos: l1.9m, h.35m. chamber: 1.7m x1.2m, h1.7m. pit: l2.3m, w.8m, d1.3m",W-E,no,yes,NA,NA,2.04,laconia 
+sigma5,Skoura: malathria ,chamber tomb,LHIIIA2-LHIIIB1,absent ,absent ,chamber: 1.5m x2.25m,W-E,no,yes,NA,NA,3.375,laconia 
+A1SM,Skoura: malathria ,chamber tomb,LHIIIA2-LHIIIB1,present,absent ,"chamber: 3.2m x 2.5m, h2.7m. pit A: l1.15m, w.45m, d.32m. pit B: l1.3m, w.0.53m, d.6m",NA,yes,yes,3,NA,8,laconia 
+ AXAV,Xerokambi: Agios Vasileios,chamber tomb ,LHII-LHIIIA1,absent ,absent ,NA,NA,no,yes,NA,NA,NA,laconia 
+skchamber1,Peristeri: Solakos ,chamber tomb,LHIIIA2-LHIIIB1,absent ,absent ,"dromos: l.3m, w1.6m, h1.5m. burial chamber: o4m, h2.5m",NE-SW,no,no,NA,NA,12.566,laconia 
+skchamber2,Peristeri: Solakos ,chamber tomb,LHIIA,absent ,absent ,NA,NA,yes,no,NA,NA,NA,laconia 
+skchamber3,Peristeri: Solakos ,chamber tomb,LHIIA,absent ,absent ,NA,NA,yes,no,NA,NA,NA,laconia 
+skchamber4,Peristeri: Solakos ,chamber tomb,NA,absent ,absent ,NA,NA,no,no,NA,NA,NA,laconia 
+skchamber5,Peristeri: Solakos ,chamber tomb,LHIIA-submycenaean,present,present,NA,NA,yes,yes,2,NA,NA,laconia 
+1DLchamber,Daphi: Louria ,chamber tomb ,LHIII,absent ,absent ,NA,N/NE-S/SW,no,yes,NA,NA,NA,laconia 
+2DLchamber,Daphi: Louria ,chamber tomb,LHIII,present,present,NA,N/NE-S/SW,yes,yes,1,NA,NA,laconia 
+1sykeachambertomb,Sykea,chamber tomb,LHIIIA-LHIIIC,present,present,"stomion: d1.7m, w1.6m. dromos: l.2m (rest extends under modern cemetery not excavated) w2.3m. burial chamber: l2.75m, w3.76m, h2.64m, all pits: w.3m",NE-SW,yes,yes,1,NA,10.34,laconia 
+2sykeachambertomb,Sykea,chamber tomb ,LHIIIA-LHIIIC ,present,present,"dromos: l8.85m, w1.25m-1.35m; stomion: w.83m, d.8m; burial chamber: l4.2m, w6m, h3.45m; pit1: l1.1m, w.355m, d.45m; pit2: l1.73m, w.25m,d.47m, pit3: l1.6m, w.6m, d.41m",NE-SW,yes,yes,15,NA,25.2,laconia 
+3sykeachambertomb,Sykea,chamber tomb,LHIIIA2-LHIIIC,present,absent ,"dromos: l8.05m, w1.16-1.18m: burial chamber: l3.6m, w6m, h3.45m; pit 1: l1m, w.4m, d.36m. pit 2: l1.8m, w.37m, d.36m. pit 3: l2.15m, w.37m, d.33m, pit 4: l1.8m, w.3m, d.33m, round pit: o.47m, d.2m, ",NE-SW,no,yes,NA,14,21.6,laconia 
+4sykeachambertomb,Sykea,chamber tomb,LHIIIB,present,present,"dromos: l7m, w1.05m-1.39m, burial chamber: l4.5m,w3.7m, h2m. pit1: l1.65m, w.42m, d.56m, pit2: l1.1m, w.45m, d.8m, pit3: l1.7m, w.35m, d.42m, pit4: l1.55m, w.3m, d.32m",NE-SW,no,yes,NA,NA,16.65,laconia 
+AngelonaBchamber,Angelona: Bastiza,chamber tomb,LHIIIB,present,present,"stomion: l1.07m, h1.07m, burial chamber: l3.35m, w4.2m, h2.14m",S-N,no,yes,NA,2,14.07,laconia 
+Karachalios_tomb_A,Epidavros Limera:PAL1,chamber tomb,MHIII- LHI,absent ,absent ,NA,NE-SW,no,no,NA,NA,NA,laconia 
+Karachalios_tomb_B,Epidavros Limera:PAL1,chamber tomb,LHI-submycenaean,absent ,absent ,"burial chamber: l4.27m, w4.4m, h1.46m",NE-SW,no,no,NA,NA,18.788,laconia 
+Karachalios_tomb_D,Epidavros Limera:PAL1,chamber tomb,NA,absent ,absent ,NA,NA,no,no,NA,NA,NA,laconia 
+PAL5 ,Epidavros Limera:PAL1,chamber tomb,LHIIA-LHIIIC,present,absent ,"dromos: l1.6m, w.92m. anteroom: l1.46m, w1.67m. Stomion of main chamber: w.62m, h.83m, Main burial chamber: l2.56m, w2.64m, h1.24m. pit: l.72m, w.36m, d.26m ",S-N,no,yes,NA,NA,6.758,laconia 
+ATR1 ,Epidavros Limera:PAL1,chamber tomb,LH,present,absent ,"stomion: w.73m, h.89m. burial chamber: l2.25m, w1.51m, h1.12m",N-S,no,yes,NA,NA,3.3975,laconia 
+ATR2,Epidavros Limera:PAL1,chamber tomb,LHIIA,absent ,absent ,"stomion: w1.2m, h.95m, d.4m. burial chamber: o3.45m, h1.55m. west niche: l1.6m, w.7m, h.92m. large pit: l2.05m, w.73m, d.92m.",N-S,no,yes,NA,NA,9.348,laconia 
+ATR3,Epidavros Limera:PAL1,chamber tomb,NA,absent ,absent ,NA,NA,no,no,NA,NA,NA,laconia 
+ATR6,Epidavros Limera:PAL1,chamber tomb,LHIIA-LHIIIC,present,absent ,"dromos: l1.4m, w1.4m, h2.2m. stomion: w.66m, h.86m, d.2m. burial chamber: l2.62m, w1.65m, h1.23m,. pitAa:l1.4m, w.4m, d.5m. pitAb: l.8m, w.44m, d.25m, . pitAy: l1.68m, w.5m, d.94m,. stomion of side chamber: w.66m, h.9m,. side chamber: l1.7m, w1.6m, h.99m",N-S,no,yes,NA,NA,4.323,laconia 
+ATR7,Epidavros Limera:PAL1,chamber tomb,LHIIIA2-LHIIIC,present,present,chamber: ,N-S,yes,yes,NA,NA,8.16,laconia 
+VAM1,Epidavros Limera:PAL1,chamber tomb,LHIIIA2,present,absent ,"dromos: l2.38m, w1.3m. stomion: w.68m, h.88m. burial chamber: l2.3m, w1.55m, h1.5m. side chamber: l2.65m, w2.25m, h.95m. stomion of side chamber: w1.3m, h.98m",NE-SW,yes,yes,3,3,3.565,laconia 
+F_Dermatianika,Kambos Voion ,chamber tomb,LH,absent ,absent ,NA,NA,no,no,NA,NA,NA,laconia 
+1 and 2,Agios Georgios Voion ,chamber tomb,LHIII,absent ,absent ,NA,NA,no,no,NA,NA,NA,laconia 
+buildchamber_Sparti,Sparti: Psychiko,build chamber tomb ,"MHIII, LHI-LHI",present,absent ,"l2.5m, w.61m-1.17m, h.96m",W/NW-E/SE,yes,yes,2,NA,2.925,laconia 
+Tomb 21,Agios Vasileios: North Cemetery,built chamber tomb,LHIIIA,present,present,NA,NA,yes,yes,NA,NA,NA,laconia 
+cist1_pellana_pele,Pellana: pelekete and Palaiokastro,simple grave,MHIII-LHI,absent ,absent ,NA,NA,no,no,NA,NA,NA,laconia 
+cist2_pellana_pele,Pellana: pelekete and Palaiokastro,simple grave ,MHIII-LHI,absent ,absent ,NA,NA,no,no,NA,NA,NA,laconia 
+cist3_pellana_pele,Pellana: pelekete and Palaiokastro,simple grave,MHIII-LHI,absent ,absent ,NA,NA,no,no,NA,NA,NA,laconia 
+cist5_pellana_pele,Pellana: pelekete and Palaiokastro,simple grave,MHIII-LHI,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+cist6_pellana_pele,Pellana: pelekete and Palaiokastro,simple grave,MHIII-LHI,absent ,absent ,NA,NA,no,no,NA,NA,NA,laconia 
+Markoustsas_plot,Sparti: Polydendron ,cist ,LHIIIA1,present,present,NA,NA,yes,yes,2,NA,NA,laconia 
+N and N Kaouris plot,Sparti: Polydendron ,pit ,LHIIIA-LHIIIB,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+1cist_amylaion,Amyklaion,cist,MHIII,absent ,absent ,NA,NA,yes,no,2,NA,NA,laconia 
+2amylaion,Amyklaion,NA,NA,absent ,absent ,NA,NA,no,no,NA,NA,NA,laconia 
+1pit_amylaion,Amyklaion,pit,MHIII-LHI,present,absent ,NA,NA,yes,yes,2,NA,NA,laconia 
+1XAVcist,Xerokambi: Agios Vasileios North Cemetery ,cist,LHI ,present,present,NA,NA,no,yes,NA,NA,NA,laconia 
+2XAVpit,Xerokambi: Agios Vasileios North Cemetery ,pit,LHII,absent ,present,NA,NA,yes,yes,1,NA,NA,laconia 
+3XAVcist,Xerokambi: Agios Vasileios North Cemetery ,cist,LHI,present,present,NA,NA,no,yes,NA,NA,NA,laconia 
+4XAVcist,Xerokambi: Agios Vasileios North Cemetery ,cist,LHI,present,absent ,NA,NA,no,yes,NA,NA,NA,laconia 
+5XAVpit,Xerokambi: Agios Vasileios North Cemetery ,pit,LHII,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+6XAVcist,Xerokambi: Agios Vasileios North Cemetery ,cist,MHIII,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+7XAVcist,Xerokambi: Agios Vasileios North Cemetery ,cist,MHIIIB,present,absent ,NA,NA,yes,yes,1,NA,NA,laconia 
+8XAVcist,Xerokambi: Agios Vasileios North Cemetery ,cist,LHI-LHII,absent ,present,NA,NA,yes,yes,1,NA,NA,laconia 
+9XAVpit,Xerokambi: Agios Vasileios North Cemetery ,pit,LHII,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+10XAVcist,Xerokambi: Agios Vasileios North Cemetery ,cist,LHI-II,present,absent ,NA,NA,no,yes,NA,NA,NA,laconia 
+11XAVpit,Xerokambi: Agios Vasileios North Cemetery ,pit,MHIII,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+12XAVcist,Xerokambi: Agios Vasileios North Cemetery ,cist,NA,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+13XAVpit,Xerokambi: Agios Vasileios North Cemetery ,pit,NA,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+14XAVcist,Xerokambi: Agios Vasileios North Cemetery ,cist,NA,present,present,NA,NA,no,yes,NA,NA,NA,laconia 
+15XAVpit,Xerokambi: Agios Vasileios North Cemetery ,pit,NA,present,absent ,NA,NA,no,yes,NA,NA,NA,laconia 
+16XAVpit,Xerokambi: Agios Vasileios North Cemetery ,pit,NA,present,absent ,NA,NA,no,yes,NA,NA,NA,laconia 
+17XAVpit,Xerokambi: Agios Vasileios North Cemetery ,pit,NA,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+18XAVcist,Xerokambi: Agios Vasileios North Cemetery ,cist,NA,present,present,NA,NA,no,yes,NA,NA,NA,laconia 
+19XAVpit,Xerokambi: Agios Vasileios North Cemetery ,pit,NA,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+20XAVcist,Xerokambi: Agios Vasileios North Cemetery ,cist,NA,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+21XAVbuiltchamber,Xerokambi: Agios Vasileios North Cemetery ,built chamber tomb,LHI-II,present,present,"volume: 7.67m^2, internal: l2.15m, w.66m, d1.1m. external: l3.1m, w1.24m, d.58m",NA,yes,yes,3,27,1.419,laconia 
+22XAVpit,Xerokambi: Agios Vasileios North Cemetery ,pit,NA,present,present,NA,NA,no,yes,NA,2,NA,laconia 
+23XAVcist,Xerokambi: Agios Vasileios North Cemetery ,cist,NA,present,present,NA,NA,no,yes,NA,4,NA,laconia 
+24XAVpit,Xerokambi: Agios Vasileios North Cemetery ,pit,NA,present,present,NA,NA,no,yes,NA,2,NA,laconia 
+25XAV,Xerokambi: Agios Vasileios North Cemetery ,NA,NA,absent ,absent ,NA,NA,no,yes,NA,NA,NA,laconia 
+1geraki_cist,Geraki: Acropolis,cist ,MHIII-LHI,absent ,present,NA,NA,yes,yes,1,1,NA,laconia 
+2geraki,Geraki: Acropolis,NA,NA,absent ,absent ,NA,NA,no,no,NA,NA,NA,laconia 
+3geraki,Geraki: Acropolis,NA,NA,absent ,present,NA,NA,no,yes,NA,1,NA,laconia 
+Louria_3_pit,Daphni: Louria 3,pit ,LHIIIA2-IIIB,absent ,absent ,NA,NE-SW,no,yes,NA,NA,NA,laconia 
+Louria_4_5,Daphni: Louria 3,natural crevices,LHIIA,absent ,absent ,NA,NA,yes,yes,1,NA,NA,laconia 
+Alpha 23,Agios Stephanos ,cist ,MH-LHI,absent ,present,NA,NA,no,yes,NA,1,NA,laconia 
+Alpha 25,Agios Stephanos ,cist,MHIII-LHI,absent ,present,NA,NA,no,yes,NA,1,NA,laconia 
+Alpha 28a,Agios Stephanos ,cist,MHIII-LHI ,absent ,present,NA,NA,no,yes,NA,1,NA,laconia 
+Alpha 28b,Agios Stephanos ,cist ,MHIII-LHI ,absent ,present,NA,NA,no,yes,NA,1,NA,laconia 
+Alpha 29,Agios Stephanos ,cist,NA,absent ,present,NA,NA,no,yes,NA,1,NA,laconia 
+Alpha 31,Agios Stephanos ,cist,MHIII-LHI,present,present,NA,NA,no,yes,NA,1,NA,laconia 
+Alpha 34,Agios Stephanos ,cist,MHIII-LHI,absent ,present,NA,NA,no,yes,NA,1,NA,laconia 
+Beta 34,Agios Stephanos ,NA,MHIII-LHI ,absent ,present,NA,NA,no,yes,NA,1,NA,laconia 
+Delta 12,Agios Stephanos ,pit,LHI ,absent ,present,NA,NA,no,yes,NA,1,NA,laconia 
+Lambda 4,Agios Stephanos ,NA,NA,absent ,present,NA,NA,no,no,NA,NA,NA,laconia 
+Beta 27,Agios Stephanos ,cist ,LHI,absent ,present,NA,NA,no,yes,NA,1,NA,laconia 
+Delta 4,Agios Stephanos ,NA,LHI,present,absent ,NA,NA,yes,yes,1,1,NA,laconia 
+delta 5,Agios Stephanos ,cist,LHI,present,absent ,NA,NA,no,yes,NA,1,NA,laconia 
+delta 6,Agios Stephanos ,cist,LHI,present,absent ,NA,NA,no,yes,NA,1,NA,laconia 
+delta 11,Agios Stephanos ,cist,LHI,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+delta 13,Agios Stephanos ,cist,LHI,absent ,present,NA,NA,no,yes,NA,1,NA,laconia 
+delta 14,Agios Stephanos ,cist,LHI,absent ,present,NA,NA,yes,yes,1,1,NA,laconia 
+delta 16,Agios Stephanos ,cist,LHI,present,absent ,NA,NA,no,yes,NA,1,NA,laconia 
+delta 22,Agios Stephanos ,cist,LHI,present,absent ,NA,NA,no,yes,NA,1,NA,laconia 
+Beta 19,Agios Stephanos ,cist,LHI-LHII,present,absent ,NA,NA,no,yes,NA,1,NA,laconia 
+Beta 30,Agios Stephanos ,cist ,LHI-LHIIA,absent ,present,NA,NA,no,yes,NA,1,NA,laconia 
+Beta 32,Agios Stephanos ,cist ,LHI-LHIIA ,absent ,present,NA,NA,no,yes,NA,1,NA,laconia 
+beta 33,Agios Stephanos ,NA,LHI-LHIIA,present,absent ,NA,NA,no,yes,NA,1,NA,laconia 
+Nu 13,Agios Stephanos ,cist ,LHI-LHIIA,absent ,present,NA,NA,no,yes,NA,1,NA,laconia 
+Beta 24,Agios Stephanos ,cist,LHIIB,absent ,present,NA,NA,no,yes,NA,1,NA,laconia 
+Eta 7,Agios Stephanos ,cist,LHII,absent ,present,NA,NA,no,yes,NA,1,NA,laconia 
+Eta 8,Agios Stephanos ,cist,LHII,absent ,present,NA,NA,no,yes,NA,1,NA,laconia 
+Eta 15,Agios Stephanos ,cist ,LHIIA,present,absent ,NA,NA,no,yes,NA,1,NA,laconia 
+Lambda15,Agios Stephanos ,pithos,LHII,absent ,present,NA,NA,no,yes,NA,1,NA,laconia 
+Lambda 13,Agios Stephanos ,cist,LHIIA,present,absent ,NA,NA,no,yes,NA,1,NA,laconia 
+nu 12,Agios Stephanos ,cist,LHIIA,absent ,present,NA,NA,no,yes,NA,1,NA,laconia 
+nu 15,Agios Stephanos ,cist,NA,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+zeta 1,Agios Stephanos ,cist,LHIIA,absent ,present,NA,NA,no,yes,NA,1,NA,laconia 
+beta 28,Agios Stephanos ,cist,LHIIB-LHIIIA1,absent ,present,NA,NA,no,yes,NA,1,NA,laconia 
+beta 5,Agios Stephanos ,pit,LHIII ,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+Beta 1,Agios Stephanos ,cist,LHIIIA1,present,absent ,NA,NA,no,yes,NA,NA,NA,laconia 
+beta 23,Agios Stephanos ,cist,LHIIIA1,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+beta 25,Agios Stephanos ,cist,LHIIIA1,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+lambda 5,Agios Stephanos ,pit,NA,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+lambda 6,Agios Stephanos ,NA,LHIIIA1,present,absent ,NA,NA,no,yes,NA,NA,NA,laconia 
+lambda 7-8,Agios Stephanos ,NA,LHIIIA1,present,absent ,NA,NA,no,yes,NA,NA,NA,laconia 
+lambda 10,Agios Stephanos ,cist,LHIIIA1,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+lambda 11-12,Agios Stephanos ,cist,LHIIIA1,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+nu 1,Agios Stephanos ,NA,LHIIIA,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+nu2,Agios Stephanos ,pit,LHIIIA,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+nu 3,Agios Stephanos ,cist,LHIIIA1,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+nu 4,Agios Stephanos ,cist,LHIIIA1,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+nu5,Agios Stephanos ,cist,LHIIIA1,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+nu 6,Agios Stephanos ,cist,LHIIIA1,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+nu 7-10,Agios Stephanos ,pits,LHIIIA1,present,absent ,NA,NA,no,yes,NA,4,NA,laconia 
+nu 11,Agios Stephanos ,cist,LHIIIA1,present,absent ,NA,NA,no,yes,NA,NA,NA,laconia 
+nu 15,Agios Stephanos ,NA,NA,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+beta 26,Agios Stephanos ,cist,LHIIIA2,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+lambda 1,Agios Stephanos ,pit ,LHIIIA2 ,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+lambda 14,Agios Stephanos ,cist,LHIIIA2,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+lambda 16,Agios Stephanos ,cist,LHIIIA2,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+zeta 2,Agios Stephanos ,cist,LHIIIA2,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+beta 3-4,Agios Stephanos ,cist,LHIIIC,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+beta 7-8,Agios Stephanos ,cist,LHIIIC,present,absent ,NA,NA,no,yes,NA,NA,NA,laconia 
+beta 12-15,Agios Stephanos ,cist,LHIIIC,present,absent ,NA,NA,no,yes,NA,NA,NA,laconia 
+beta 20,Agios Stephanos ,cist,LHIIIC ,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+eta 13,Agios Stephanos ,cist,LHIIIC,present,absent ,NA,NA,no,yes,NA,NA,NA,laconia 
+zeta 3,Agios Stephanos ,cist,LHIIIC ,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+PAL6,Epidavros Limera,pit,NA,absent ,present,NA,NA,no,yes,NA,NA,NA,laconia 
+altar_pithos_nisakouli,Nisakouli (Methoni) ,pithos,MH,present,absent ,NA,NA,yes,yes,NA,NA,NA,messenia
+Dhiodhia ,Pila ,tholos,"LHI-II, LHIIIB",present,present,NA,NA,no,yes,NA,15,NA,messenia
+KissosA_peribolos,Handhrinou Kissos ,Grave peribolos ,LHIIA,absent ,absent ,NA,NA,yes,no,1,NA,NA,messenia
+KissisB_peribolos,Handhrinou Kissos ,Grave peribolos ,NA,absent ,absent ,NA,NA,no,yes,NA,NA,NA,messenia
+gamma_peribolos,Handhrinou Kissos ,Grave peribolos ,LHII,present,absent ,NA,NA,yes,yes,1,NA,NA,messenia
+delta_peribolos,Handhrinou Kissos ,Grave peribolos,NA,present,absent ,NA,NA,no,yes,NA,NA,NA,messenia
+hkgravemound1,Handhrinou Kissos ,mound,LHII,absent ,absent ,NA,NA,no,yes,NA,NA,NA,messenia
+hkgravemound2,Handhrinou Kissos ,mound,NA,absent ,absent ,NA,NA,no,no,NA,NA,NA,messenia
+hkgravemound3,Handhrinou Kissos ,mound,NA,present,absent ,NA,NA,no,yes,NA,1,NA,messenia
+kgmoundA,Koukounara Gouvalari,mound,MH-LHIIIC,absent ,absent ,"diameter: 30m e-w, 18m n-s",NA,no,yes,NA,NA,NA,messenia
+kgt1,Koukounara Gouvalari,tholos ,LHI-LHII,present,absent ,chamber: 2.9m diameter. 1.1m surviving. enterance: 75cm-84cm,NA,no,yes,NA,NA,6.605,messenia
+kgt2,Koukounara Gouvalari,tholos ,LHI-LHII,present,absent ,chamber: 3.05m diameter,NA,no,yes,NA,20,7.306,messenia
+kgt3,Koukounara Gouvalari,tholos ,NA,present,absent ,chamber diameter: 1.55m. stomion 60cm hight- surviving 50cmx50cm,NA,no,yes,NA,2,1.887,messenia
+kgt4,Koukounara Gouvalari,tholos ,LHIII ,absent ,absent ,"chamber diameter: 3.5m, 3m high. stomion: w1.25m, w90cm at top. lintel l95cm x w82m. tomion walls/facade: 3.32m- 3.82m, h1.21m-1.32m",NA,no,yes,NA,NA,9.621,messenia
+kgt5,Koukounara Gouvalari,tholos ,LHI-LHII,present,absent ,chamber diameter: 2.8m,NA,yes,yes,1,NA,6.158,messenia
+kgt6,Koukounara Gouvalari,tholos ,LHIIIA1,absent ,absent ,"chamber diameter: 3.48m. enterence destroyed, but ""just over a meter wide"" ",NA,no,yes,NA,NA,9.511,messenia
+kgt7,Koukounara Gouvalari,tholos ,LHI-LHII,present,present,chamber diameter: 4m. stomion: 1.2m wide lintel length 92cm,NA,no,yes,NA,12,12.566,messenia
+kgt8,Koukounara Gouvalari,tholos ,LHII-LHIII,absent ,absent ,chamber diameter: 3m. ,NA,no,no,NA,NA,7.069,messenia
+kgt9,Koukounara Gouvalari,tholos ,LHI-LHII,present,present,chamber diameter: 3m. ,NA,yes,yes,2,3,7.069,messenia
+kgt10,Koukounara Gouvalari,tholos,LHI-LHII,present,present,"chamber diameter: 4.73m Stomion: 92cm wide, 1.72-1.6m high ",NA,yes,yes,1,20,17.57,messenia
+kgmoundb,Koukounara Gouvalari,mound ,NA,present,absent ,"chamber diameter: 1.85m. Stomion: 1.18m wide, 1.18m deep, 61-48cm hight",NA,yes,yes,1,NA,2.688,messenia
+kgmound2,Koukounara Gouvalari,mound ,NA,absent ,absent ,chamber diameter: 3m,NA,no,yes,NA,NA,7.069,messenia
+kgtholos,Koukounara Gouvalari,tholos,NA,present,absent ,"chamber diameter: 4.75m, h1.2m. stomion: 1.85mlong, 1.1m wide, 95cm wide at chamber",NA,no,yes,NA,12,17.72,messenia
+tholos1ka,Koukounara akones,tholos ,LHIII,present,absent ,"stomion: h 1.95m, l 2.4m, w 1.2m-0.66m. chamber: d 6.2m, h 2.5m. pit: 2.2mx 0.9mx0.95m",NA,no,yes,NA,NA,30.19,messenia
+tholos2ka,Koukounara akones,tholos ,LHII-LHIII,absent ,absent ,"stomion: l 2.3m, w 1.2m. chmaber: d 5.4m, h 1m",NA,no,no,NA,NA,22.9,messenia
+Fites 1,Koukounara Livadhiti to Fities,chamber tomb,LHIIA,absent ,present,"stomion: l 2.4m, w 1.2m- 1.05m, 2 lintels. chamber: d 6m, h 2m",NA,no,yes,NA,NA,28.274,messenia
+Fites 2,Koukounara Livadhiti to Fities,chamber tomb,LHIIA,present,present,"stomion: l 2.3m, w 1.3m-1.16m, h 1.74m. chamber: d 5.9m ",NA,yes,yes,1,6,27.34,messenia
+ktholos1,Kaminia,tholos,"MHIII, LHI-LHIIIC",absent ,absent ,"chamber: d 3.2m- 3.4m, h 2m",NA,no,no,NA,NA,8.553,messenia
+ktholos2,Kaminia,tholos,"MHIII, LHI-LHIIIC",absent ,absent ,"chamber: d 2.7m, h 1.45m",NA,no,no,NA,NA,5.726,messenia
+ktholos3,Kaminia,tholos,"MHIII, LHI-LHIIIC",absent ,absent ,"chamber: 2.5m. dromos: l 4.7m, w 1.3m. stomion: h 1.23m ",NA,no,no,NA,NA,4.909,messenia
+ktholos4,Kaminia,tholos,"MHIII, LHI-LHIIIC",absent ,absent ,"chamber: d 2.7m, h 1.9m. stomion: h 1.03m",NA,no,no,NA,NA,5.726,messenia
+ktholos5,Kaminia,tholos,LHIIA,present,present,"chamber: d 2.1m, h 1.25m",NA,yes,yes,3,9,3.464,messenia
+1kpithos,Kaminia,pithos ,MHIII,absent ,present,NA,NA,no,yes,NA,1,NA,messenia
+2kpithos,Kaminia,pithos ,MHIII,absent ,present,NA,NA,no,yes,NA,1,NA,messenia
+aippithos1,Ayos Ioannis Papoulia ,pithos ,NA,absent ,absent ,NA,NA,no,no,NA,NA,NA,messenia
+aippithos2,Ayos Ioannis Papoulia ,pithos ,NA,absent ,absent ,NA,NA,no,no,NA,NA,NA,messenia
+aippithos3,Ayos Ioannis Papoulia ,pithos ,NA,absent ,absent ,NA,NA,no,no,NA,NA,NA,messenia
+aippithos4,Ayos Ioannis Papoulia ,pithos ,NA,absent ,present,NA,NA,no,yes,NA,1,NA,messenia
+aippithos5,Ayos Ioannis Papoulia ,pithos ,NA,present,present,NA,NA,no,yes,NA,1,NA,messenia
+aipcist6,Ayos Ioannis Papoulia ,cist ,NA,present,absent ,NA,NA,no,yes,NA,NA,NA,messenia
+aipcist7,Ayos Ioannis Papoulia ,cist ,NA,absent ,absent ,2.23m x 0.82m,NA,no,no,NA,NA,NA,messenia
+aipcist8,Ayos Ioannis Papoulia ,cist ,NA,absent ,absent ,1m x 0.72m,NA,no,no,NA,NA,NA,messenia
+aipcist9,Ayos Ioannis Papoulia ,cist ,NA,present,absent ,60cm x 30cm,NA,no,yes,NA,NA,NA,messenia
+aipcist10,Ayos Ioannis Papoulia ,cist ,NA,present,absent ,30cm x 13cm,NA,no,yes,NA,NA,NA,messenia
+aippithos11,Ayos Ioannis Papoulia ,pithos,NA,absent ,absent ,NA,NA,no,yes,NA,NA,NA,messenia
+aippithos12,Ayos Ioannis Papoulia ,pithos,NA,absent ,absent ,NA,NA,no,no,NA,NA,NA,messenia
+aippithos13,Ayos Ioannis Papoulia ,pithos,NA,absent ,absent ,NA,NA,no,no,NA,NA,NA,messenia
+aipcist14,Ayos Ioannis Papoulia ,cist ,MH,absent ,present,75cm x 95cm,NA,no,yes,NA,1,NA,messenia
+aippithos15,Ayos Ioannis Papoulia ,pithos ,LH II,absent ,present,NA,NA,no,yes,NA,1,NA,messenia
+aipcist16,Ayos Ioannis Papoulia ,cist ,NA,absent ,absent ,NA,NA,no,no,NA,NA,NA,messenia
+aipcist17,Ayos Ioannis Papoulia ,cist ,NA,absent ,absent ,NA,NA,no,no,NA,NA,NA,messenia
+aipcist18,Ayos Ioannis Papoulia ,cist ,NA,absent ,absent ,NA,NA,no,no,NA,NA,NA,messenia
+aippithos19,Ayos Ioannis Papoulia ,pithos ,NA,present,present,NA,NA,yes,yes,1,2,NA,messenia
+aipcist20,Ayos Ioannis Papoulia ,cist ,NA,absent ,present,l 1.9m,NA,no,yes,NA,1,NA,messenia
+aippithos21,Ayos Ioannis Papoulia ,pithos ,NA,absent ,present,NA,NA,no,yes,NA,1,NA,messenia
+aipcist22,Ayos Ioannis Papoulia ,cist ,NA,present,present,NA,NA,no,yes,NA,2,NA,messenia
+aippithos2324,Ayos Ioannis Papoulia ,pithoi ,NA,present,present,NA,NA,no,yes,NA,NA,NA,messenia
+korifasiotholos,Korifasio,tholos ,MHIII,absent ,absent ,NA,NA,yes,no,2,NA,NA,messenia
+vpithos1,Voidhokoloa,Pithos ,NA,absent ,absent ,l 1.76m,NA,no,yes,NA,NA,NA,messenia
+vpithos4,Voidhokoloa,pithos ,NA,present,present,l 1.13m,NA,no,yes,NA,2,NA,messenia
+vpithos5,Voidhokoloa,pithos ,NA,absent ,present,l 1.47m,NA,yes,yes,1,1,NA,messenia
+vpithos6,Voidhokoloa,pithos ,NA,present,present,NA,NA,no,yes,NA,2,NA,messenia
+vpithos7,Voidhokoloa,pithos ,NA,absent ,present,l 1.89m,NA,yes,yes,1,1,NA,messenia
+vpithos10,Voidhokoloa,pithos,NA,absent ,absent ,l 1.79m,NA,yes,yes,1,NA,NA,messenia
+vpithos11,Voidhokoloa,pithos ,NA,absent ,present,NA,NA,yes,yes,1,1,NA,messenia
+vpithos12,Voidhokoloa,pithos ,NA,absent ,absent ,1.55m,NA,no,yes,NA,NA,NA,messenia
+vpithos13,Voidhokoloa,pithos ,NA,absent ,absent ,NA,NA,no,yes,NA,NA,NA,messenia
+taraganatholos1,Tragana ,tholos ,LHIIA,present,present,"d 7.2m-7.3m, stomion: l 2.8m, h 2.9m, w 1.45-1.52-1.7m. Dromos: l 9.5m- 1.5 before stomion. ",NA,yes,yes,4,NA,41.85,messenia
+taraganatholos2,Tragana ,tholos ,LHIIA,absent ,absent ,"d 7.1m- 7.2m, h 3.25m. Stomion: w 1.35m. dromos: l 7.5m, w 2.25-2.55m",NA,yes,no,1,NA,39.59,messenia
+solinaritholos,Solinari Tourlidhitsa,tholos,LHIIB-LHIIIA,absent ,absent ,"dromos: l 3m, w 1.7m. Stomion: h 1m, l 2.75m, w 1.35m,. Chamber: d 5.1m",NA,yes,no,2,NA,20.43,messenia
+Kefalovriso 1,volimidhia,pit,LHI-LHIII,absent ,absent ,NA,NA,no,no,NA,NA,NA,messenia
+Kefalovriso 2,volimidhia,chamber tomb,LHI-LHIII,present,present,"Chamber: d 3.7m, h 3.55m. enterance: h 1.7m, w 1.1m ",NA,yes,yes,5,3,10.752,messenia
+Kefalovriso 3,volimidhia,chamber tomb,LHIIIA,present,present,Chamber: d 4.25m-4.3m. ,NA,yes,yes,3,NA,14.522,messenia
+Kefalovriso 4,volimidhia,chamber tomb,LHIII,present,absent ,"Chamber: d 3.8m. Stomion: w 92cm, h 1.29m, l 75cm. dromos: w 1.75m",NA,yes,yes,2,2,11.341,messenia
+Kefalovriso 5,volimidhia,chamber tomb,LHI,present,absent ,"chamber: d 3.6m. Dromos: l 3.2m, w 1.4m. ",NA,yes,yes,3,NA,10.179,messenia
+Kefalovriso 6,volimidhia,chamber tomb,LHI-LHIII,present,absent ,"chamber: d 3.2m. dromos: l 2.5m, ",NA,yes,yes,1,NA,8.042,messenia
+Kefalovriso 7,volimidhia,chamber tomb,LHI,present,absent ,NA,NA,yes,yes,2,NA,NA,messenia
+Kefalovriso A,volimidhia,chamber tomb,LHI,present,present,chamber: d 3.7m. stomion: h 1.2m w 98cm,NA,yes,yes,1,NA,10.752,messenia
+Kefalovriso B,volimidhia,chamber tomb,LHIII,present,present,"chamber:h 2.65m, d 3.75m-4m. stomion: h 1.2m, w 1.2m-1.1m.",NA,yes,yes,6,NA,5.515,messenia
+Angelopoulou 1,volimidhia,chamber tomb,LHII-LHIII,absent ,absent ,"chamber: d 5.9m x 6.1m, h 2.2m",NA,no,yes,NA,NA,27.34,messenia
+Angelopoulou 2,volimidhia,chamber tomb,NA,absent ,absent ,"chamber: d 3.9m, h 2.55m",NA,no,no,NA,NA,11.946,messenia
+Angelopoulou 3,volimidhia,chamber tomb,NA,absent ,absent ,NA,NA,no,no,NA,NA,NA,messenia
+Angelopoulou 4,volimidhia,chamber tomb,LHI-LHIIA,absent ,absent ,"chamber: 5.1m, h 3m",NA,yes,no,1,NA,20.43,messenia
+Angelopoulou 5,volimidhia,chamber tomb,NA,absent ,absent ,"chamber: d 4m, h 2.25m. side chamber: d 1.3m, h 1m",NA,no,no,NA,NA,12.566,messenia
+Angelopoulou 6,volimidhia,chamber tomb,NA,absent ,absent ,NA,NA,no,no,NA,NA,NA,messenia
+Angelopoulou 7,volimidhia,chamber tomb,LHI,absent ,absent ,NA,NA,yes,no,1,NA,NA,messenia
+Angelopoulou 8,volimidhia,chamber tomb,LHI-LHII,present,present,NA,NA,yes,yes,3,NA,NA,messenia
+Angelopoulou 9,volimidhia,chamber tomb,LHI-LHII,absent ,absent ,NA,NA,yes,no,1,NA,NA,messenia
+Angelopoulou 10,volimidhia,chamber tomb,NA,absent ,present,"chamber: d 4.5m , h 2.35m. dromos: w 1.55m, l 3m. Stomion: h 1.7m, w 1.3m.",NA,no,yes,NA,NA,15.904,messenia
+Angelopoulou 11,volimidhia,chamber tomb,LHI,present,absent ,"chamber: d 4.6m, h 2.4m. Stomion: h 1.8m, w 95cm. dromos: w 1.65m, ",NA,yes,yes,1,47,16.62,messenia
+Mastoraki 1,volimidhia,chamber tomb,NA,absent ,absent ,NA,NA,no,no,NA,NA,NA,messenia
+Voria ,volimidhia,chamber tomb,LHIIB-LHIII,present,present,"chamber: d 5m, h 3.25m. stomion: h 1.75m, w 1.4m, d .8m. Dromos: l 7.2m, w 1.75m",NA,no,yes,NA,NA,19.635,messenia
+Voria 2,volimidhia,chamber tomb,LHIII,present,present,"chamber:d 3.1m, h 2.35m. stomion: h 1.4m, w 0.9",NA,yes,yes,1,NA,7.548,messenia
+Voria 3,volimidhia,chamber tomb,LHIII,present,present,NA,NA,no,yes,NA,10,NA,messenia
+Voria 4,volimidhia,chamber tomb,NA,present,present,NA,NA,yes,yes,1,6,NA,messenia
+Voria 5,volimidhia,chamber tomb,LHIII,present,absent ,NA,NA,no,yes,NA,7,NA,messenia
+Voria 6 ,volimidhia,chamber tomb,LHIIIA-LHIIIB,present,present,NA,NA,no,yes,NA,NA,NA,messenia
+Voria 7,volimidhia,chamber tomb,LHIII,absent ,absent ,"chamber: d 5.25m. stomion: h 1.45m, w 1m. dromos: l 1.75m",NA,no,yes,NA,NA,21.648,messenia
+Rigas tomb ,volimidhia,chamber tomb,LHIIIA-LHIIIB,present,present,dromos: l 3.9m. ,NA,yes,yes,1,NA,NA,messenia
+Koroniou 1,volimidhia,chamber tomb,LHI,present,present,NA,NA,no,yes,NA,NA,NA,messenia
+Koroniou 2,volimidhia,chamber tomb,LHIII,absent ,absent ,dromos: l 1m,NA,no,yes,NA,NA,NA,messenia
+Koroniou 3,volimidhia,chamber tomb,LHIIA-LHIII,present,present,"chamber: d 5.3m. dromos: l 5.3m w 1.25-1.75m. stomoin: h 1.2m, w 1.1m, l 70cm",NA,yes,yes,2,9,22.06,messenia
+Koroniou 4,volimidhia,chamber tomb,NA,absent ,absent ,NA,NA,no,no,NA,NA,NA,messenia
+Koroniou 5,volimidhia,chamber tomb,NA,absent ,absent ,chamber: d 2m,NA,no,no,NA,NA,3.142,messenia
+Koroniou 6,volimidhia,chamber tomb,LHI,absent ,absent ,chamber: d 2.5m. dromos: l 3m,NA,yes,no,1,NA,4.909,messenia
+engtholosIII,Englianos ,tholos,LHIIA-LHIIIB,present,absent ,dromos: l 8.1m. w 2.25-2.35m. stomion: l 3m. h 3.1m w 1.65m chamber: d 7.66-7.71 m. h 2.5-3m ,NA,no,yes,NA,NA,46.08,messenia
+engtholosIV,Englianos ,tholos ,MH-LM,present,absent ,dromos: l 10.5 m. w 4.4m. stomion: h 4.55 m. w 2.25 m. l 4.6 m. chamber: d 9.35m. h 4.9m. ,NA,yes,no,NA,10,68.66,messenia
+engtholosV,Englianos ,tholos ,MH-LHIIIA1,present,present,NA,NA,yes,yes,2,NA,NA,messenia
+enfshaftgrave ,Englianos ,shaft grave ,MH-LHIII ,present,absent ,d 1.05 m. w 1.05-1.12m . 1.53-156m. ,NA,no,no,NA,NA,NA,messenia
+E8,Englianos ,chamber tomb ,LHIIA-LHIIB,present,present,dromos: l 7m. d 2.9m w 1.67m,NA,yes,yes,1,NA,38.485,messenia
+E9,Englianos ,chamber tomb,LHIIB-LHIIIB,present,absent ,dromos: l 5.85 m. w 0.71m. chamber: w 1.2m. d 2.7m. ,NA,no,yes,NA,NA,5.726,messenia
+Kaloyeropoulou,Routsi ,mound ,MH,present,present,d 20.4m x 25.8m,NA,yes,yes,2,5,NA,messenia
+yorgopoulou ,Routsi ,mound,MH,absent ,absent ,NA,NA,no,no,NA,NA,NA,messenia
+Rtholos1,Routsi ,tholos ,LHI-LHIII,absent ,absent ,"chamber: d 5.4m, h 1.9m. stomion: w 1.4m, h 2.2m, l 2.2m ",NA,yes,yes,1,NA,22.9,messenia
+Rtholos2,Routsi ,tholos ,LHI-LHIII,present,present,"chamber: d 5m, h 1m. stomion: h 1.45m, w 1.3m, l 1.3",NA,yes,yes,11,NA,19.635,messenia
+little circle ,Nihoria ,circle ,NA,absent ,present,"h 1.2m, d 2m",NA,no,yes,NA,NA,3.142,messenia
+vevestholos ,Nihoria ,tholos ,NA,absent ,absent ,chamber: d 5.1m. dromos: l 2.4m,NA,no,yes,NA,NA,20.43,messenia
+Nikitopoulou 2,Nihoria ,tholos,NA,absent ,absent ,chamber: d 4m,NA,no,yes,NA,NA,12.566,messenia
+nikitopoulou 3,Nihoria ,tholos,NA,present,present,"chamber: d 3.4m, h .8m, stomion: l 1.5m, w 0.9m ",NA,no,yes,NA,NA,9.08,messenia
+Nikitopoulou 4,Nihoria ,tholos,NA,present,absent ,chamber: d 3.4m ,NA,yes,yes,4,6,9.08,messenia
+Nikitopoulou 5,Nihoria ,tholos,NA,absent ,absent ,chamber: d 5.2m,NA,no,no,NA,NA,21.237,messenia
+Nikitopoulou 6,Nihoria ,tholos,NA,absent ,absent ,chamber: d 3m. Stomion: l 1.6m,NA,no,yes,NA,1,7.069,messenia
+Akones ,Nihoria ,mound,NA,absent ,present,build mound: h 3m.  ,NA,yes,yes,1,NA,NA,messenia
+dharatholos,Dhara ,tholos ,LHIIIA-LHIIIB,absent ,absent ,chamber diameter: 6.75m. Dromos: 5.8m long,NA,no,no,NA,NA,35.785,messenia
+paletholos,paleohoria ,tholos ,LHI- LHIIIC,present,absent ,"chamber: 3.4m to 3.6m wide. Stomion: 1.45m long, 90cm-1m wide",NA,yes,yes,1,24,9.08,messenia
+kambostholos,Kambos ,tholos,MHIII-LHI,absent ,absent ,"chamber diameter: 8.5m. stomion: h2.65m, d3.09m. lintel: 3 stones 2.84mx.85mx.47m thick, w 1.07-1.75m",NA,no,yes,NA,NA,56.75,messenia
+mound_kokorakou,Peristeria & kokorakou ,mound,NA,absent ,absent ,"d 20m, h 4m ",NA,no,yes,NA,NA,NA,messenia
+PKMH_LHI_grave ,Peristeria & kokorakou ,grave ,MH-LHI,present,absent ,2.47m x 2.5m,NA,yes,yes,2,3,NA,messenia
+PKsouth_tholos_1,Peristeria & kokorakou ,tholos,LHIIB- LHIIIA1,present,present,"chamber: d 5.8m. stomion: l 2.7m, w 1m",NA,yes,yes,3,3,26.42,messenia
+PKtholos_3,Peristeria & kokorakou ,tholos ,NA,present,present,"chamber: d 6.9m. stomion: l 3.9m, w 1.73m, ",NA,yes,yes,5,NA,37.39,messenia
+PKgraves_settelment_context ,Peristeria & kokorakou ,grave,NA,absent ,present,NA,NA,no,yes,NA,NA,NA,messenia
+PKtholos_tomb2,Peristeria & kokorakou ,tholos ,NA,present,present,chamber: D 10.6m. H 3.5m stomion: W 1.6-2.5m. L 5.15m.  dromos: L 9.15m. W 2m ,NA,no,yes,NA,NA,88.25,messenia
+PKtholos_tomb1,Peristeria & kokorakou ,tholos,LHIIA,absent ,absent ,chamber: H 5-8.5 m. stomion: L5.5m. H 5.1m. dromos: L 28m. W 3.3m. ,NA,yes,no,1,NA,NA,messenia
+PKtholos_under_the_road,Peristeria & kokorakou ,tholos ,NA,absent ,present,NA,NA,yes,yes,1,1,NA,messenia
+PKthecircle,Peristeria & kokorakou ,circle,NA,absent ,absent ,NA,NA,no,no,NA,NA,NA,messenia
+koptholos,Kopanaki ,tholos ,NA,absent ,absent ,"chamber: d 5.35m. stomion: l 3.5m, w 1.2m",NA,no,no,NA,NA,22.48,messenia
+malthigraves,Malthi ,graves in settelment context ,MHII-MHIII,absent ,absent ,NA,NA,no,no,NA,NA,NA,messenia
+vxtholos,Vasiliko Xerovrisi ,tholos ,LHIIA-LHIII,present,absent ,"chamber diameter: 6.5m. stomion: 2.75m long, 2.05m high,  95cm-52cm wide ",NA,no,yes,NA,NA,33.18,messenia
+pmtholos1,Psari Metsiki ,tholos ,NA,absent ,absent ,chamber: D8.05-9.1m. H3.3m stomion: L4.9m dromos: L6m,NA,yes,yes,1,NA,50.9,messenia
+pmtholos2,Psari Metsiki ,tholos,NA,absent ,absent ,stomion: (possibly) L3.6m,NA,no,no,NA,NA,NA,messenia
+singleburial,Filiatra Stomion ,grave ,MHII,absent ,absent ,NA,NA,no,yes,NA,1,NA,messenia
+kaplanitholos,Kaplani ,tholos,LHIIA,absent ,absent ,chamber: D 5.3-5.5m H 2.2m stomion: W40cm. H 1.65m. L 2.7m dromos: L5.7m. ,NA,no,yes,NA,2,23.76,messenia
+eatholos,Epia Anthia ,tholos ,LHIIA,absent ,absent ,"dromos:L7.75m. stomion: w1.7m, 4-5m depth. chamber diameter: 10.5m ",NA,no,no,NA,NA,86.59,messenia
