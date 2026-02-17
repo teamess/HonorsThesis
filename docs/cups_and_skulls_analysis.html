@@ -527,15 +527,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomteamessHonorsThesistreed6895664ee8fa0ca78bb81d9e211a2705327062ftargetblankd689566a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomteamessHonorsThesistree2410c8dc7d465590a1dd6fe2f31dcc68680d1ac0targetblank2410c8da">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/teamess/HonorsThesis/tree/d6895664ee8fa0ca78bb81d9e211a2705327062f" target="_blank">d689566</a>
+<a href="https://github.com/teamess/HonorsThesis/tree/2410c8dc7d465590a1dd6fe2f31dcc68680d1ac0" target="_blank">2410c8d</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomteamessHonorsThesistreed6895664ee8fa0ca78bb81d9e211a2705327062ftargetblankd689566a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomteamessHonorsThesistree2410c8dc7d465590a1dd6fe2f31dcc68680d1ac0targetblank2410c8da"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -545,7 +545,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/teamess/HonorsThesis/tree/d6895664ee8fa0ca78bb81d9e211a2705327062f" target="_blank">d689566</a>.
+<a href="https://github.com/teamess/HonorsThesis/tree/2410c8dc7d465590a1dd6fe2f31dcc68680d1ac0" target="_blank">2410c8d</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -562,6 +562,7 @@ were generated:
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .claude/
+    Ignored:    analysis/figure/
     Ignored:    renv/library/
     Ignored:    renv/staging/
 
@@ -617,6 +618,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/teamess/HonorsThesis/blob/2410c8dc7d465590a1dd6fe2f31dcc68680d1ac0/analysis/cups_and_skulls_analysis.Rmd" target="_blank">2410c8d</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-17
+</td>
+<td>
+Add dictionary loading template and switch to grouped bar plots
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/teamess/HonorsThesis/8d3e1c7c0d4c10ed29212b107f44e7dbb83e512f/docs/cups_and_skulls_analysis.html" target="_blank">8d3e1c7</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-17
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -823,6 +858,74 @@ $ secondary_burial          &lt;lgl&gt; FALSE, FALSE, FALSE, TRUE, TRUE, FALSE, 
 $ burial_category           &lt;chr&gt; &quot;Unknown/Not Recorded&quot;, &quot;Unknown/Not Recorde…
 $ grave_type_simple         &lt;chr&gt; &quot;Tholos&quot;, &quot;Tholos&quot;, &quot;Tholos&quot;, &quot;Tholos&quot;, &quot;Tho…</code></pre>
 </div>
+<div id="import-and-process-data-dictionaries" class="section level2">
+<h2>Import and Process Data Dictionaries</h2>
+<p><strong>After the student completes the dictionaries</strong>, this
+section will load and apply ordinal rankings:</p>
+<pre class="r"><code># NOTE: Set eval=TRUE once the student has completed the dictionaries
+
+# Load period dictionary
+period_dict &lt;- read_csv(here::here(&quot;data&quot;, &quot;period_dictionary.csv&quot;))
+
+# Load tomb type dictionary
+tomb_dict &lt;- read_csv(here::here(&quot;data&quot;, &quot;tomb_type_dictionary.csv&quot;))
+
+# Join period dictionary and extract period components
+cups_skulls_clean &lt;- cups_skulls_clean %&gt;%
+  left_join(
+    period_dict %&gt;% select(period_code, chronological_order, earliest_component, latest_component),
+    by = c(&quot;period&quot; = &quot;period_code&quot;)
+  ) %&gt;%
+
+  # Get ordinal values for earliest component
+  left_join(
+    period_dict %&gt;% select(period_code, chronological_order) %&gt;% rename(start_order = chronological_order),
+    by = c(&quot;earliest_component&quot; = &quot;period_code&quot;)
+  ) %&gt;%
+
+  # Get ordinal values for latest component
+  left_join(
+    period_dict %&gt;% select(period_code, chronological_order) %&gt;% rename(end_order = chronological_order),
+    by = c(&quot;latest_component&quot; = &quot;period_code&quot;)
+  ) %&gt;%
+
+  # For single periods (where start = end), use that value
+  # For ranges, create midpoint
+  mutate(
+    period_start_order = start_order,
+    period_end_order = end_order,
+    period_midpoint_order = (start_order + end_order) / 2
+  )
+
+# Join tomb type dictionary
+cups_skulls_clean &lt;- cups_skulls_clean %&gt;%
+  left_join(
+    tomb_dict %&gt;% select(tomb_type, tomb_type_order),
+    by = c(&quot;grave_type_simple&quot; = &quot;tomb_type&quot;)
+  ) %&gt;%
+
+  # Convert to ordered factors
+  mutate(
+    tomb_type_ordered = factor(
+      grave_type_simple,
+      levels = arrange(tomb_dict, tomb_type_order) %&gt;% pull(tomb_type),
+      ordered = TRUE
+    ),
+    period_ordered = factor(
+      period,
+      levels = arrange(period_dict, chronological_order) %&gt;% pull(period_code),
+      ordered = TRUE
+    )
+  )
+
+cat(&quot;✓ Dictionaries successfully loaded and applied!\n&quot;)
+cat(&quot;New columns created:\n&quot;)
+cat(&quot;  - period_start_order: chronological order of earliest period component\n&quot;)
+cat(&quot;  - period_end_order: chronological order of latest period component\n&quot;)
+cat(&quot;  - period_midpoint_order: midpoint between start and end\n&quot;)
+cat(&quot;  - tomb_type_ordered: ordered factor for tomb types\n&quot;)
+cat(&quot;  - period_ordered: ordered factor for periods\n&quot;)</code></pre>
+</div>
 <div id="data-overview" class="section level2">
 <h2>Data Overview</h2>
 <div id="basic-statistics" class="section level3">
@@ -951,20 +1054,19 @@ print(grave_type_summary)</code></pre>
  8 messenia Pit Grave            25
  9 messenia Other                21
 10 messenia Cist Grave           11</code></pre>
-<pre class="r"><code>ggplot(grave_type_summary, aes(x = reorder(grave_type_simple, count), y = count, fill = region)) +
-  geom_col(position = &quot;dodge&quot;) +
-  coord_flip() +
+<pre class="r"><code>ggplot(grave_type_summary, aes(x = reorder(grave_type_simple, -count), y = count, fill = region)) +
+  geom_col(position = &quot;dodge&quot;, width = 0.7) +
   scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
-  facet_wrap(~region, scales = &quot;free_x&quot;) +
+  geom_text(aes(label = count), position = position_dodge(width = 0.7), vjust = -0.3, size = 4) +
   labs(
     title = &quot;Distribution of Grave Types by Region&quot;,
-    x = &quot;&quot;,
+    x = &quot;Grave Type&quot;,
     y = &quot;Number of Graves&quot;,
     fill = &quot;Region&quot;
   ) +
   theme_minimal() +
-  theme(legend.position = &quot;bottom&quot;)</code></pre>
-<p><img src="figure/cups_and_skulls_analysis.Rmd/grave-type-plot-1.png" width="1344" style="display: block; margin: auto;" /></p>
+  theme(legend.position = &quot;bottom&quot;, axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
+<p><img src="figure/cups_and_skulls_analysis.Rmd/grave-type-plot-1.png" width="1152" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-grave-type-plot-1">
 Past versions of grave-type-plot-1.png
@@ -987,6 +1089,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/teamess/HonorsThesis/blob/8d3e1c7c0d4c10ed29212b107f44e7dbb83e512f/docs/figure/cups_and_skulls_analysis.Rmd/grave-type-plot-1.png" target="_blank">8d3e1c7</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/teamess/HonorsThesis/blob/2f9f6dc69217c874641e1f8d5c958649ee592433/docs/figure/cups_and_skulls_analysis.Rmd/grave-type-plot-1.png" target="_blank">2f9f6dc</a>
@@ -1032,20 +1145,19 @@ print(burial_type_summary)</code></pre>
   count(region, burial_category) %&gt;%
   arrange(region, desc(n))
 
-ggplot(burial_category_data_region, aes(x = reorder(burial_category, n), y = n, fill = region)) +
-  geom_col(position = &quot;dodge&quot;) +
-  coord_flip() +
+ggplot(burial_category_data_region, aes(x = reorder(burial_category, -n), y = n, fill = region)) +
+  geom_col(position = &quot;dodge&quot;, width = 0.7) +
   scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
-  facet_wrap(~region, scales = &quot;free_x&quot;) +
+  geom_text(aes(label = n), position = position_dodge(width = 0.7), vjust = -0.3, size = 4) +
   labs(
     title = &quot;Distribution of Burial Types by Region&quot;,
-    x = &quot;&quot;,
+    x = &quot;Burial Type&quot;,
     y = &quot;Count&quot;,
     fill = &quot;Region&quot;
   ) +
   theme_minimal() +
-  theme(legend.position = &quot;bottom&quot;)</code></pre>
-<p><img src="figure/cups_and_skulls_analysis.Rmd/burial-plot-1.png" width="1344" style="display: block; margin: auto;" /></p>
+  theme(legend.position = &quot;bottom&quot;, axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
+<p><img src="figure/cups_and_skulls_analysis.Rmd/burial-plot-1.png" width="1152" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-burial-plot-1">
 Past versions of burial-plot-1.png
@@ -1068,6 +1180,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/teamess/HonorsThesis/blob/8d3e1c7c0d4c10ed29212b107f44e7dbb83e512f/docs/figure/cups_and_skulls_analysis.Rmd/burial-plot-1.png" target="_blank">8d3e1c7</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/teamess/HonorsThesis/blob/2f9f6dc69217c874641e1f8d5c958649ee592433/docs/figure/cups_and_skulls_analysis.Rmd/burial-plot-1.png" target="_blank">2f9f6dc</a>
@@ -1140,20 +1263,20 @@ print(dv_by_type)</code></pre>
   ) %&gt;%
   arrange(region, desc(with_vessels))
 
-ggplot(dv_by_type_region, aes(x = reorder(grave_type_simple, with_vessels), y = with_vessels, fill = region)) +
-  geom_col(position = &quot;dodge&quot;) +
-  coord_flip() +
+ggplot(dv_by_type_region, aes(x = reorder(grave_type_simple, -with_vessels), y = with_vessels, fill = region)) +
+  geom_col(position = &quot;dodge&quot;, width = 0.7) +
   scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
-  facet_wrap(~region, scales = &quot;free_x&quot;) +
+  geom_text(aes(label = paste0(with_vessels, &quot; (&quot;, pct_with_vessels, &quot;%)&quot;)),
+            position = position_dodge(width = 0.7), vjust = -0.3, size = 3.5) +
   labs(
     title = &quot;Graves with Drinking Vessels by Grave Type and Region&quot;,
-    x = &quot;&quot;,
+    x = &quot;Grave Type&quot;,
     y = &quot;Number of Graves with Drinking Vessels&quot;,
     fill = &quot;Region&quot;
   ) +
   theme_minimal() +
-  theme(legend.position = &quot;bottom&quot;)</code></pre>
-<p><img src="figure/cups_and_skulls_analysis.Rmd/dv-by-type-plot-1.png" width="1344" style="display: block; margin: auto;" /></p>
+  theme(legend.position = &quot;bottom&quot;, axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
+<p><img src="figure/cups_and_skulls_analysis.Rmd/dv-by-type-plot-1.png" width="1152" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-dv-by-type-plot-1">
 Past versions of dv-by-type-plot-1.png
@@ -1176,6 +1299,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/teamess/HonorsThesis/blob/8d3e1c7c0d4c10ed29212b107f44e7dbb83e512f/docs/figure/cups_and_skulls_analysis.Rmd/dv-by-type-plot-1.png" target="_blank">8d3e1c7</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/teamess/HonorsThesis/blob/2f9f6dc69217c874641e1f8d5c958649ee592433/docs/figure/cups_and_skulls_analysis.Rmd/dv-by-type-plot-1.png" target="_blank">2f9f6dc</a>
@@ -1223,20 +1357,20 @@ print(dv_by_burial)</code></pre>
   ) %&gt;%
   arrange(region, desc(with_vessels))
 
-ggplot(dv_by_burial_region, aes(x = reorder(burial_category, with_vessels), y = with_vessels, fill = region)) +
-  geom_col(position = &quot;dodge&quot;) +
-  coord_flip() +
+ggplot(dv_by_burial_region, aes(x = reorder(burial_category, -with_vessels), y = with_vessels, fill = region)) +
+  geom_col(position = &quot;dodge&quot;, width = 0.7) +
   scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
-  facet_wrap(~region, scales = &quot;free_x&quot;) +
+  geom_text(aes(label = paste0(with_vessels, &quot; (&quot;, pct_with_vessels, &quot;%)&quot;)),
+            position = position_dodge(width = 0.7), vjust = -0.3, size = 3.5) +
   labs(
     title = &quot;Graves with Drinking Vessels by Burial Type and Region&quot;,
-    x = &quot;&quot;,
+    x = &quot;Burial Type&quot;,
     y = &quot;Number of Graves with Drinking Vessels&quot;,
     fill = &quot;Region&quot;
   ) +
   theme_minimal() +
-  theme(legend.position = &quot;bottom&quot;)</code></pre>
-<p><img src="figure/cups_and_skulls_analysis.Rmd/dv-by-burial-plot-1.png" width="1344" style="display: block; margin: auto;" /></p>
+  theme(legend.position = &quot;bottom&quot;, axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
+<p><img src="figure/cups_and_skulls_analysis.Rmd/dv-by-burial-plot-1.png" width="1152" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-dv-by-burial-plot-1">
 Past versions of dv-by-burial-plot-1.png
@@ -1259,6 +1393,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/teamess/HonorsThesis/blob/8d3e1c7c0d4c10ed29212b107f44e7dbb83e512f/docs/figure/cups_and_skulls_analysis.Rmd/dv-by-burial-plot-1.png" target="_blank">8d3e1c7</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/teamess/HonorsThesis/blob/2f9f6dc69217c874641e1f8d5c958649ee592433/docs/figure/cups_and_skulls_analysis.Rmd/dv-by-burial-plot-1.png" target="_blank">2f9f6dc</a>
@@ -1610,6 +1755,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/teamess/HonorsThesis/blob/8d3e1c7c0d4c10ed29212b107f44e7dbb83e512f/docs/figure/cups_and_skulls_analysis.Rmd/skulls-area-scatter-1.png" target="_blank">8d3e1c7</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/teamess/HonorsThesis/blob/2f9f6dc69217c874641e1f8d5c958649ee592433/docs/figure/cups_and_skulls_analysis.Rmd/skulls-area-scatter-1.png" target="_blank">2f9f6dc</a>
 </td>
 <td>
@@ -1717,6 +1873,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/teamess/HonorsThesis/blob/8d3e1c7c0d4c10ed29212b107f44e7dbb83e512f/docs/figure/cups_and_skulls_analysis.Rmd/vessels-area-scatter-1.png" target="_blank">8d3e1c7</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/teamess/HonorsThesis/blob/2f9f6dc69217c874641e1f8d5c958649ee592433/docs/figure/cups_and_skulls_analysis.Rmd/vessels-area-scatter-1.png" target="_blank">2f9f6dc</a>
@@ -1828,6 +1995,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/teamess/HonorsThesis/blob/8d3e1c7c0d4c10ed29212b107f44e7dbb83e512f/docs/figure/cups_and_skulls_analysis.Rmd/both-area-scatter-1.png" target="_blank">8d3e1c7</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/teamess/HonorsThesis/blob/2f9f6dc69217c874641e1f8d5c958649ee592433/docs/figure/cups_and_skulls_analysis.Rmd/both-area-scatter-1.png" target="_blank">2f9f6dc</a>
