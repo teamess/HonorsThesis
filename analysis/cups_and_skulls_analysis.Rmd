@@ -28,6 +28,24 @@ library(janitor)
 library(knitr)
 ```
 
+## Color Customization
+
+Customize colors for the analyses. Edit the values below to use your preferred colors:
+
+```{r color-palette}
+# Set your color palette here
+colors <- list(
+  laconia = "#1B9E77",      # Laconia color (default: teal/green)
+  messenia = "#D95F02",     # Messenia color (default: orange)
+  drinking_vessel = "#7570B3",  # Drinking vessels (default: purple)
+  skulls = "#E7298A",        # Skulls (default: pink)
+  background = "#FFFFCC"     # Background/neutral (default: light yellow)
+)
+
+# These colors will be used throughout all plots
+# Change the hex codes to your preferred colors
+```
+
 ## Load Data
 
 ```{r load-data}
@@ -139,24 +157,26 @@ print(sites_summary, n = 30)
 
 ```{r grave-types}
 grave_type_summary <- cups_skulls_clean %>%
-  count(grave_type_simple, name = "count") %>%
-  arrange(desc(count))
+  count(region, grave_type_simple, name = "count") %>%
+  arrange(region, desc(count))
 
 print(grave_type_summary)
 ```
 
-```{r grave-type-plot, fig.width=8, fig.height=5}
-ggplot(grave_type_summary, aes(x = reorder(grave_type_simple, count), y = count, fill = grave_type_simple)) +
-  geom_col() +
+```{r grave-type-plot, fig.width=14, fig.height=5}
+ggplot(grave_type_summary, aes(x = reorder(grave_type_simple, count), y = count, fill = region)) +
+  geom_col(position = "dodge") +
   coord_flip() +
-  geom_text(aes(label = count), hjust = -0.1, size = 4) +
+  scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
+  facet_wrap(~region, scales = "free_x") +
   labs(
-    title = "Distribution of Grave Types",
+    title = "Distribution of Grave Types by Region",
     x = "",
-    y = "Number of Graves"
+    y = "Number of Graves",
+    fill = "Region"
   ) +
   theme_minimal() +
-  theme(legend.position = "none")
+  theme(legend.position = "bottom")
 ```
 
 ## Burial Types
@@ -182,22 +202,24 @@ burial_type_summary <- cups_skulls_clean %>%
 print(burial_type_summary)
 ```
 
-```{r burial-plot, fig.width=8, fig.height=5}
-burial_category_data <- cups_skulls_clean %>%
-  count(burial_category) %>%
-  arrange(desc(n))
+```{r burial-plot, fig.width=14, fig.height=5}
+burial_category_data_region <- cups_skulls_clean %>%
+  count(region, burial_category) %>%
+  arrange(region, desc(n))
 
-ggplot(burial_category_data, aes(x = reorder(burial_category, n), y = n, fill = burial_category)) +
-  geom_col() +
+ggplot(burial_category_data_region, aes(x = reorder(burial_category, n), y = n, fill = region)) +
+  geom_col(position = "dodge") +
   coord_flip() +
-  geom_text(aes(label = n), hjust = -0.1, size = 4) +
+  scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
+  facet_wrap(~region, scales = "free_x") +
   labs(
-    title = "Distribution of Burial Types",
+    title = "Distribution of Burial Types by Region",
     x = "",
-    y = "Count"
+    y = "Count",
+    fill = "Region"
   ) +
   theme_minimal() +
-  theme(legend.position = "none")
+  theme(legend.position = "bottom")
 ```
 
 ## Drinking Vessels Analysis
@@ -236,18 +258,31 @@ dv_by_type <- cups_skulls_clean %>%
 print(dv_by_type)
 ```
 
-```{r dv-by-type-plot, fig.width=9, fig.height=5}
-ggplot(dv_by_type, aes(x = reorder(grave_type_simple, with_vessels), y = with_vessels, fill = grave_type_simple)) +
-  geom_col() +
+```{r dv-by-type-plot, fig.width=14, fig.height=5}
+dv_by_type_region <- cups_skulls_clean %>%
+  group_by(region, grave_type_simple) %>%
+  summarise(
+    total = n(),
+    with_vessels = sum(has_drinking_vessel == TRUE, na.rm = TRUE),
+    pct_with_vessels = round(with_vessels / total * 100, 1),
+    avg_vessel_count = round(mean(drinking_vessel_number, na.rm = TRUE), 2),
+    .groups = "drop"
+  ) %>%
+  arrange(region, desc(with_vessels))
+
+ggplot(dv_by_type_region, aes(x = reorder(grave_type_simple, with_vessels), y = with_vessels, fill = region)) +
+  geom_col(position = "dodge") +
   coord_flip() +
-  geom_text(aes(label = paste0(with_vessels, " (", pct_with_vessels, "%)")), hjust = -0.1, size = 4) +
+  scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
+  facet_wrap(~region, scales = "free_x") +
   labs(
-    title = "Graves with Drinking Vessels by Grave Type",
+    title = "Graves with Drinking Vessels by Grave Type and Region",
     x = "",
-    y = "Number of Graves with Drinking Vessels"
+    y = "Number of Graves with Drinking Vessels",
+    fill = "Region"
   ) +
   theme_minimal() +
-  theme(legend.position = "none")
+  theme(legend.position = "bottom")
 ```
 
 ### Drinking Vessels by Burial Type
@@ -266,18 +301,31 @@ dv_by_burial <- cups_skulls_clean %>%
 print(dv_by_burial)
 ```
 
-```{r dv-by-burial-plot, fig.width=9, fig.height=5}
-ggplot(dv_by_burial, aes(x = reorder(burial_category, with_vessels), y = with_vessels, fill = burial_category)) +
-  geom_col() +
+```{r dv-by-burial-plot, fig.width=14, fig.height=5}
+dv_by_burial_region <- cups_skulls_clean %>%
+  group_by(region, burial_category) %>%
+  summarise(
+    total = n(),
+    with_vessels = sum(has_drinking_vessel == TRUE, na.rm = TRUE),
+    pct_with_vessels = round(with_vessels / total * 100, 1),
+    avg_vessel_count = round(mean(drinking_vessel_number, na.rm = TRUE), 2),
+    .groups = "drop"
+  ) %>%
+  arrange(region, desc(with_vessels))
+
+ggplot(dv_by_burial_region, aes(x = reorder(burial_category, with_vessels), y = with_vessels, fill = region)) +
+  geom_col(position = "dodge") +
   coord_flip() +
-  geom_text(aes(label = paste0(with_vessels, " (", pct_with_vessels, "%)")), hjust = -0.1, size = 4) +
+  scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
+  facet_wrap(~region, scales = "free_x") +
   labs(
-    title = "Graves with Drinking Vessels by Burial Type",
+    title = "Graves with Drinking Vessels by Burial Type and Region",
     x = "",
-    y = "Number of Graves with Drinking Vessels"
+    y = "Number of Graves with Drinking Vessels",
+    fill = "Region"
   ) +
   theme_minimal() +
-  theme(legend.position = "none")
+  theme(legend.position = "bottom")
 ```
 
 ## Skeletal Remains Analysis
@@ -464,83 +512,89 @@ print(space_analysis_data %>%
 
 #### Skulls vs Chamber Area
 
-```{r skulls-area-scatter, fig.width=10, fig.height=6}
+```{r skulls-area-scatter, fig.width=14, fig.height=6}
 skulls_area_data <- cups_skulls_clean %>%
   filter(!is.na(area_of_chamber_estimated) & !is.na(skulls_number))
 
-# Calculate correlation
-cor_skulls_area <- cor(skulls_area_data$area_of_chamber_estimated, skulls_area_data$skulls_number, use = "complete.obs")
-
-ggplot(skulls_area_data, aes(x = area_of_chamber_estimated, y = skulls_number)) +
-  geom_point(size = 3, alpha = 0.6, color = "steelblue") +
-  geom_smooth(method = "lm", se = TRUE, color = "red", alpha = 0.2) +
+ggplot(skulls_area_data, aes(x = area_of_chamber_estimated, y = skulls_number, color = region)) +
+  geom_point(size = 3, alpha = 0.6) +
+  geom_smooth(method = "lm", se = TRUE, alpha = 0.2) +
+  scale_color_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
+  facet_wrap(~region) +
   labs(
-    title = "Relationship: Chamber Area vs Number of Skulls",
-    subtitle = paste0("Pearson r = ", round(cor_skulls_area, 3)),
+    title = "Relationship: Chamber Area vs Number of Skulls by Region",
     x = "Chamber Area Estimated (m²)",
     y = "Number of Skulls",
-    caption = "Red line shows linear trend with 95% confidence interval"
+    color = "Region"
   ) +
   theme_minimal() +
-  theme(plot.subtitle = element_text(size = 10))
+  theme(legend.position = "bottom")
 ```
 
 ```{r skulls-area-correlation}
-# Statistical test
-skulls_lm <- lm(skulls_number ~ area_of_chamber_estimated, data = skulls_area_data)
-skulls_summary <- summary(skulls_lm)
+# By region
+for (reg in unique(skulls_area_data$region)) {
+  region_data <- skulls_area_data %>% filter(region == reg)
+  cor_val <- cor(region_data$area_of_chamber_estimated, region_data$skulls_number, use = "complete.obs")
+  lm_result <- lm(skulls_number ~ area_of_chamber_estimated, data = region_data)
 
-cat("Linear Model: Skulls ~ Chamber Area\n")
-print(skulls_summary)
+  cat("\n===", toupper(reg), "===\n")
+  cat("Pearson correlation (r):", round(cor_val, 3), "\n")
+  print(summary(lm_result))
+}
 ```
 
 #### Drinking Vessels vs Chamber Area
 
-```{r vessels-area-scatter, fig.width=10, fig.height=6}
+```{r vessels-area-scatter, fig.width=14, fig.height=6}
 vessels_area_data <- cups_skulls_clean %>%
   filter(!is.na(area_of_chamber_estimated) & !is.na(drinking_vessel_number))
 
-# Calculate correlation
-cor_vessels_area <- cor(vessels_area_data$area_of_chamber_estimated, vessels_area_data$drinking_vessel_number, use = "complete.obs")
-
-ggplot(vessels_area_data, aes(x = area_of_chamber_estimated, y = drinking_vessel_number)) +
-  geom_point(size = 3, alpha = 0.6, color = "darkgreen") +
-  geom_smooth(method = "lm", se = TRUE, color = "red", alpha = 0.2) +
+ggplot(vessels_area_data, aes(x = area_of_chamber_estimated, y = drinking_vessel_number, color = region)) +
+  geom_point(size = 3, alpha = 0.6) +
+  geom_smooth(method = "lm", se = TRUE, alpha = 0.2) +
+  scale_color_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
+  facet_wrap(~region) +
   labs(
-    title = "Relationship: Chamber Area vs Number of Drinking Vessels",
-    subtitle = paste0("Pearson r = ", round(cor_vessels_area, 3)),
+    title = "Relationship: Chamber Area vs Number of Drinking Vessels by Region",
     x = "Chamber Area Estimated (m²)",
     y = "Number of Drinking Vessels",
-    caption = "Red line shows linear trend with 95% confidence interval"
+    color = "Region"
   ) +
   theme_minimal() +
-  theme(plot.subtitle = element_text(size = 10))
+  theme(legend.position = "bottom")
 ```
 
 ```{r vessels-area-correlation}
-# Statistical test
-vessels_lm <- lm(drinking_vessel_number ~ area_of_chamber_estimated, data = vessels_area_data)
-vessels_summary <- summary(vessels_lm)
+# By region
+for (reg in unique(vessels_area_data$region)) {
+  region_data <- vessels_area_data %>% filter(region == reg)
+  cor_val <- cor(region_data$area_of_chamber_estimated, region_data$drinking_vessel_number, use = "complete.obs")
+  lm_result <- lm(drinking_vessel_number ~ area_of_chamber_estimated, data = region_data)
 
-cat("Linear Model: Drinking Vessels ~ Chamber Area\n")
-print(vessels_summary)
+  cat("\n===", toupper(reg), "===\n")
+  cat("Pearson correlation (r):", round(cor_val, 3), "\n")
+  print(summary(lm_result))
+}
 ```
 
 #### Both Skulls and Vessels vs Chamber Area
 
-```{r both-area-scatter, fig.width=10, fig.height=6}
+```{r both-area-scatter, fig.width=14, fig.height=6}
 both_area_data <- cups_skulls_clean %>%
   filter(!is.na(area_of_chamber_estimated) & !is.na(skulls_number) & !is.na(drinking_vessel_number))
 
 ggplot(both_area_data, aes(x = area_of_chamber_estimated, y = skulls_number)) +
   geom_point(aes(color = drinking_vessel_number), size = 4, alpha = 0.7) +
-  scale_color_gradient(name = "Drinking\nVessels", low = "yellow", high = "darkred") +
+  scale_color_gradient(name = "Drinking\nVessels", low = colors$background, high = colors$drinking_vessel) +
+  facet_wrap(~region) +
   labs(
-    title = "Chamber Area vs Skulls (colored by Drinking Vessels)",
+    title = "Chamber Area vs Skulls (colored by Drinking Vessels) by Region",
     x = "Chamber Area Estimated (m²)",
     y = "Number of Skulls"
   ) +
-  theme_minimal()
+  theme_minimal() +
+  theme(legend.position = "bottom")
 ```
 
 ---
