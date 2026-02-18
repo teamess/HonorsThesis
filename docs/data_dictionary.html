@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Your Name" />
+
+<meta name="date" content="2026-02-17" />
+
+<title>Period and Tomb Type Dictionary</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">HonorsThesis</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Period and Tomb Type Dictionary</h1>
+<h3 class="subtitle">Instructions for Filling in Ordinal Variables</h3>
+<h4 class="author">Your Name</h4>
+<h4 class="date">2026-02-17</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2026-02-17
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>jovial-shockley/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20260127code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20260127)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20260127code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20260127)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomteamessHonorsThesistree27b3161f75d14f35e6d0017b58c571def36734f8targetblank27b3161a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/teamess/HonorsThesis/tree/27b3161f75d14f35e6d0017b58c571def36734f8" target="_blank">27b3161</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomteamessHonorsThesistree27b3161f75d14f35e6d0017b58c571def36734f8targetblank27b3161a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/teamess/HonorsThesis/tree/27b3161f75d14f35e6d0017b58c571def36734f8" target="_blank">27b3161</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .claude/
+    Ignored:    renv/library/
+    Ignored:    renv/staging/
+
+Untracked files:
+    Untracked:  Data/laconia_messinia_cups_skulls.csv
+    Untracked:  Data/period_dictionary.csv
+    Untracked:  Data/tomb_type_dictionary.csv
+
+Unstaged changes:
+    Deleted:    data/laconia_messinia_cups_skulls - Sheet2.csv
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/data_dictionary.Rmd</code>) and
+HTML (<code>docs/data_dictionary.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/teamess/HonorsThesis/blob/27b3161f75d14f35e6d0017b58c571def36734f8/analysis/data_dictionary.Rmd" target="_blank">27b3161</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-17
+</td>
+<td>
+Add comprehensive guiding comments for student customization
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/teamess/HonorsThesis/2f9f6dc69217c874641e1f8d5c958649ee592433/docs/data_dictionary.html" target="_blank">2f9f6dc</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-17
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/teamess/HonorsThesis/blob/c592bd352a4784b957374a19fd5ede1fd24abfa9/analysis/data_dictionary.Rmd" target="_blank">c592bd3</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-17
+</td>
+<td>
+Add data dictionary worksheet and chamber space analysis
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="overview" class="section level2">
+<h2>Overview</h2>
+<p>This worksheet helps you define two key ordinal variables for
+analysis:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Archaeological Periods</strong> — arrange chronologically
+from earliest to latest</li>
+<li><strong>Tomb Types</strong> — arrange by complexity, labor
+investment, or prevalence</li>
+</ol>
+<p>The dictionaries you complete here will be imported automatically
+into your analysis files.</p>
+<p><strong>Important:</strong> Your decisions here will directly affect:
+- Which analyses are possible in your main analysis file - How temporal
+trends are interpreted - Whether tomb type complexity correlates with
+burial practices - Regional comparisons and statistical tests</p>
+<p>You may have your own ideas about how to group periods or rank tomb
+types based on your archaeological knowledge. This is YOUR research —
+make the decisions that make sense for your thesis questions!</p>
+<hr />
+</div>
+<div id="period-dictionary-dataperiod_dictionary.csv"
+class="section level2">
+<h2>Period Dictionary (<code>data/period_dictionary.csv</code>)</h2>
+<div id="what-to-fill-in" class="section level3">
+<h3>What to Fill In</h3>
+<p>Three columns need your input:</p>
+<table>
+<colgroup>
+<col width="25%" />
+<col width="46%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>What to Enter</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>chronological_order</code></td>
+<td>A number ranking this period chronologically (1 = earliest, higher =
+latest)</td>
+<td>1, 2, 3, 4…</td>
+</tr>
+<tr class="even">
+<td><code>earliest_component</code></td>
+<td>If this is a range period, the earliest single period it
+includes</td>
+<td>For “LHIIA-LHIIIB”, enter “LHIIA”</td>
+</tr>
+<tr class="odd">
+<td><code>latest_component</code></td>
+<td>If this is a range period, the latest single period it includes</td>
+<td>For “LHIIA-LHIIIB”, enter “LHIIIB”</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="examples" class="section level3">
+<h3>Examples</h3>
+<p><strong>Single Periods</strong> — entry columns are the same:</p>
+<pre><code>period_code,period_name,chronological_order,earliest_component,latest_component
+LHIIA,Late Helladic IIA,5,LHIIA,LHIIA
+LHIIIB,Late Helladic IIIB,11,LHIIIB,LHIIIB</code></pre>
+<p><strong>Range Periods</strong> — earliest and latest differ:</p>
+<pre><code>period_code,period_name,chronological_order,earliest_component,latest_component
+LHIIA-LHIIIB,Late Helladic IIA to IIIB,8,LHIIA,LHIIIB
+MH-LHIII,Middle Helladic to LHIII,15,MH,LHIII</code></pre>
+<p><strong>What this means:</strong> - The range “LHIIA-LHIIIB” spans
+from period 5 (LHIIA) to period 11 (LHIIIB) - R will later extract both
+the start and end period for analysis - This lets you analyze: “When did
+this grave context start?”, “When did it end?”, or “What’s the
+span?”</p>
+</div>
+<div id="filling-it-in" class="section level3">
+<h3>Filling It In</h3>
+<ol style="list-style-type: decimal">
+<li><p><strong>Determine chronological order:</strong> Arrange all
+periods from earliest (1) to latest (highest number)</p>
+<ul>
+<li>See standard Aegean chronologies (Rutter, Manning, etc.)</li>
+<li>MH typically comes before LH</li>
+<li>Within LH: LHI → LHII → LHIII</li>
+<li>Subdivisions (IIA, IIB) fit sequentially</li>
+</ul></li>
+<li><p><strong>For single periods:</strong> Copy the period code to both
+<code>earliest_component</code> and
+<code>latest_component</code></p></li>
+<li><p><strong>For range periods:</strong> Identify the start and end,
+then copy them to the respective columns</p>
+<ul>
+<li>“LHIIA-LHIIIB” → earliest = LHIIA, latest = LHIIIB</li>
+<li>“MH-LHIII” → earliest = MH, latest = LHIII</li>
+</ul></li>
+</ol>
+<hr />
+</div>
+</div>
+<div id="tomb-type-dictionary-datatomb_type_dictionary.csv"
+class="section level2">
+<h2>Tomb Type Dictionary
+(<code>data/tomb_type_dictionary.csv</code>)</h2>
+<div id="what-to-fill-in-1" class="section level3">
+<h3>What to Fill In</h3>
+<p>One column needs your input:</p>
+<table>
+<colgroup>
+<col width="25%" />
+<col width="46%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>What to Enter</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>tomb_type_order</code></td>
+<td>A number ranking this tomb type (1 = first, higher = last)</td>
+<td>You decide the ordering criterion</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="how-to-rank-tomb-types" class="section level3">
+<h3>How to Rank Tomb Types</h3>
+<p>Choose <strong>one</strong> ranking system and apply it
+consistently:</p>
+<p><strong>Option A: Architectural Complexity</strong> (simplest → most
+complex) - Simple grave (1) - Pit (2) - Cist (3) - Chamber tomb (4) -
+Tholos (5)</p>
+<p><strong>Option B: Labor/Resource Investment</strong> (least → most) -
+Natural crevices (1) - Simple grave (2) - Pit grave (3) - Cist grave (4)
+- Built chamber tomb (5) - Tholos (6)</p>
+<p><strong>Option C: Frequency in Dataset</strong> (rarest → most
+common) - Count which tomb types appear most often - Rank
+accordingly</p>
+</div>
+<div id="your-tomb-types" class="section level3">
+<h3>Your Tomb Types</h3>
+<p>Here are the actual tomb types in your dataset. Choose
+<strong>one</strong> ranking system and assign each a number:</p>
+<table>
+<colgroup>
+<col width="12%" />
+<col width="25%" />
+<col width="20%" />
+<col width="25%" />
+<col width="15%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Tomb Type</th>
+<th>Option A (Complexity)</th>
+<th>Option B (Labor)</th>
+<th>Option C (Frequency)</th>
+<th>Your Choice</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>natural crevices</td>
+<td>1 (simplest)</td>
+<td>1 (least labor)</td>
+<td>? (count in data)</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>simple grave</td>
+<td>2</td>
+<td>2</td>
+<td>?</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>grave</td>
+<td>2-3</td>
+<td>2-3</td>
+<td>?</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>circle</td>
+<td>?</td>
+<td>?</td>
+<td>?</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>pithoi/pithos/Pithos</td>
+<td>2-3</td>
+<td>2-3</td>
+<td>?</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>pit/pits</td>
+<td>3</td>
+<td>3</td>
+<td>?</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>cist</td>
+<td>4</td>
+<td>4</td>
+<td>?</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>dromos of tholos</td>
+<td>varies</td>
+<td>4-5</td>
+<td>?</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>shaft grave</td>
+<td>3-4</td>
+<td>4</td>
+<td>?</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>chamber tomb</td>
+<td>5</td>
+<td>5</td>
+<td>?</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>build/built chamber tomb</td>
+<td>5</td>
+<td>5-6</td>
+<td>?</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>tholos</td>
+<td>5-6 (most complex)</td>
+<td>6 (most labor)</td>
+<td>?</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>mound</td>
+<td>?</td>
+<td>?</td>
+<td>?</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Grave peribolos</td>
+<td>?</td>
+<td>?</td>
+<td>?</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>graves in settlement context</td>
+<td>2-3</td>
+<td>2-3</td>
+<td>?</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Notes:</strong> - Some types are unclear from the dataset —
+use archaeological knowledge to rank them - “grave” and “simple grave”
+are probably similar (assign similar ranks) - “build chamber tomb” and
+“built chamber tomb” are likely the same (assign same rank) -
+“pithoi/pithos/Pithos” (burial in large storage jars) is relatively
+simple - If you choose <strong>Option C (Frequency)</strong>, count how
+many graves of each type appear in the dataset and rank from rarest to
+most common</p>
+</div>
+<div id="decision" class="section level3">
+<h3>Decision</h3>
+<p><strong>Which ranking system are you using?</strong>
+___________________</p>
+<p><strong>Why did you choose this?</strong></p>
+<hr />
+</div>
+<div id="filling-in-your-csv" class="section level3">
+<h3>Filling in Your CSV</h3>
+<p>Once you’ve decided on a ranking system, fill in the <strong>“Your
+Choice”</strong> column above, then copy those numbers into
+<code>data/tomb_type_dictionary.csv</code> in the
+<code>tomb_type_order</code> column.</p>
+<p><strong>Example (using Option A: Complexity):</strong></p>
+<pre><code>tomb_type,tomb_type_order
+natural crevices,1
+simple grave,2
+grave,2
+circle,3
+pithoi,2
+pit,3
+cist,4
+shaft grave,4
+dromos of tholos,4
+chamber tomb,5
+build chamber tomb,5
+built chamber tomb,5
+tholos,6
+mound,3
+Grave peribolos,4
+graves in settlement context,2</code></pre>
+<p><strong>Key points:</strong> - You can use the same number twice
+(e.g., “simple grave” and “grave” both = 2) - Numbers don’t have to
+count up perfectly (e.g., you can go 1, 2, 2, 3, 4, 4, 5, 6) - But they
+should be sequential overall (no gaps like 1, 2, 5, 6) - The actual
+numbers don’t matter — R only cares about the relative order</p>
+<hr />
+</div>
+</div>
+<div id="how-these-will-be-used-in-analysis" class="section level2">
+<h2>How These Will Be Used in Analysis</h2>
+<p>Once you’ve filled these in, the analysis code will:</p>
+<ol style="list-style-type: decimal">
+<li><strong>For periods:</strong> Automatically match range periods to
+their earliest/latest components</li>
+<li><strong>Create new columns:</strong>
+<code>period_start_order</code>, <code>period_end_order</code>, and
+<code>period_midpoint_order</code></li>
+<li><strong>For tomb types:</strong> Use your ranking to create an
+ordinal factor for statistical tests</li>
+</ol>
+<p>This lets you analyze relationships across time and tomb
+architecture!</p>
+<hr />
+</div>
+<div id="checklist-before-submitting" class="section level2">
+<h2>Checklist Before Submitting</h2>
+<p><strong>Period Dictionary:</strong> - ☐ All periods have a
+chronological order number - ☐ Numbers count up (1, 2, 3… no gaps, no
+duplicates unless periods occur simultaneously) - ☐ Single periods have
+matching <code>earliest_component</code> and
+<code>latest_component</code> - ☐ Range periods have different start and
+end components - ☐ Start component chronologically precedes end
+component</p>
+<p><strong>Tomb Type Dictionary:</strong> - ☐ All tomb types have a
+ranking order number - ☐ Ranking is consistent across all types (you can
+see your logic) - ☐ Numbers are sequential (1, 2, 3… or in logical
+order) - ☐ You documented your ranking system and rationale</p>
+<hr />
+</div>
+<div id="questions" class="section level2">
+<h2>Questions?</h2>
+<p>If you’re unsure about: - <strong>Period dating:</strong> Check
+archaeological chronology tables (Rutter 2014, Manning 2010) -
+<strong>Period sequences:</strong> Look at the period names — Roman
+numerals usually help (I before II before III) - <strong>Tomb
+types:</strong> Consider what makes sense for your research question
+about drinking vessels and burial practices</p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.5.2 (2025-10-31)
+Platform: aarch64-apple-darwin20
+Running under: macOS Tahoe 26.2
+
+Matrix products: default
+BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US/en_US/en_US/C/en_US/en_US
+
+time zone: America/Detroit
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] stringr_1.6.0
+
+loaded via a namespace (and not attached):
+ [1] vctrs_0.7.1       cli_3.6.5         knitr_1.50        rlang_1.1.7      
+ [5] xfun_0.54         stringi_1.8.7     renv_1.1.6        promises_1.3.3   
+ [9] jsonlite_2.0.0    workflowr_1.7.1   glue_1.8.0        rprojroot_2.0.4  
+[13] git2r_0.36.2      htmltools_0.5.8.1 httpuv_1.6.16     sass_0.4.10      
+[17] rmarkdown_2.29    jquerylib_0.1.4   evaluate_1.0.3    tibble_3.3.1     
+[21] fastmap_1.2.0     yaml_2.3.10       lifecycle_1.0.5   whisker_0.4.1    
+[25] compiler_4.5.2    fs_1.6.6          Rcpp_1.1.1        pkgconfig_2.0.3  
+[29] later_1.4.2       digest_0.6.37     R6_2.6.1          pillar_1.11.1    
+[33] magrittr_2.0.4    bslib_0.9.0       tools_4.5.2       cachem_1.1.0     </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

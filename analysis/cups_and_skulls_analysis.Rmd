@@ -1,0 +1,778 @@
+---
+title: "Drinking Vessels and Skeletal Remains Analysis"
+subtitle: "Laconia and Messinia Burial Data"
+author: "Your Name"
+date: "`r Sys.Date()`"
+output:
+  workflowr::wflow_html:
+    toc: true
+    toc_float: true
+    code_folding: hide
+editor_options:
+  chunk_output_type: inline
+---
+
+## How to Use This Analysis
+
+**THIS IS A TEMPLATE** that you'll customize as you complete your data dictionaries.
+
+### What You Need to Do:
+
+1. **Complete `data/period_dictionary.csv`:**
+   - Assign chronological order to each period (1 = earliest, higher = latest)
+   - For range periods (e.g., "LHIIA-LHIIIB"), identify the earliest and latest components
+   - See `analysis/data_dictionary.Rmd` for detailed instructions
+
+2. **Complete `data/tomb_type_dictionary.csv`:**
+   - Decide how to rank the 5 tomb types (Tholos, Chamber Tomb, Cist Grave, Pit Grave, Other)
+   - Choose: by complexity, labor investment, or frequency
+   - See `analysis/data_dictionary.Rmd` for guidance
+
+3. **Enable the Dictionary Loading Code:**
+   - Once dictionaries are complete, find the "Import and Process Data Dictionaries" section
+   - Change `eval=FALSE` to `eval=TRUE`
+   - This activates the ordinal factors and enables temporal/complexity analyses
+
+### What This Analysis Will Show (Once Dictionaries Are Complete):
+
+- **Distribution comparisons** between Laconia and Messenia
+- **Temporal trends** in drinking vessel deposition across periods
+- **Complexity patterns** in tomb types and burial practices
+- **Regional differences** in how graves are used
+- **Relationships** between chamber size, drinking vessels, and skeletal remains
+
+Your decisions in the dictionaries will shape these findings — so think carefully about your ranking logic!
+
+---
+
+## Introduction
+
+This analysis examines the relationship between drinking vessels and human skeletal remains in Laconian and Messinian tholos and chamber tombs. The data focuses on grave contexts where drinking vessels are recorded alongside information about primary and secondary burials.
+
+## Load Libraries
+
+```{r setup, message=FALSE, warning=FALSE}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(stringr)
+library(janitor)
+library(knitr)
+```
+
+## Color Customization
+
+**YOU CAN EDIT THIS SECTION:** Customize colors for the analyses. Edit the hex codes below to use your preferred colors.
+
+All plots throughout this analysis will use these colors, so if you change them here, the change applies everywhere automatically.
+
+**Color choices affect:**
+- Regional comparisons (Laconia vs Messenia)
+- Visualization clarity and accessibility
+- How different variables stand out in plots
+
+```{r color-palette}
+# Set your color palette here
+colors <- list(
+  laconia = "#1B9E77",      # Laconia color (default: teal/green)
+  messenia = "#D95F02",     # Messenia color (default: orange)
+  drinking_vessel = "#7570B3",  # Drinking vessels (default: purple)
+  skulls = "#E7298A",        # Skulls (default: pink)
+  background = "#FFFFCC"     # Background/neutral (default: light yellow)
+)
+
+# These colors will be used throughout all plots
+# Change the hex codes to your preferred colors
+```
+
+## Load Data
+
+```{r load-data}
+# Load the CSV data
+data_path <- here::here("data", "laconia_messinia_cups_skulls.csv")
+cups_skulls <- read_csv(data_path)
+
+# Display dimensions
+cat("Dataset dimensions:", nrow(cups_skulls), "graves ×", ncol(cups_skulls), "columns\n")
+
+# Show column names
+glimpse(cups_skulls)
+```
+
+## Data Cleaning
+
+**NOTE:** The code below simplifies the complex grave type names into broader categories. If you want to group grave types differently, you can edit the `case_when()` statements in this chunk. For example, you might want to keep "Pit Grave" and "Cist Grave" separate, or group them together.
+
+```{r clean-data}
+cups_skulls_clean <- cups_skulls %>%
+  # Clean column names
+  janitor::clean_names() %>%
+
+  # Trim whitespace from character columns
+  mutate(across(where(is.character), str_trim)) %>%
+
+  # Standardize yes/no values in drinking vessel column
+  mutate(
+    has_drinking_vessel = case_when(
+      tolower(drinking_vessel) == "yes" ~ TRUE,
+      tolower(drinking_vessel) == "no" ~ FALSE,
+      TRUE ~ NA
+    ),
+    has_remains = case_when(
+      tolower(remains) == "yes" ~ TRUE,
+      tolower(remains) == "no" ~ FALSE,
+      TRUE ~ NA
+    ),
+    primary_burial = case_when(
+      tolower(primary) == "present" ~ TRUE,
+      tolower(primary) == "absent" ~ FALSE,
+      TRUE ~ NA
+    ),
+    secondary_burial = case_when(
+      tolower(secondary) == "present" ~ TRUE,
+      tolower(secondary) == "absent" ~ FALSE,
+      TRUE ~ NA
+    )
+  ) %>%
+
+  # Create burial category
+  mutate(
+    burial_category = case_when(
+      primary_burial & secondary_burial ~ "Both Primary & Secondary",
+      primary_burial & !secondary_burial ~ "Primary Only",
+      !primary_burial & secondary_burial ~ "Secondary Only",
+      TRUE ~ "Unknown/Not Recorded"
+    )
+  ) %>%
+
+  # Simplify grave type
+  # ** YOU CAN CUSTOMIZE THIS SECTION **
+  # If you want different groupings, edit the patterns here
+  # Current grouping is based on archaeological complexity
+  mutate(
+    grave_type_simple = case_when(
+      str_detect(tolower(type), "tholos") ~ "Tholos",
+      str_detect(tolower(type), "chamber") ~ "Chamber Tomb",
+      str_detect(tolower(type), "cist") ~ "Cist Grave",
+      str_detect(tolower(type), "pit") ~ "Pit Grave",
+      str_detect(tolower(type), "dromos") ~ "Dromos Only",
+      TRUE ~ "Other"
+    )
+  )
+
+# Show cleaned data structure
+glimpse(cups_skulls_clean)
+```
+
+## Import and Process Data Dictionaries
+
+### WHEN YOU'RE READY:
+
+1. Complete both dictionary files in `/data/`:
+   - `period_dictionary.csv` — add chronological order + period components
+   - `tomb_type_dictionary.csv` — add your tomb type ranking
+
+2. Come back here and change the code chunk to `eval=TRUE` (line below says `eval=FALSE`)
+
+3. Re-run the analysis — this chunk will automatically:
+   - Load your dictionaries
+   - Match range periods to their earliest/latest components
+   - Create `period_start_order`, `period_end_order`, `period_midpoint_order`
+   - Create ordered factors for statistical tests
+
+**What this enables:**
+- Testing whether drinking vessel deposition changes over time
+- Comparing tomb complexity with burial practices
+- Temporal and complexity-based statistical models
+
+**After dictionaries are complete**, this section will load and apply ordinal rankings:
+
+```{r load-dictionaries, eval=FALSE}
+# NOTE: Set eval=TRUE once the student has completed the dictionaries
+
+# Load period dictionary
+period_dict <- read_csv(here::here("data", "period_dictionary.csv"))
+
+# Load tomb type dictionary
+tomb_dict <- read_csv(here::here("data", "tomb_type_dictionary.csv"))
+
+# Join period dictionary and extract period components
+cups_skulls_clean <- cups_skulls_clean %>%
+  left_join(
+    period_dict %>% select(period_code, chronological_order, earliest_component, latest_component),
+    by = c("period" = "period_code")
+  ) %>%
+
+  # Get ordinal values for earliest component
+  left_join(
+    period_dict %>% select(period_code, chronological_order) %>% rename(start_order = chronological_order),
+    by = c("earliest_component" = "period_code")
+  ) %>%
+
+  # Get ordinal values for latest component
+  left_join(
+    period_dict %>% select(period_code, chronological_order) %>% rename(end_order = chronological_order),
+    by = c("latest_component" = "period_code")
+  ) %>%
+
+  # For single periods (where start = end), use that value
+  # For ranges, create midpoint
+  mutate(
+    period_start_order = start_order,
+    period_end_order = end_order,
+    period_midpoint_order = (start_order + end_order) / 2
+  )
+
+# Join tomb type dictionary
+cups_skulls_clean <- cups_skulls_clean %>%
+  left_join(
+    tomb_dict %>% select(tomb_type, tomb_type_order),
+    by = c("grave_type_simple" = "tomb_type")
+  ) %>%
+
+  # Convert to ordered factors
+  mutate(
+    tomb_type_ordered = factor(
+      grave_type_simple,
+      levels = arrange(tomb_dict, tomb_type_order) %>% pull(tomb_type),
+      ordered = TRUE
+    ),
+    period_ordered = factor(
+      period,
+      levels = arrange(period_dict, chronological_order) %>% pull(period_code),
+      ordered = TRUE
+    )
+  )
+
+cat("✓ Dictionaries successfully loaded and applied!\n")
+cat("New columns created:\n")
+cat("  - period_start_order: chronological order of earliest period component\n")
+cat("  - period_end_order: chronological order of latest period component\n")
+cat("  - period_midpoint_order: midpoint between start and end\n")
+cat("  - tomb_type_ordered: ordered factor for tomb types\n")
+cat("  - period_ordered: ordered factor for periods\n")
+```
+
+## Data Overview
+
+### Basic Statistics
+
+These are descriptive statistics of your dataset. They won't change based on your dictionaries, but they provide context for all analyses below.
+
+```{r summary-stats}
+cat("=== Dataset Summary ===\n\n")
+cat("Total graves:", nrow(cups_skulls_clean), "\n")
+cat("Graves with drinking vessels recorded:", sum(cups_skulls_clean$has_drinking_vessel == TRUE, na.rm = TRUE), "\n")
+cat("Graves with human remains:", sum(cups_skulls_clean$has_remains == TRUE, na.rm = TRUE), "\n")
+cat("\n")
+
+# Missing data summary
+cat("=== Missing Data ===\n")
+cups_skulls_clean %>%
+  summarise(across(everything(), ~sum(is.na(.)))) %>%
+  pivot_longer(everything(), names_to = "column", values_to = "missing_count") %>%
+  filter(missing_count > 0) %>%
+  arrange(desc(missing_count)) %>%
+  kable()
+```
+
+### Sites Represented
+
+```{r sites-overview}
+sites_summary <- cups_skulls_clean %>%
+  count(site, region, name = "n_graves") %>%
+  arrange(desc(n_graves))
+
+cat("Number of sites:", n_distinct(cups_skulls_clean$site), "\n")
+cat("Sites represented:\n\n")
+print(sites_summary, n = 30)
+```
+
+## Grave Type Distribution
+
+**HOW YOUR CHOICES AFFECT THIS:**
+- The groupings in the "Data Cleaning" section determine what you see here
+- If you edit `grave_type_simple` to create different categories, these plots will change
+- Once you complete `tomb_type_dictionary.csv`, you can run additional analyses on tomb complexity
+
+```{r grave-types}
+grave_type_summary <- cups_skulls_clean %>%
+  count(region, grave_type_simple, name = "count") %>%
+  arrange(region, desc(count))
+
+print(grave_type_summary)
+```
+
+```{r grave-type-plot, fig.width=12, fig.height=6}
+ggplot(grave_type_summary, aes(x = reorder(grave_type_simple, -count), y = count, fill = region)) +
+  geom_col(position = "dodge", width = 0.7) +
+  scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
+  geom_text(aes(label = count), position = position_dodge(width = 0.7), vjust = -0.3, size = 4) +
+  labs(
+    title = "Distribution of Grave Types by Region",
+    x = "Grave Type",
+    y = "Number of Graves",
+    fill = "Region"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom", axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+## Burial Types
+
+### Primary vs Secondary Burials
+
+```{r burial-type-summary}
+burial_type_summary <- cups_skulls_clean %>%
+  summarise(
+    total = n(),
+    with_primary = sum(primary_burial == TRUE, na.rm = TRUE),
+    with_secondary = sum(secondary_burial == TRUE, na.rm = TRUE),
+    both = sum(primary_burial == TRUE & secondary_burial == TRUE, na.rm = TRUE),
+    neither = sum(primary_burial == FALSE & secondary_burial == FALSE, na.rm = TRUE),
+    unknown = sum(is.na(primary_burial) | is.na(secondary_burial))
+  ) %>%
+  mutate(
+    pct_primary = round(with_primary / total * 100, 1),
+    pct_secondary = round(with_secondary / total * 100, 1),
+    pct_both = round(both / total * 100, 1)
+  )
+
+print(burial_type_summary)
+```
+
+```{r burial-plot, fig.width=12, fig.height=6}
+burial_category_data_region <- cups_skulls_clean %>%
+  count(region, burial_category) %>%
+  arrange(region, desc(n))
+
+ggplot(burial_category_data_region, aes(x = reorder(burial_category, -n), y = n, fill = region)) +
+  geom_col(position = "dodge", width = 0.7) +
+  scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
+  geom_text(aes(label = n), position = position_dodge(width = 0.7), vjust = -0.3, size = 4) +
+  labs(
+    title = "Distribution of Burial Types by Region",
+    x = "Burial Type",
+    y = "Count",
+    fill = "Region"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom", axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+## Drinking Vessels Analysis
+
+### Overall Drinking Vessel Presence
+
+```{r drinking-vessel-summary}
+dv_summary <- cups_skulls_clean %>%
+  summarise(
+    total_graves = n(),
+    with_vessels = sum(has_drinking_vessel == TRUE, na.rm = TRUE),
+    without_vessels = sum(has_drinking_vessel == FALSE, na.rm = TRUE),
+    unknown_vessel_status = sum(is.na(has_drinking_vessel))
+  ) %>%
+  mutate(
+    pct_with = round(with_vessels / total_graves * 100, 1),
+    avg_vessels_recorded = round(mean(cups_skulls_clean$drinking_vessel_number, na.rm = TRUE), 2)
+  )
+
+print(dv_summary)
+```
+
+### Drinking Vessels by Grave Type
+
+```{r dv-by-grave-type}
+dv_by_type <- cups_skulls_clean %>%
+  group_by(grave_type_simple) %>%
+  summarise(
+    total = n(),
+    with_vessels = sum(has_drinking_vessel == TRUE, na.rm = TRUE),
+    pct_with_vessels = round(with_vessels / total * 100, 1),
+    avg_vessel_count = round(mean(drinking_vessel_number, na.rm = TRUE), 2)
+  ) %>%
+  arrange(desc(with_vessels))
+
+print(dv_by_type)
+```
+
+```{r dv-by-type-plot, fig.width=12, fig.height=6}
+dv_by_type_region <- cups_skulls_clean %>%
+  group_by(region, grave_type_simple) %>%
+  summarise(
+    total = n(),
+    with_vessels = sum(has_drinking_vessel == TRUE, na.rm = TRUE),
+    pct_with_vessels = round(with_vessels / total * 100, 1),
+    avg_vessel_count = round(mean(drinking_vessel_number, na.rm = TRUE), 2),
+    .groups = "drop"
+  ) %>%
+  arrange(region, desc(with_vessels))
+
+ggplot(dv_by_type_region, aes(x = reorder(grave_type_simple, -with_vessels), y = with_vessels, fill = region)) +
+  geom_col(position = "dodge", width = 0.7) +
+  scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
+  geom_text(aes(label = paste0(with_vessels, " (", pct_with_vessels, "%)")),
+            position = position_dodge(width = 0.7), vjust = -0.3, size = 3.5) +
+  labs(
+    title = "Graves with Drinking Vessels by Grave Type and Region",
+    x = "Grave Type",
+    y = "Number of Graves with Drinking Vessels",
+    fill = "Region"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom", axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+### Drinking Vessels by Burial Type
+
+```{r dv-by-burial-type}
+dv_by_burial <- cups_skulls_clean %>%
+  group_by(burial_category) %>%
+  summarise(
+    total = n(),
+    with_vessels = sum(has_drinking_vessel == TRUE, na.rm = TRUE),
+    pct_with_vessels = round(with_vessels / total * 100, 1),
+    avg_vessel_count = round(mean(drinking_vessel_number, na.rm = TRUE), 2)
+  ) %>%
+  arrange(desc(with_vessels))
+
+print(dv_by_burial)
+```
+
+```{r dv-by-burial-plot, fig.width=12, fig.height=6}
+dv_by_burial_region <- cups_skulls_clean %>%
+  group_by(region, burial_category) %>%
+  summarise(
+    total = n(),
+    with_vessels = sum(has_drinking_vessel == TRUE, na.rm = TRUE),
+    pct_with_vessels = round(with_vessels / total * 100, 1),
+    avg_vessel_count = round(mean(drinking_vessel_number, na.rm = TRUE), 2),
+    .groups = "drop"
+  ) %>%
+  arrange(region, desc(with_vessels))
+
+ggplot(dv_by_burial_region, aes(x = reorder(burial_category, -with_vessels), y = with_vessels, fill = region)) +
+  geom_col(position = "dodge", width = 0.7) +
+  scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
+  geom_text(aes(label = paste0(with_vessels, " (", pct_with_vessels, "%)")),
+            position = position_dodge(width = 0.7), vjust = -0.3, size = 3.5) +
+  labs(
+    title = "Graves with Drinking Vessels by Burial Type and Region",
+    x = "Burial Type",
+    y = "Number of Graves with Drinking Vessels",
+    fill = "Region"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom", axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+## Skeletal Remains Analysis
+
+### Remains Distribution
+
+```{r remains-summary}
+remains_summary <- cups_skulls_clean %>%
+  summarise(
+    total_graves = n(),
+    with_remains = sum(has_remains == TRUE, na.rm = TRUE),
+    without_remains = sum(has_remains == FALSE, na.rm = TRUE),
+    unknown_remains = sum(is.na(has_remains))
+  ) %>%
+  mutate(pct_with_remains = round(with_remains / total_graves * 100, 1))
+
+print(remains_summary)
+```
+
+### Skulls Recorded
+
+```{r skulls-analysis}
+skulls_stats <- cups_skulls_clean %>%
+  filter(!is.na(skulls_number)) %>%
+  summarise(
+    graves_with_skull_count = n(),
+    total_skulls = sum(skulls_number, na.rm = TRUE),
+    avg_skulls = round(mean(skulls_number, na.rm = TRUE), 2),
+    min_skulls = min(skulls_number, na.rm = TRUE),
+    max_skulls = max(skulls_number, na.rm = TRUE)
+  )
+
+print(skulls_stats)
+```
+
+```{r skulls-distribution}
+skulls_by_count <- cups_skulls_clean %>%
+  filter(!is.na(skulls_number)) %>%
+  count(skulls_number, name = "graves") %>%
+  arrange(skulls_number)
+
+print(skulls_by_count)
+```
+
+## Cross-Analysis: Drinking Vessels and Remains
+
+### Do graves with drinking vessels tend to have remains?
+
+```{r vessels-and-remains}
+vessels_remains_cross <- cups_skulls_clean %>%
+  filter(!is.na(has_drinking_vessel) & !is.na(has_remains)) %>%
+  count(has_drinking_vessel, has_remains) %>%
+  pivot_wider(names_from = has_remains, values_from = n, values_fill = 0) %>%
+  rename(no_remains = `FALSE`, with_remains = `TRUE`)
+
+rownames(vessels_remains_cross) <- c("No Drinking Vessels", "With Drinking Vessels")
+print(vessels_remains_cross)
+```
+
+```{r vessels-and-remains-analysis}
+# Calculate cross-tabulation with percentages
+cross_analysis <- cups_skulls_clean %>%
+  filter(!is.na(has_drinking_vessel) & !is.na(has_remains)) %>%
+  group_by(has_drinking_vessel) %>%
+  summarise(
+    total = n(),
+    with_remains = sum(has_remains == TRUE, na.rm = TRUE),
+    pct_with_remains = round(with_remains / total * 100, 1)
+  ) %>%
+  mutate(vessel_status = ifelse(has_drinking_vessel, "With Drinking Vessels", "Without Drinking Vessels"))
+
+kable(select(cross_analysis, vessel_status, total, with_remains, pct_with_remains))
+```
+
+### Drinking Vessels and Skull Count
+
+```{r vessels-skulls-scatter}
+vessels_skulls_data <- cups_skulls_clean %>%
+  filter(!is.na(drinking_vessel_number) & !is.na(skulls_number)) %>%
+  mutate(has_vessels_label = ifelse(has_drinking_vessel, "With Vessels", "No Vessels"))
+
+ggplot(vessels_skulls_data, aes(x = drinking_vessel_number, y = skulls_number, color = has_vessels_label)) +
+  geom_jitter(size = 3, alpha = 0.6, width = 0.2, height = 0.2) +
+  geom_smooth(method = "lm", se = FALSE, alpha = 0.2) +
+  labs(
+    title = "Relationship: Drinking Vessels vs Skull Count",
+    x = "Number of Drinking Vessels Recorded",
+    y = "Number of Skulls",
+    color = ""
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+## Regional Analysis
+
+### Laconia vs Other Regions
+
+```{r regional-summary}
+regional_summary <- cups_skulls_clean %>%
+  group_by(region) %>%
+  summarise(
+    total_graves = n(),
+    with_drinking_vessels = sum(has_drinking_vessel == TRUE, na.rm = TRUE),
+    pct_with_vessels = round(with_drinking_vessels / total_graves * 100, 1),
+    with_remains = sum(has_remains == TRUE, na.rm = TRUE),
+    pct_with_remains = round(with_remains / total_graves * 100, 1),
+    avg_skulls = round(mean(skulls_number, na.rm = TRUE), 2)
+  )
+
+print(regional_summary)
+```
+
+## Chronological Overview
+
+### Periods Represented
+
+```{r period-distribution}
+period_summary <- cups_skulls_clean %>%
+  mutate(
+    period_category = case_when(
+      str_detect(tolower(period), "mh") ~ "Middle Helladic",
+      str_detect(tolower(period), "lh\\s*i(?!i)")  | str_detect(tolower(period), "lh i-") ~ "LH I-II",
+      str_detect(tolower(period), "lh\\s*ii") & !str_detect(tolower(period), "lh\\s*ii") ~ "LH II",
+      str_detect(tolower(period), "lh\\s*iii") ~ "LH III",
+      str_detect(tolower(period), "lh") ~ "Late Helladic (general)",
+      is.na(period) | period == "" ~ "Unrecorded",
+      TRUE ~ "Other"
+    )
+  ) %>%
+  count(period_category, name = "graves") %>%
+  arrange(desc(graves))
+
+print(period_summary)
+```
+
+## Key Findings Summary
+
+```{r findings}
+cat("=== KEY FINDINGS ===\n\n")
+
+cat("1. Drinking Vessel Prevalence:\n")
+cat("   -", sum(cups_skulls_clean$has_drinking_vessel == TRUE, na.rm = TRUE),
+    "graves (", round(sum(cups_skulls_clean$has_drinking_vessel == TRUE, na.rm = TRUE) / nrow(cups_skulls_clean) * 100, 1),
+    "%) have drinking vessels recorded\n\n")
+
+cat("2. Skeletal Remains:\n")
+cat("   -", sum(cups_skulls_clean$has_remains == TRUE, na.rm = TRUE),
+    "graves (", round(sum(cups_skulls_clean$has_remains == TRUE, na.rm = TRUE) / nrow(cups_skulls_clean) * 100, 1),
+    "%) have human remains\n")
+cat("   - Skull counts recorded in", sum(!is.na(cups_skulls_clean$skulls_number)), "graves\n\n")
+
+cat("3. Burial Type Association:\n")
+burial_counts <- cups_skulls_clean %>%
+  count(burial_category) %>%
+  arrange(desc(n))
+for (i in 1:nrow(burial_counts)) {
+  cat("   -", burial_counts$burial_category[i], ":", burial_counts$n[i], "graves\n")
+}
+```
+
+## Chamber Space and Burial Goods
+
+### Do larger chambers have more skulls and drinking vessels?
+
+This section explores whether the estimated chamber area relates to the number of skulls and drinking vessels found.
+
+**HOW YOUR PERIOD DICTIONARY WILL ENHANCE THIS:**
+- Once you complete `period_dictionary.csv` and enable the dictionary loading code, we can add temporal layers
+- You'll be able to see if these relationships change across periods
+- Time-based patterns can reveal ritual practice evolution
+
+#### Data Availability
+
+```{r space-data-summary}
+space_analysis_data <- cups_skulls_clean %>%
+  filter(!is.na(area_of_chamber_estimated))
+
+cat("Graves with chamber area estimated:", nrow(space_analysis_data), "\n")
+cat("Graves with area AND skull count:", sum(!is.na(space_analysis_data$skulls_number)), "\n")
+cat("Graves with area AND vessel count:", sum(!is.na(space_analysis_data$drinking_vessel_number)), "\n\n")
+
+# Summary statistics for chamber area
+cat("Chamber Area Summary (m²):\n")
+print(space_analysis_data %>%
+  pull(area_of_chamber_estimated) %>%
+  summary())
+```
+
+#### Skulls vs Chamber Area
+
+```{r skulls-area-scatter, fig.width=14, fig.height=6}
+skulls_area_data <- cups_skulls_clean %>%
+  filter(!is.na(area_of_chamber_estimated) & !is.na(skulls_number))
+
+ggplot(skulls_area_data, aes(x = area_of_chamber_estimated, y = skulls_number, color = region)) +
+  geom_point(size = 3, alpha = 0.6) +
+  geom_smooth(method = "lm", se = TRUE, alpha = 0.2) +
+  scale_color_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
+  facet_wrap(~region) +
+  labs(
+    title = "Relationship: Chamber Area vs Number of Skulls by Region",
+    x = "Chamber Area Estimated (m²)",
+    y = "Number of Skulls",
+    color = "Region"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+```{r skulls-area-correlation}
+# By region
+for (reg in unique(skulls_area_data$region)) {
+  region_data <- skulls_area_data %>% filter(region == reg)
+  cor_val <- cor(region_data$area_of_chamber_estimated, region_data$skulls_number, use = "complete.obs")
+  lm_result <- lm(skulls_number ~ area_of_chamber_estimated, data = region_data)
+
+  cat("\n===", toupper(reg), "===\n")
+  cat("Pearson correlation (r):", round(cor_val, 3), "\n")
+  print(summary(lm_result))
+}
+```
+
+#### Drinking Vessels vs Chamber Area
+
+```{r vessels-area-scatter, fig.width=14, fig.height=6}
+vessels_area_data <- cups_skulls_clean %>%
+  filter(!is.na(area_of_chamber_estimated) & !is.na(drinking_vessel_number))
+
+ggplot(vessels_area_data, aes(x = area_of_chamber_estimated, y = drinking_vessel_number, color = region)) +
+  geom_point(size = 3, alpha = 0.6) +
+  geom_smooth(method = "lm", se = TRUE, alpha = 0.2) +
+  scale_color_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
+  facet_wrap(~region) +
+  labs(
+    title = "Relationship: Chamber Area vs Number of Drinking Vessels by Region",
+    x = "Chamber Area Estimated (m²)",
+    y = "Number of Drinking Vessels",
+    color = "Region"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+```{r vessels-area-correlation}
+# By region
+for (reg in unique(vessels_area_data$region)) {
+  region_data <- vessels_area_data %>% filter(region == reg)
+  cor_val <- cor(region_data$area_of_chamber_estimated, region_data$drinking_vessel_number, use = "complete.obs")
+  lm_result <- lm(drinking_vessel_number ~ area_of_chamber_estimated, data = region_data)
+
+  cat("\n===", toupper(reg), "===\n")
+  cat("Pearson correlation (r):", round(cor_val, 3), "\n")
+  print(summary(lm_result))
+}
+```
+
+#### Both Skulls and Vessels vs Chamber Area
+
+```{r both-area-scatter, fig.width=14, fig.height=6}
+both_area_data <- cups_skulls_clean %>%
+  filter(!is.na(area_of_chamber_estimated) & !is.na(skulls_number) & !is.na(drinking_vessel_number))
+
+ggplot(both_area_data, aes(x = area_of_chamber_estimated, y = skulls_number)) +
+  geom_point(aes(color = drinking_vessel_number), size = 4, alpha = 0.7) +
+  scale_color_gradient(name = "Drinking\nVessels", low = colors$background, high = colors$drinking_vessel) +
+  facet_wrap(~region) +
+  labs(
+    title = "Chamber Area vs Skulls (colored by Drinking Vessels) by Region",
+    x = "Chamber Area Estimated (m²)",
+    y = "Number of Skulls"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+---
+
+## NEXT STEPS FOR YOUR RESEARCH
+
+### You Control These Decisions:
+
+1. **Period Chronology** (`period_dictionary.csv`):
+   - How you order periods affects temporal trend detection
+   - Range periods (e.g., "LHIIA-LHIIIB") can span 50+ years
+   - Your finest/coarsest periodization choices determine analysis granularity
+
+2. **Tomb Type Ranking** (`tomb_type_dictionary.csv`):
+   - Complexity ranking reveals whether complex tombs get more/different goods
+   - Labor investment ranking shows resource correlation with practices
+   - Frequency ranking reveals site-specific burial patterns
+
+3. **Grave Type Grouping** (edit the `case_when()` in Data Cleaning):
+   - Should Pit and Cist graves be separate or grouped?
+   - Is "Other" too vague, or does it represent genuinely mixed practices?
+   - Your grouping should reflect your research questions
+
+### Possible Extensions (Once Dictionaries Are Complete):
+
+- Test whether temporal trends differ between Laconia and Messenia
+- Model drinking vessel count as a function of period + tomb complexity
+- Compare primary vs secondary burial practices across time and tomb type
+- Investigate whether larger chambers are preferred in certain periods
+
+Your research questions should drive these decisions!
+
+## Session Info
+
+```{r session-info}
+sessionInfo()
+```
