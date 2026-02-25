@@ -1,6 +1,16 @@
 tomb_type,tomb_type_order
-Tholos,
-Chamber Tomb,
-Cist Grave,
-Pit Grave,
-Other,
+natural crevices,1
+circle,2
+grave peribolos,3
+mound,4
+pithos,5
+simple grave,6
+graves in settlement context,7
+grave,7
+pit ,8
+cist,9
+shaft grave,10
+chamber tomb,11
+built chamber tomb,12
+dromos of tholos,13
+tholos,14
