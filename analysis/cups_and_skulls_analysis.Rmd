@@ -1,5 +1,5 @@
 ---
-title: "Drinking Vessels and Skeletal Remains Analysis"
+title: "Drinking Vessels, Skeletal Remains, and Hair Pins Analysis"
 subtitle: "Laconia and Messinia Burial Data"
 author: "Your Name"
 date: "`r Sys.Date()`"
@@ -12,46 +12,26 @@ editor_options:
   chunk_output_type: inline
 ---
 
-## How to Use This Analysis
+## About This Analysis
 
-**THIS IS A TEMPLATE** that you'll customize as you complete your data dictionaries.
-
-### What You Need to Do:
-
-1. **Complete `data/period_dictionary.csv`:**
-   - Assign chronological order to each period (1 = earliest, higher = latest)
-   - For range periods (e.g., "LHIIA-LHIIIB"), identify the earliest and latest components
-   - See `analysis/data_dictionary.Rmd` for detailed instructions
-
-2. **Complete `data/tomb_type_dictionary.csv`:**
-   - Decide how to rank the 5 tomb types (Tholos, Chamber Tomb, Cist Grave, Pit Grave, Other)
-   - Choose: by complexity, labor investment, or frequency
-   - See `analysis/data_dictionary.Rmd` for guidance
-
-3. **Enable the Dictionary Loading Code:**
-   - Once dictionaries are complete, find the "Import and Process Data Dictionaries" section
-   - Change `eval=FALSE` to `eval=TRUE`
-   - This activates the ordinal factors and enables temporal/complexity analyses
-
-### What This Analysis Will Show (Once Dictionaries Are Complete):
+This analysis examines funerary assemblage patterns in Laconia and Messinia, including:
 
 - **Distribution comparisons** between Laconia and Messenia
-- **Temporal trends** in drinking vessel deposition across periods
-- **Complexity patterns** in tomb types and burial practices
+- **Temporal trends** in burial practices across periods
+- **Hair pin** presence and its relationship to secondary burial, drinking vessels, and tomb size
 - **Regional differences** in how graves are used
-- **Relationships** between chamber size, drinking vessels, and skeletal remains
-
-Your decisions in the dictionaries will shape these findings — so think carefully about your ranking logic!
+- **Relationships** between chamber size, drinking vessels, skeletal remains, and hair pins
 
 ---
 
 ## Introduction
 
-This analysis examines the relationship between drinking vessels and human skeletal remains in Laconian and Messinian tholos and chamber tombs. The data focuses on grave contexts where drinking vessels are recorded alongside information about primary and secondary burials.
+This analysis examines the relationship between drinking vessels, human skeletal remains, and hair pins in Laconian and Messinian tholos and chamber tombs. The data focuses on grave contexts where drinking vessels and hair pins are recorded alongside information about primary and secondary burials.
 
 ## Load Libraries
 
 ```{r setup, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 library(readr)
 library(dplyr)
 library(ggplot2)
@@ -59,6 +39,7 @@ library(tidyr)
 library(stringr)
 library(janitor)
 library(knitr)
+library(ggrepel)
 ```
 
 ## Color Customization
@@ -79,18 +60,31 @@ colors <- list(
   messenia = "#D95F02",     # Messenia color (default: orange)
   drinking_vessel = "#7570B3",  # Drinking vessels (default: purple)
   skulls = "#E7298A",        # Skulls (default: pink)
+  pin = "#E6AB02",            # Hair pins (default: gold/amber)
   background = "#FFFFCC"     # Background/neutral (default: light yellow)
 )
 
 # These colors will be used throughout all plots
 # Change the hex codes to your preferred colors
+
+# Set global ggplot theme with larger text
+theme_set(theme_minimal(base_size = 16))
+theme_update(
+  plot.title = element_text(size = 18, face = "bold"),
+  plot.subtitle = element_text(size = 14),
+  axis.title = element_text(size = 14),
+  axis.text = element_text(size = 12),
+  legend.text = element_text(size = 12),
+  legend.title = element_text(size = 13),
+  strip.text = element_text(size = 13)
+)
 ```
 
 ## Load Data
 
 ```{r load-data}
 # Load the CSV data
-data_path <- here::here("data", "laconia_messinia_cups_skulls.csv")
+data_path <- here::here("data", "laconia_messinia_cups_skulls_pins.csv")
 cups_skulls <- read_csv(data_path)
 
 # Display dimensions
@@ -133,6 +127,11 @@ cups_skulls_clean <- cups_skulls %>%
       tolower(secondary) == "present" ~ TRUE,
       tolower(secondary) == "absent" ~ FALSE,
       TRUE ~ NA
+    ),
+    has_pin = case_when(
+      tolower(hair_pin) == "yes" ~ TRUE,
+      tolower(hair_pin) == "no" ~ FALSE,
+      TRUE ~ NA
     )
   ) %>%
 
@@ -167,35 +166,18 @@ glimpse(cups_skulls_clean)
 
 ## Import and Process Data Dictionaries
 
-### WHEN YOU'RE READY:
+This section loads the period and tomb type dictionaries and applies chronological and complexity orderings to the data.
 
-1. Complete both dictionary files in `/data/`:
-   - `period_dictionary.csv` — add chronological order + period components
-   - `tomb_type_dictionary.csv` — add your tomb type ranking
-
-2. Come back here and change the code chunk to `eval=TRUE` (line below says `eval=FALSE`)
-
-3. Re-run the analysis — this chunk will automatically:
-   - Load your dictionaries
-   - Match range periods to their earliest/latest components
-   - Create `period_start_order`, `period_end_order`, `period_midpoint_order`
-   - Create ordered factors for statistical tests
-
-**What this enables:**
-- Testing whether drinking vessel deposition changes over time
-- Comparing tomb complexity with burial practices
-- Temporal and complexity-based statistical models
-
-**After dictionaries are complete**, this section will load and apply ordinal rankings:
-
-```{r load-dictionaries, eval=FALSE}
+```{r load-dictionaries, eval=TRUE}
 # NOTE: Set eval=TRUE once the student has completed the dictionaries
 
 # Load period dictionary
-period_dict <- read_csv(here::here("data", "period_dictionary.csv"))
+period_dict <- read_csv(here::here("data", "period_dictionary.csv")) %>%
+  mutate(across(where(is.character), str_trim))
 
 # Load tomb type dictionary
-tomb_dict <- read_csv(here::here("data", "tomb_type_dictionary.csv"))
+tomb_dict <- read_csv(here::here("data", "tomb_type_dictionary.csv")) %>%
+  mutate(tomb_type = str_trim(tomb_type))
 
 # Join period dictionary and extract period components
 cups_skulls_clean <- cups_skulls_clean %>%
@@ -224,18 +206,103 @@ cups_skulls_clean <- cups_skulls_clean %>%
     period_midpoint_order = (start_order + end_order) / 2
   )
 
-# Join tomb type dictionary
+# Calendar year lookup for each single-component period code
+# Sources: user-supplied dates; sub-phases (MHIIIB, LHIIIB1, LHIIIC1) estimated
+component_cal <- tribble(
+  ~component,      ~cal_start_bce, ~cal_end_bce,
+  "MH",            2000,           1600,
+  "MHII",          1850,           1700,
+  "MHIII",         1700,           1600,
+  "MHIIIB",        1650,           1600,
+  "LH",            1600,           1070,
+  "LHI",           1600,           1500,
+  "LHII",          1500,           1390,
+  "LHIIA",         1500,           1440,
+  "LHIIB",         1440,           1390,
+  "LHIII",         1390,           1070,
+  "LHIIIA",        1390,           1300,
+  "LHIIIA1",       1390,           1370,
+  "LHIIIA2",       1370,           1300,
+  "LHIIIB",        1300,           1190,
+  "LHIIIB1",       1300,           1250,
+  "LHIIIC",        1190,           1070,
+  "LHIIIC1",       1190,           1130,
+  "submycenaean",  1070,           1015
+)
+
+# Add calendar year columns: start = start of earliest component,
+# end = end of latest component
 cups_skulls_clean <- cups_skulls_clean %>%
   left_join(
-    tomb_dict %>% select(tomb_type, tomb_type_order),
-    by = c("grave_type_simple" = "tomb_type")
+    component_cal %>% select(component, cal_start_bce),
+    by = c("earliest_component" = "component")
   ) %>%
+  rename(period_start_cal = cal_start_bce) %>%
+  left_join(
+    component_cal %>% select(component, cal_end_bce),
+    by = c("latest_component" = "component")
+  ) %>%
+  rename(period_end_cal = cal_end_bce) %>%
+  mutate(period_midpoint_cal = (period_start_cal + period_end_cal) / 2)
+
+# Broad phase groupings with calendar spans for temporal plots
+phase_cal <- tribble(
+  ~broad_phase,  ~phase_start_bce, ~phase_end_bce,
+  "MH",          2000,             1600,
+  "LH I",        1600,             1500,
+  "LH II",       1500,             1390,
+  "LH IIIA",     1390,             1300,
+  "LH IIIB",     1300,             1190,
+  "LH IIIC",     1190,             1070,
+  "SM",          1070,             1015
+) %>% mutate(
+  phase_mid_bce = (phase_start_bce + phase_end_bce) / 2,
+  phase_duration = phase_start_bce - phase_end_bce,
+  broad_phase = factor(broad_phase,
+    levels = c("MH", "LH I", "LH II", "LH IIIA", "LH IIIB", "LH IIIC", "SM"),
+    ordered = TRUE)
+)
+
+# Assign each grave to broadest phase based on its earliest component
+cups_skulls_clean <- cups_skulls_clean %>%
+  mutate(
+    broad_phase = case_when(
+      earliest_component %in% c("MH", "MHII", "MHIII", "MHIIIB") ~ "MH",
+      earliest_component %in% c("LH", "LHI")                      ~ "LH I",
+      earliest_component %in% c("LHII", "LHIIA", "LHIIB")         ~ "LH II",
+      earliest_component %in% c("LHIII", "LHIIIA", "LHIIIA1", "LHIIIA2") ~ "LH IIIA",
+      earliest_component %in% c("LHIIIB", "LHIIIB1")              ~ "LH IIIB",
+      earliest_component %in% c("LHIIIC", "LHIIIC1")              ~ "LH IIIC",
+      earliest_component == "submycenaean"                          ~ "SM",
+      TRUE ~ NA_character_
+    ),
+    broad_phase = factor(broad_phase,
+      levels = c("MH", "LH I", "LH II", "LH IIIA", "LH IIIB", "LH IIIC", "SM"),
+      ordered = TRUE)
+  )
+
+# Map grave_type_simple names to tomb_type dictionary names
+grave_to_tomb_map <- tibble(
+  grave_type_simple = c("Tholos", "Chamber Tomb", "Cist Grave", "Pit Grave", "Dromos Only", "Other"),
+  tomb_type_dict = c("tholos", "chamber tomb", "cist", "pit", "dromos of tholos", NA)
+)
+
+# Join tomb type dictionary via mapping
+cups_skulls_clean <- cups_skulls_clean %>%
+  left_join(grave_to_tomb_map, by = "grave_type_simple") %>%
+  left_join(
+    tomb_dict %>% select(tomb_type, tomb_type_order),
+    by = c("tomb_type_dict" = "tomb_type")
+  ) %>%
+  select(-tomb_type_dict) %>%
 
   # Convert to ordered factors
   mutate(
     tomb_type_ordered = factor(
       grave_type_simple,
-      levels = arrange(tomb_dict, tomb_type_order) %>% pull(tomb_type),
+      levels = grave_to_tomb_map$grave_type_simple[
+        order(tomb_dict$tomb_type_order[match(grave_to_tomb_map$tomb_type_dict, tomb_dict$tomb_type)])
+      ],
       ordered = TRUE
     ),
     period_ordered = factor(
@@ -265,6 +332,7 @@ cat("=== Dataset Summary ===\n\n")
 cat("Total graves:", nrow(cups_skulls_clean), "\n")
 cat("Graves with drinking vessels recorded:", sum(cups_skulls_clean$has_drinking_vessel == TRUE, na.rm = TRUE), "\n")
 cat("Graves with human remains:", sum(cups_skulls_clean$has_remains == TRUE, na.rm = TRUE), "\n")
+cat("Graves with hair pins:", sum(cups_skulls_clean$has_pin == TRUE, na.rm = TRUE), "\n")
 cat("\n")
 
 # Missing data summary
@@ -272,7 +340,7 @@ cat("=== Missing Data ===\n")
 cups_skulls_clean %>%
   summarise(across(everything(), ~sum(is.na(.)))) %>%
   pivot_longer(everything(), names_to = "column", values_to = "missing_count") %>%
-  filter(missing_count > 0) %>%
+  dplyr::filter(missing_count > 0) %>%
   arrange(desc(missing_count)) %>%
   kable()
 ```
@@ -315,7 +383,7 @@ ggplot(grave_type_summary, aes(x = reorder(grave_type_simple, -count), y = count
     y = "Number of Graves",
     fill = "Region"
   ) +
-  theme_minimal() +
+  theme_minimal(base_size = 16) +
   theme(legend.position = "bottom", axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
@@ -357,7 +425,7 @@ ggplot(burial_category_data_region, aes(x = reorder(burial_category, -n), y = n,
     y = "Count",
     fill = "Region"
   ) +
-  theme_minimal() +
+  theme_minimal(base_size = 16) +
   theme(legend.position = "bottom", axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
@@ -420,7 +488,7 @@ ggplot(dv_by_type_region, aes(x = reorder(grave_type_simple, -with_vessels), y =
     y = "Number of Graves with Drinking Vessels",
     fill = "Region"
   ) +
-  theme_minimal() +
+  theme_minimal(base_size = 16) +
   theme(legend.position = "bottom", axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
@@ -463,8 +531,225 @@ ggplot(dv_by_burial_region, aes(x = reorder(burial_category, -with_vessels), y =
     y = "Number of Graves with Drinking Vessels",
     fill = "Region"
   ) +
-  theme_minimal() +
+  theme_minimal(base_size = 16) +
   theme(legend.position = "bottom", axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+## Hair Pin Analysis
+
+### Overall Hair Pin Presence
+
+```{r pin-summary}
+pin_summary <- cups_skulls_clean %>%
+  summarise(
+    total_graves = n(),
+    with_pins = sum(has_pin == TRUE, na.rm = TRUE),
+    without_pins = sum(has_pin == FALSE, na.rm = TRUE),
+    unknown_pin_status = sum(is.na(has_pin))
+  ) %>%
+  mutate(pct_with = round(with_pins / total_graves * 100, 1))
+
+print(pin_summary)
+```
+
+### Hair Pins by Region
+
+```{r pins-by-region, fig.width=12, fig.height=6}
+pin_by_region <- cups_skulls_clean %>%
+  group_by(region) %>%
+  summarise(
+    total = n(),
+    with_pins = sum(has_pin == TRUE, na.rm = TRUE),
+    pct_with_pins = round(with_pins / total * 100, 1),
+    .groups = "drop"
+  )
+
+ggplot(pin_by_region, aes(x = region, y = with_pins, fill = region)) +
+  geom_col(width = 0.6) +
+  scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
+  geom_text(aes(label = paste0(with_pins, " (", pct_with_pins, "%)")), vjust = -0.3, size = 4) +
+  labs(
+    title = "Graves with Hair Pins by Region",
+    x = "Region",
+    y = "Number of Graves with Hair Pins",
+    fill = "Region"
+  ) +
+  theme_minimal(base_size = 16) +
+  theme(legend.position = "bottom")
+```
+
+## Secondary Entombment and Hair Pins
+
+### Secondary Burial x Hair Pin Presence by Region
+
+**Note:** Hair pins are present in only a small number of graves (n=16), so results should be interpreted with caution.
+
+```{r secondary-pins-table}
+secondary_pins <- cups_skulls_clean %>%
+  dplyr::filter(!is.na(secondary_burial) & !is.na(has_pin)) %>%
+  group_by(region, secondary_burial, has_pin) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  mutate(
+    secondary_label = ifelse(secondary_burial, "Secondary Present", "Secondary Absent"),
+    pin_label = ifelse(has_pin, "With Pin", "No Pin")
+  )
+
+# Summary table
+secondary_pins_wide <- secondary_pins %>%
+  select(region, secondary_label, pin_label, count) %>%
+  pivot_wider(names_from = pin_label, values_from = count, values_fill = 0)
+
+kable(secondary_pins_wide)
+```
+
+```{r secondary-pins-plot, fig.width=12, fig.height=6}
+secondary_pins_pct <- cups_skulls_clean %>%
+  dplyr::filter(!is.na(secondary_burial) & !is.na(has_pin)) %>%
+  group_by(region, secondary_burial) %>%
+  summarise(
+    total = n(),
+    with_pin = sum(has_pin == TRUE),
+    pct_with_pin = round(with_pin / total * 100, 1),
+    .groups = "drop"
+  ) %>%
+  mutate(secondary_label = ifelse(secondary_burial, "Secondary Present", "Secondary Absent"))
+
+ggplot(secondary_pins_pct, aes(x = secondary_label, y = pct_with_pin, fill = region)) +
+  geom_col(position = "dodge", width = 0.7) +
+  scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
+  geom_text(aes(label = paste0(with_pin, "/", total, "\n(", pct_with_pin, "%)")),
+            position = position_dodge(width = 0.7), vjust = -0.3, size = 3.5) +
+  labs(
+    title = "Hair Pin Presence by Secondary Burial Status and Region",
+    x = "Secondary Burial Status",
+    y = "% of Graves with Hair Pins",
+    fill = "Region"
+  ) +
+  theme_minimal(base_size = 16) +
+  theme(legend.position = "bottom")
+```
+
+```{r secondary-pins-fisher}
+# Fisher's exact test by region (appropriate for small cell counts)
+for (reg in unique(cups_skulls_clean$region)) {
+  region_data <- cups_skulls_clean %>%
+    dplyr::filter(region == reg & !is.na(secondary_burial) & !is.na(has_pin))
+
+  contingency <- table(region_data$secondary_burial, region_data$has_pin)
+
+  cat("\n===", toupper(reg), "===\n")
+  print(contingency)
+
+  if (all(dim(contingency) == c(2, 2))) {
+    fisher_result <- fisher.test(contingency)
+    cat("Fisher's exact test p-value:", round(fisher_result$p.value, 4), "\n")
+    cat("Odds ratio:", round(fisher_result$estimate, 3), "\n")
+  } else {
+    cat("Insufficient variation for statistical test\n")
+  }
+}
+```
+
+## Drinking Vessels, Secondary Burial, and Hair Pins
+
+### Three-Way Cross-Tabulation by Region
+
+```{r three-way-table}
+three_way <- cups_skulls_clean %>%
+  dplyr::filter(!is.na(has_drinking_vessel) & !is.na(secondary_burial) & !is.na(has_pin)) %>%
+  group_by(region, has_drinking_vessel, secondary_burial, has_pin) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  mutate(
+    vessel_label = ifelse(has_drinking_vessel, "Vessel Present", "No Vessel"),
+    secondary_label = ifelse(secondary_burial, "Secondary Present", "Secondary Absent"),
+    pin_label = ifelse(has_pin, "With Pin", "No Pin")
+  )
+
+kable(three_way %>% select(region, vessel_label, secondary_label, pin_label, count))
+```
+
+```{r three-way-plot, fig.width=14, fig.height=8}
+three_way_summary <- cups_skulls_clean %>%
+  dplyr::filter(!is.na(has_drinking_vessel) & !is.na(secondary_burial) & !is.na(has_pin)) %>%
+  mutate(
+    vessel_label = ifelse(has_drinking_vessel, "Vessel Present", "No Vessel"),
+    secondary_label = ifelse(secondary_burial, "Secondary Present", "Secondary Absent"),
+    pin_label = ifelse(has_pin, "With Pin", "No Pin")
+  ) %>%
+  count(region, vessel_label, secondary_label, pin_label)
+
+ggplot(three_way_summary, aes(x = secondary_label, y = n, fill = pin_label)) +
+  geom_col(position = "dodge", width = 0.7) +
+  scale_fill_manual(values = c("With Pin" = colors$pin, "No Pin" = "grey70")) +
+  facet_grid(vessel_label ~ region) +
+  geom_text(aes(label = n), position = position_dodge(width = 0.7), vjust = -0.3, size = 3) +
+  labs(
+    title = "Hair Pins by Secondary Burial Status and Drinking Vessel Presence",
+    subtitle = "Rows: Drinking Vessel status | Columns: Region",
+    x = "Secondary Burial Status",
+    y = "Count",
+    fill = "Hair Pin"
+  ) +
+  theme_minimal(base_size = 16) +
+  theme(legend.position = "bottom", axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+## Hair Pins and Chamber Size
+
+### Do graves with hair pins tend to be larger?
+
+```{r pins-area-summary}
+pins_area_data <- cups_skulls_clean %>%
+  dplyr::filter(!is.na(area_of_chamber_estimated) & !is.na(has_pin))
+
+cat("Graves with area AND pin status:", nrow(pins_area_data), "\n")
+
+pins_area_data %>%
+  group_by(has_pin) %>%
+  summarise(
+    n = n(),
+    mean_area = round(mean(area_of_chamber_estimated, na.rm = TRUE), 2),
+    median_area = round(median(area_of_chamber_estimated, na.rm = TRUE), 2),
+    sd_area = round(sd(area_of_chamber_estimated, na.rm = TRUE), 2),
+    .groups = "drop"
+  ) %>%
+  mutate(pin_label = ifelse(has_pin, "With Pin", "No Pin")) %>%
+  kable()
+```
+
+```{r pins-area-boxplot, fig.width=12, fig.height=6}
+ggplot(pins_area_data, aes(x = ifelse(has_pin, "With Pin", "No Pin"),
+                            y = area_of_chamber_estimated, fill = region)) +
+  geom_boxplot(alpha = 0.7, position = "dodge") +
+  scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
+  labs(
+    title = "Chamber Area by Hair Pin Presence and Region",
+    x = "Hair Pin Status",
+    y = "Chamber Area Estimated (m\u00b2)",
+    fill = "Region"
+  ) +
+  theme_minimal(base_size = 16) +
+  theme(legend.position = "bottom")
+```
+
+```{r pins-area-test}
+# Wilcoxon test (non-parametric, appropriate for potentially non-normal area data)
+for (reg in unique(pins_area_data$region)) {
+  region_data <- pins_area_data %>% dplyr::filter(region == reg)
+  with_pin <- region_data %>% dplyr::filter(has_pin == TRUE) %>% pull(area_of_chamber_estimated)
+  without_pin <- region_data %>% dplyr::filter(has_pin == FALSE) %>% pull(area_of_chamber_estimated)
+
+  cat("\n===", toupper(reg), "===\n")
+  cat("With pin: n =", length(with_pin), ", median =", round(median(with_pin), 2), "\n")
+  cat("Without pin: n =", length(without_pin), ", median =", round(median(without_pin), 2), "\n")
+
+  if (length(with_pin) >= 2 & length(without_pin) >= 2) {
+    test_result <- wilcox.test(with_pin, without_pin)
+    cat("Wilcoxon rank-sum test p-value:", round(test_result$p.value, 4), "\n")
+  } else {
+    cat("Too few observations for statistical test\n")
+  }
+}
 ```
 
 ## Skeletal Remains Analysis
@@ -488,7 +773,7 @@ print(remains_summary)
 
 ```{r skulls-analysis}
 skulls_stats <- cups_skulls_clean %>%
-  filter(!is.na(skulls_number)) %>%
+  dplyr::filter(!is.na(skulls_number)) %>%
   summarise(
     graves_with_skull_count = n(),
     total_skulls = sum(skulls_number, na.rm = TRUE),
@@ -502,7 +787,7 @@ print(skulls_stats)
 
 ```{r skulls-distribution}
 skulls_by_count <- cups_skulls_clean %>%
-  filter(!is.na(skulls_number)) %>%
+  dplyr::filter(!is.na(skulls_number)) %>%
   count(skulls_number, name = "graves") %>%
   arrange(skulls_number)
 
@@ -515,7 +800,7 @@ print(skulls_by_count)
 
 ```{r vessels-and-remains}
 vessels_remains_cross <- cups_skulls_clean %>%
-  filter(!is.na(has_drinking_vessel) & !is.na(has_remains)) %>%
+  dplyr::filter(!is.na(has_drinking_vessel) & !is.na(has_remains)) %>%
   count(has_drinking_vessel, has_remains) %>%
   pivot_wider(names_from = has_remains, values_from = n, values_fill = 0) %>%
   rename(no_remains = `FALSE`, with_remains = `TRUE`)
@@ -527,7 +812,7 @@ print(vessels_remains_cross)
 ```{r vessels-and-remains-analysis}
 # Calculate cross-tabulation with percentages
 cross_analysis <- cups_skulls_clean %>%
-  filter(!is.na(has_drinking_vessel) & !is.na(has_remains)) %>%
+  dplyr::filter(!is.na(has_drinking_vessel) & !is.na(has_remains)) %>%
   group_by(has_drinking_vessel) %>%
   summarise(
     total = n(),
@@ -543,7 +828,7 @@ kable(select(cross_analysis, vessel_status, total, with_remains, pct_with_remain
 
 ```{r vessels-skulls-scatter}
 vessels_skulls_data <- cups_skulls_clean %>%
-  filter(!is.na(drinking_vessel_number) & !is.na(skulls_number)) %>%
+  dplyr::filter(!is.na(drinking_vessel_number) & !is.na(skulls_number)) %>%
   mutate(has_vessels_label = ifelse(has_drinking_vessel, "With Vessels", "No Vessels"))
 
 ggplot(vessels_skulls_data, aes(x = drinking_vessel_number, y = skulls_number, color = has_vessels_label)) +
@@ -555,7 +840,7 @@ ggplot(vessels_skulls_data, aes(x = drinking_vessel_number, y = skulls_number, c
     y = "Number of Skulls",
     color = ""
   ) +
-  theme_minimal() +
+  theme_minimal(base_size = 16) +
   theme(legend.position = "bottom")
 ```
 
@@ -601,6 +886,712 @@ period_summary <- cups_skulls_clean %>%
 print(period_summary)
 ```
 
+### Period Span Analysis
+
+The following chart shows how each **period code in the dataset** maps onto the Bronze Age calendar. The x-axis is proportional to actual calendar years (BCE), so visually wider rows represent longer date ranges.
+
+- **Range periods** (e.g., "LHIIA–LHIIIB") appear as horizontal segments. These indicate that the scholarly record only places the grave within a span of phases — the grave could date to any point within that range.
+- **Single-period codes** (e.g., "LHIIIA2") appear as single points — more precisely dated graves.
+- The **dashed vertical lines** mark the start of each major phase. Tick labels that combine multiple codes (e.g., "LHIII / LHIIIA / LHIIIA1") indicate phase boundaries that coincide on the calendar.
+
+**For temporal analyses:** Graves with wide-spanning period codes (long bars) are assigned to the broad phase of their *earliest* endpoint. This is the most conservative choice but means a grave recorded as "MH–LHIIIC" (spanning nearly 1,000 years) is counted as an MH-phase grave, even though it may represent a much later context.
+
+```{r period-span-chart, fig.width=16, fig.height=14}
+# Identify single-component periods and attach calendar years
+single_periods <- period_dict %>%
+  dplyr::filter(earliest_component == latest_component) %>%
+  select(period_code, chronological_order) %>%
+  arrange(chronological_order) %>%
+  distinct(period_code, .keep_all = TRUE) %>%
+  dplyr::filter(period_code != "LH II") %>%
+  left_join(component_cal %>% select(component, cal_start_bce),
+            by = c("period_code" = "component"))
+
+# Get all period codes in the data with their calendar year spans
+period_spans <- cups_skulls_clean %>%
+  dplyr::filter(!is.na(period_start_cal) & !is.na(period_end_cal)) %>%
+  distinct(period, period_start_cal, period_end_cal) %>%
+  mutate(
+    is_range = period_start_cal != period_end_cal,
+    span_width = period_start_cal - period_end_cal  # BCE: larger start = earlier
+  ) %>%
+  arrange(desc(period_start_cal), period_end_cal)
+
+# Count graves per period code
+period_counts <- cups_skulls_clean %>%
+  dplyr::filter(!is.na(period_start_cal)) %>%
+  count(period, name = "n_graves")
+
+period_spans <- period_spans %>%
+  left_join(period_counts, by = "period") %>%
+  mutate(period_label = paste0(period, " (n=", n_graves, ")")) %>%
+  mutate(period_label = factor(period_label,
+    levels = rev(mutate(arrange(., desc(period_start_cal), period_end_cal),
+                        period_label = paste0(period, " (n=", n_graves, ")"))$period_label)))
+
+# Collapse period codes that share the same calendar position into one label
+# (e.g. LH and LHI both start at 1600 BCE — combine as "LH / LHI")
+single_periods_unique <- dplyr::filter(single_periods, !is.na(cal_start_bce)) %>%
+  group_by(cal_start_bce) %>%
+  summarise(period_code = paste(period_code, collapse = " / "), .groups = "drop")
+
+ggplot(period_spans) +
+  geom_segment(
+    data = dplyr::filter(period_spans, is_range),
+    aes(x = period_start_cal, xend = period_end_cal,
+        y = period_label, yend = period_label),
+    linewidth = 2, color = colors$drinking_vessel, alpha = 0.7
+  ) +
+  geom_point(
+    aes(x = period_start_cal, y = period_label),
+    size = 3, color = colors$drinking_vessel
+  ) +
+  geom_point(
+    data = dplyr::filter(period_spans, is_range),
+    aes(x = period_end_cal, y = period_label),
+    size = 3, color = colors$drinking_vessel
+  ) +
+  geom_vline(
+    data = single_periods_unique,
+    aes(xintercept = cal_start_bce),
+    linetype = "dashed", alpha = 0.3
+  ) +
+  scale_x_reverse(
+    breaks = single_periods_unique$cal_start_bce,
+    labels = single_periods_unique$period_code
+  ) +
+  labs(
+    title = "Period Spans in the Dataset",
+    subtitle = "Each row is a period code used in the data. X-axis is proportional calendar time (BCE).",
+    x = "Calendar Date (BCE)",
+    y = "Period Code (n = number of graves)"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 10),
+    axis.text.y = element_text(size = 9),
+    panel.grid.major.y = element_line(color = "grey90"),
+    panel.grid.minor = element_blank()
+  )
+```
+
+```{r period-span-summary}
+cat("=== Individual chronological components (in order) ===\n\n")
+for (i in 1:nrow(single_periods)) {
+  cat(sprintf("  %2d. %s\n", i, single_periods$period_code[i]))
+}
+
+cat("\n=== Summary ===\n")
+cat("Single-period codes:", sum(!period_spans$is_range), "\n")
+cat("Range-period codes:", sum(period_spans$is_range), "\n")
+cat("Total period codes in data:", nrow(period_spans), "\n")
+
+cat("\n=== Range periods spanning 3+ components ===\n")
+wide_spans <- period_spans %>%
+  dplyr::filter(span_width > 10) %>%
+  arrange(desc(span_width))
+if (nrow(wide_spans) > 0) {
+  for (i in 1:nrow(wide_spans)) {
+    cat(sprintf("  %s: spans from order %g to %g (width = %g, n = %d graves)\n",
+        wide_spans$period[i], wide_spans$period_start_order[i],
+        wide_spans$period_end_order[i], wide_spans$span_width[i],
+        wide_spans$n_graves[i]))
+  }
+}
+```
+
+### Individual Graves by Period and Region
+
+Each line represents a single grave, spanning its period range. Graves are colored by whether hair pins were found. This shows how graves cluster across time and whether pin-bearing graves concentrate in particular periods.
+
+```{r graves-by-period-region, fig.width=16, fig.height=14}
+# Prepare individual grave data with calendar year spans
+graves_time <- cups_skulls_clean %>%
+  dplyr::filter(!is.na(period_start_cal) & !is.na(period_end_cal) & !is.na(has_pin)) %>%
+  mutate(pin_label = ifelse(has_pin, "With Pin", "No Pin")) %>%
+  # Order graves: earlier start first (higher BCE = earlier), then narrower range
+  arrange(region, desc(period_start_cal), period_end_cal) %>%
+  group_by(region) %>%
+  mutate(grave_rank = row_number()) %>%
+  ungroup()
+
+# Use single_periods with cal years (already built in period-span-chart chunk)
+sp_cal <- dplyr::filter(single_periods, !is.na(cal_start_bce))
+
+ggplot(graves_time) +
+  geom_segment(
+    aes(x = period_start_cal, xend = period_end_cal,
+        y = grave_rank, yend = grave_rank,
+        color = pin_label),
+    linewidth = 0.8, alpha = 0.7
+  ) +
+  geom_point(
+    data = dplyr::filter(graves_time, period_start_cal == period_end_cal),
+    aes(x = period_start_cal, y = grave_rank, color = pin_label),
+    size = 1.5, alpha = 0.7
+  ) +
+  scale_color_manual(values = c("With Pin" = colors$pin, "No Pin" = colors$drinking_vessel)) +
+  geom_vline(
+    data = sp_cal,
+    aes(xintercept = cal_start_bce),
+    linetype = "dashed", alpha = 0.2
+  ) +
+  scale_x_reverse(
+    breaks = sp_cal$cal_start_bce,
+    labels = sp_cal$period_code
+  ) +
+  facet_wrap(~region, ncol = 1, scales = "free_y") +
+  labs(
+    title = "Individual Graves by Period Span and Region",
+    subtitle = "Each line = one grave. X-axis is proportional calendar time (BCE). Colored by hair pin presence.",
+    x = "Calendar Date (BCE)",
+    y = "Graves (ordered by period)",
+    color = "Hair Pin"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "bottom",
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 11),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank()
+  )
+```
+
+## Temporal Analyses
+
+The purpose of this section is to examine whether funerary practices — burial type, presence of drinking vessels, hair pins, and tomb size — changed over the course of the Bronze Age and whether those changes differed between Laconia and Messenia.
+
+### How Graves Are Assigned to Phases
+
+Graves in this dataset are often given **date ranges** rather than a single period (e.g., a grave might be recorded as "LHIIA–LHIIIB," meaning it could date anywhere within that span). For the temporal plots below, each grave is assigned to the **7-phase broad phase scheme** (MH → SM) based on its **earliest** period component. A grave dated LHIIA–LHIIIB, for instance, is counted in "LH II" — its earliest possible phase.
+
+**What this means for interpretation:** A grave assigned to an early phase may actually be a later burial; the assignment is conservative (if anything, it understates change over time). Graves spanning many centuries are the most ambiguous, and their placement in the earliest phase is a simplification.
+
+**Excluded graves:** Graves whose period code could not be matched to any known component (i.e., those with unusual or incomplete period designations) receive `NA` for `broad_phase` and are **excluded from all temporal plots**. The table below shows how many graves fall into each phase, including the NA count. Additionally, graves recorded only as the generic undifferentiated "LH" code are assigned to "LH I" (the earliest LH sub-phase), which may slightly inflate that category.
+
+Two display options are shown for each plot:
+
+- **Option A** — Ordered categorical x-axis (7 broad phases as labels, equal spacing)
+- **Option B** — Proportional calendar x-axis (BCE years, bar widths scaled to actual phase duration)
+
+```{r phase-coverage}
+cat("Graves assigned to broad phases:\n")
+print(table(cups_skulls_clean$broad_phase, useNA = "ifany"))
+```
+
+---
+
+### Burial Type Composition Over Time
+
+These charts show whether the **mix of primary and secondary burials** changed over time within each region. Primary burial refers to an intact, articulated interment of a body; secondary burial refers to the later re-deposition of skeletal remains (typically disarticulated bones moved to make room for new burials). A single grave can contain both.
+
+Each grave is classified into one of four **mutually exclusive** categories:
+- **Primary only** — evidence for primary burial, no secondary
+- **Both** — evidence for both primary and secondary burials
+- **Secondary only** — evidence for secondary burial only
+- **Neither/Unknown** — no burial type recorded
+
+Bars show **100% of graves dated to that phase in that region**; n= total graves in the phase. The "Neither/Unknown" segment is important: it reflects gaps in the recording — graves where burial type was not noted, not necessarily graves without burials. A large "Neither/Unknown" segment in a phase indicates the available data for that period is limited.
+
+#### Option A: Broad Phase Categories — Proportions
+
+```{r burial-over-time, fig.width=14, fig.height=8}
+burial_cat_data <- cups_skulls_clean %>%
+  dplyr::filter(!is.na(broad_phase)) %>%
+  mutate(burial_cat = case_when(
+    primary_burial == TRUE & secondary_burial == TRUE ~ "Both",
+    primary_burial == TRUE                            ~ "Primary only",
+    secondary_burial == TRUE                          ~ "Secondary only",
+    TRUE                                              ~ "Neither/Unknown"
+  ),
+  burial_cat = factor(burial_cat,
+    levels = c("Primary only", "Both", "Secondary only", "Neither/Unknown"))) %>%
+  group_by(region, broad_phase, burial_cat) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(region, broad_phase) %>%
+  mutate(total = sum(n), pct = n / total * 100) %>%
+  ungroup()
+
+phase_totals_burial <- burial_cat_data %>%
+  distinct(region, broad_phase, total)
+
+ggplot(burial_cat_data, aes(x = broad_phase, y = pct, fill = burial_cat)) +
+  geom_col(position = "stack", width = 0.7) +
+  geom_text(aes(label = ifelse(pct >= 8, paste0(round(pct), "%"), "")),
+            position = position_stack(vjust = 0.5), size = 3.5, color = "white") +
+  geom_text(data = phase_totals_burial,
+            aes(x = broad_phase, y = 104, label = paste0("n=", total)),
+            inherit.aes = FALSE, vjust = 0, size = 3.5) +
+  scale_fill_manual(values = c(
+    "Primary only"    = colors$drinking_vessel,
+    "Both"            = "#44AA99",
+    "Secondary only"  = colors$skulls,
+    "Neither/Unknown" = "grey80"
+  )) +
+  scale_y_continuous(limits = c(0, 113), labels = function(x) paste0(x, "%")) +
+  facet_wrap(~region, ncol = 1) +
+  labs(
+    title = "Burial Type Composition Over Time by Region",
+    subtitle = "Option A: each bar = 100% of graves in that phase; n= total graves",
+    x = "Broad Phase", y = "% of Graves in Phase", fill = "Burial Type"
+  ) +
+  theme(legend.position = "bottom", axis.text.x = element_text(angle = 30, hjust = 1))
+```
+
+#### Option A: Raw Counts
+
+```{r burial-over-time-raw, fig.width=14, fig.height=8}
+ggplot(burial_cat_data, aes(x = broad_phase, y = n, fill = burial_cat)) +
+  geom_col(position = "stack", width = 0.7) +
+  geom_text(aes(label = ifelse(n >= 2, n, "")),
+            position = position_stack(vjust = 0.5), size = 3.5, color = "white") +
+  scale_fill_manual(values = c(
+    "Primary only"    = colors$drinking_vessel,
+    "Both"            = "#44AA99",
+    "Secondary only"  = colors$skulls,
+    "Neither/Unknown" = "grey80"
+  )) +
+  facet_wrap(~region, ncol = 1) +
+  labs(
+    title = "Burial Type Counts Over Time by Region",
+    subtitle = "Option A: raw number of graves per burial type category per phase",
+    x = "Broad Phase", y = "Number of Graves", fill = "Burial Type"
+  ) +
+  theme(legend.position = "bottom", axis.text.x = element_text(angle = 30, hjust = 1))
+```
+
+#### Option B: Proportional Calendar Time (BCE) — Proportions
+
+```{r burial-over-time-b, fig.width=14, fig.height=8}
+burial_cat_b <- burial_cat_data %>%
+  left_join(phase_cal, by = "broad_phase") %>%
+  mutate(bar_width = phase_duration * 0.75)
+
+phase_totals_burial_b <- burial_cat_b %>%
+  distinct(region, broad_phase, total, phase_mid_bce)
+
+ggplot(burial_cat_b, aes(x = phase_mid_bce, y = pct, fill = burial_cat, width = bar_width)) +
+  geom_col(position = "stack") +
+  geom_text(aes(label = ifelse(pct >= 8, paste0(round(pct), "%"), "")),
+            position = position_stack(vjust = 0.5), size = 3.5, color = "white") +
+  geom_text(data = phase_totals_burial_b,
+            aes(x = phase_mid_bce, y = 104, label = paste0("n=", total)),
+            inherit.aes = FALSE, vjust = 0, size = 3.5) +
+  scale_fill_manual(values = c(
+    "Primary only"    = colors$drinking_vessel,
+    "Both"            = "#44AA99",
+    "Secondary only"  = colors$skulls,
+    "Neither/Unknown" = "grey80"
+  )) +
+  scale_y_continuous(limits = c(0, 113), labels = function(x) paste0(x, "%")) +
+  scale_x_reverse(
+    breaks = phase_cal$phase_start_bce,
+    labels = paste0(phase_cal$phase_start_bce, "\n(", phase_cal$broad_phase, ")")
+  ) +
+  facet_wrap(~region, ncol = 1) +
+  labs(
+    title = "Burial Type Composition Over Time by Region",
+    subtitle = "Option B: bar widths proportional to phase duration; each bar = 100% of graves in that phase",
+    x = "Calendar Date BCE (phase start)", y = "% of Graves in Phase", fill = "Burial Type"
+  ) +
+  theme(legend.position = "bottom")
+```
+
+#### Option B: Raw Counts
+
+```{r burial-over-time-b-raw, fig.width=14, fig.height=8}
+ggplot(burial_cat_b, aes(x = phase_mid_bce, y = n, fill = burial_cat, width = bar_width)) +
+  geom_col(position = "stack") +
+  geom_text(aes(label = ifelse(n >= 2, n, "")),
+            position = position_stack(vjust = 0.5), size = 3.5, color = "white") +
+  scale_fill_manual(values = c(
+    "Primary only"    = colors$drinking_vessel,
+    "Both"            = "#44AA99",
+    "Secondary only"  = colors$skulls,
+    "Neither/Unknown" = "grey80"
+  )) +
+  scale_x_reverse(
+    breaks = phase_cal$phase_start_bce,
+    labels = paste0(phase_cal$phase_start_bce, "\n(", phase_cal$broad_phase, ")")
+  ) +
+  facet_wrap(~region, ncol = 1) +
+  labs(
+    title = "Burial Type Counts Over Time by Region",
+    subtitle = "Option B: raw counts; bar widths proportional to phase duration",
+    x = "Calendar Date BCE (phase start)", y = "Number of Graves", fill = "Burial Type"
+  ) +
+  theme(legend.position = "bottom")
+```
+
+---
+
+### Regional Comparison: Secondary Burial Over Time
+
+These plots isolate the **secondary burial rate** — the proportion of graves in each phase with evidence for secondary burial — and compare Laconia and Messenia directly. The two regions are stacked top-to-bottom to make the x-axis comparable at a glance.
+
+**What to look for:** Do the two regions track together (suggesting pan-regional practice) or diverge (suggesting regional differences in how and when secondary burial became common)? Phases with very small n (shown in the labels) should be interpreted cautiously — a single grave shifts the percentage dramatically.
+
+Labels show "X% (N secondary of M total graves in that phase)."
+
+#### Option A: Broad Phase Categories — Proportions
+
+```{r burial-time-comparison, fig.width=14, fig.height=8}
+secondary_phase <- cups_skulls_clean %>%
+  dplyr::filter(!is.na(broad_phase) & !is.na(secondary_burial)) %>%
+  group_by(region, broad_phase) %>%
+  summarise(
+    n_graves    = n(),
+    n_secondary = sum(secondary_burial == TRUE),
+    pct_secondary = round(n_secondary / n_graves * 100, 1),
+    .groups = "drop"
+  )
+
+ggplot(secondary_phase, aes(x = broad_phase, y = pct_secondary, fill = region)) +
+  geom_col(width = 0.7) +
+  geom_text(aes(label = paste0(round(pct_secondary), "%\n(", n_secondary, " of ", n_graves, ")")),
+            vjust = -0.3, size = 3.5) +
+  scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
+  scale_y_continuous(limits = c(0, 130)) +
+  facet_wrap(~region, ncol = 1) +
+  labs(
+    title = "Secondary Burial Frequency Over Time: Laconia vs Messenia",
+    subtitle = "Option A: % of graves in each phase with secondary burial; label = secondary of total",
+    x = "Broad Phase", y = "% of Graves with Secondary Burial", fill = "Region"
+  ) +
+  theme(legend.position = "none", axis.text.x = element_text(angle = 30, hjust = 1))
+```
+
+#### Option A: Raw Counts
+
+```{r burial-time-comparison-raw, fig.width=14, fig.height=8}
+secondary_raw_stack <- secondary_phase %>%
+  mutate(n_other = n_graves - n_secondary) %>%
+  pivot_longer(cols = c(n_secondary, n_other),
+               names_to = "burial_type", values_to = "count") %>%
+  mutate(burial_type = ifelse(burial_type == "n_secondary", "Secondary Burial", "Other Graves"))
+
+ggplot(secondary_raw_stack, aes(x = broad_phase, y = count, fill = burial_type)) +
+  geom_col(position = "stack", width = 0.7) +
+  geom_text(aes(label = ifelse(count > 0, count, "")),
+            position = position_stack(vjust = 0.5), size = 3.5, color = "white") +
+  scale_fill_manual(values = c("Secondary Burial" = colors$skulls, "Other Graves" = "grey80")) +
+  facet_wrap(~region, ncol = 1) +
+  labs(
+    title = "Secondary Burial Counts Over Time: Laconia vs Messenia",
+    subtitle = "Option A: each bar = total graves in phase; highlighted segment = graves with secondary burial",
+    x = "Broad Phase", y = "Number of Graves", fill = ""
+  ) +
+  theme(legend.position = "bottom", axis.text.x = element_text(angle = 30, hjust = 1))
+```
+
+#### Option B: Proportional Calendar Time (BCE) — Proportions
+
+```{r burial-time-comparison-b, fig.width=14, fig.height=8}
+secondary_phase_b <- secondary_phase %>%
+  left_join(phase_cal, by = "broad_phase") %>%
+  mutate(bar_width = phase_duration * 0.8)
+
+ggplot(secondary_phase_b,
+       aes(x = phase_mid_bce, y = pct_secondary, fill = region, width = bar_width)) +
+  geom_col(position = "identity") +
+  geom_text(aes(label = paste0(round(pct_secondary), "%\n(", n_secondary, " of ", n_graves, ")")),
+            vjust = -0.3, size = 3.5) +
+  scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
+  scale_y_continuous(limits = c(0, 130)) +
+  scale_x_reverse(
+    breaks = phase_cal$phase_start_bce,
+    labels = paste0(phase_cal$phase_start_bce, "\n(", phase_cal$broad_phase, ")")
+  ) +
+  facet_wrap(~region, ncol = 1) +
+  labs(
+    title = "Secondary Burial Frequency Over Time: Laconia vs Messenia",
+    subtitle = "Option B: bar widths proportional to phase duration; % of graves in that phase with secondary burial",
+    x = "Calendar Date BCE (phase start)", y = "% of Graves with Secondary Burial", fill = "Region"
+  ) +
+  theme(legend.position = "none")
+```
+
+#### Option B: Raw Counts
+
+```{r burial-time-comparison-b-raw, fig.width=14, fig.height=8}
+secondary_raw_stack_b <- secondary_phase_b %>%
+  mutate(n_other = n_graves - n_secondary) %>%
+  pivot_longer(cols = c(n_secondary, n_other),
+               names_to = "burial_type", values_to = "count") %>%
+  mutate(burial_type = ifelse(burial_type == "n_secondary", "Secondary Burial", "Other Graves"))
+
+ggplot(secondary_raw_stack_b,
+       aes(x = phase_mid_bce, y = count, fill = burial_type, width = bar_width)) +
+  geom_col(position = "stack") +
+  geom_text(aes(label = ifelse(count > 0, count, "")),
+            position = position_stack(vjust = 0.5), size = 3.5, color = "white") +
+  scale_fill_manual(values = c("Secondary Burial" = colors$skulls, "Other Graves" = "grey80")) +
+  scale_x_reverse(
+    breaks = phase_cal$phase_start_bce,
+    labels = paste0(phase_cal$phase_start_bce, "\n(", phase_cal$broad_phase, ")")
+  ) +
+  facet_wrap(~region, ncol = 1) +
+  labs(
+    title = "Secondary Burial Counts Over Time: Laconia vs Messenia",
+    subtitle = "Option B: raw counts; bar widths proportional to phase duration",
+    x = "Calendar Date BCE (phase start)", y = "Number of Graves", fill = ""
+  ) +
+  theme(legend.position = "bottom")
+```
+
+---
+
+### All Burial Variables Over Time
+
+These line charts bring together the three main assemblage attributes — drinking vessels, secondary burial, and hair pins — on a single timeline, allowing comparison of their trends. Point size reflects the total number of graves in that phase and region, so visually smaller points signal phases with sparse data where percentages are less reliable.
+
+**Important:** The three variables are **not mutually exclusive** — a grave may have drinking vessels *and* secondary burial *and* a hair pin. The lines therefore do not add up to 100%. Each line independently answers: "In what share of graves in this phase is this attribute present?"
+
+**Excluded graves:** Graves with `NA` for `broad_phase` (unmatched period codes) are not plotted. This is typically a small number; see the phase coverage table above.
+
+**Interpreting the raw count companion:** The raw count version makes the denominators visible. When a percentage looks high or low, checking the raw counts reveals whether it is based on 2 graves or 20. Phases where total graves (point size) are very small should be treated as preliminary observations, not firm patterns.
+
+#### Option A: Broad Phase Categories — Proportions
+
+```{r vessels-pins-time, fig.width=10, fig.height=8}
+multi_phase_data <- cups_skulls_clean %>%
+  dplyr::filter(!is.na(broad_phase)) %>%
+  group_by(region, broad_phase) %>%
+  summarise(
+    n_graves          = n(),
+    n_drinking_vessel = sum(has_drinking_vessel == TRUE, na.rm = TRUE),
+    n_secondary       = sum(secondary_burial    == TRUE, na.rm = TRUE),
+    n_pin             = sum(has_pin             == TRUE, na.rm = TRUE),
+    pct_drinking_vessel = round(n_drinking_vessel / n_graves * 100, 1),
+    pct_secondary       = round(n_secondary       / n_graves * 100, 1),
+    pct_pin             = round(n_pin             / n_graves * 100, 1),
+    .groups = "drop"
+  )
+
+multi_phase_pct_long <- multi_phase_data %>%
+  pivot_longer(cols = c(pct_drinking_vessel, pct_secondary, pct_pin),
+               names_to = "variable", values_to = "percentage") %>%
+  mutate(variable = case_when(
+    variable == "pct_drinking_vessel" ~ "Drinking Vessel",
+    variable == "pct_secondary"       ~ "Secondary Burial",
+    variable == "pct_pin"             ~ "Hair Pin"
+  ),
+  variable = factor(variable, levels = c("Drinking Vessel", "Secondary Burial", "Hair Pin")))
+
+dodge_a <- position_dodge(width = 0.4)
+
+ggplot(multi_phase_pct_long,
+       aes(x = broad_phase, y = percentage, color = variable, group = variable)) +
+  geom_line(linewidth = 1.2, position = dodge_a) +
+  geom_point(aes(size = n_graves), position = dodge_a) +
+  geom_text_repel(aes(label = paste0(round(percentage), "%")),
+                  size = 4, show.legend = FALSE,
+                  bg.color = "white", bg.r = 0.15,
+                  min.segment.length = 0, seed = 42,
+                  box.padding = 0.4,
+                  position = dodge_a) +
+  scale_color_manual(values = c(
+    "Drinking Vessel"  = colors$drinking_vessel,
+    "Secondary Burial" = colors$skulls,
+    "Hair Pin"         = colors$pin
+  )) +
+  scale_size_continuous(range = c(2, 8)) +
+  scale_y_continuous(limits = c(0, 115)) +
+  facet_wrap(~region, ncol = 1) +
+  labs(
+    title = "Burial Practices Over Time by Region",
+    subtitle = "Option A: % of graves with each attribute per phase; point size = total graves\nNote: variables are not mutually exclusive — a grave may appear in multiple lines",
+    x = "Broad Phase", y = "% of Graves in Phase",
+    color = "Variable", size = "Total Graves"
+  ) +
+  theme(legend.position = "bottom", axis.text.x = element_text(angle = 30, hjust = 1))
+```
+
+#### Option A: Raw Counts
+
+```{r vessels-pins-time-raw, fig.width=10, fig.height=8}
+multi_phase_n_long <- multi_phase_data %>%
+  pivot_longer(cols = c(n_drinking_vessel, n_secondary, n_pin),
+               names_to = "variable", values_to = "count") %>%
+  mutate(variable = case_when(
+    variable == "n_drinking_vessel" ~ "Drinking Vessel",
+    variable == "n_secondary"       ~ "Secondary Burial",
+    variable == "n_pin"             ~ "Hair Pin"
+  ),
+  variable = factor(variable, levels = c("Drinking Vessel", "Secondary Burial", "Hair Pin")))
+
+ggplot(multi_phase_n_long,
+       aes(x = broad_phase, y = count, color = variable, group = variable)) +
+  geom_line(linewidth = 1.2, position = dodge_a) +
+  geom_point(aes(size = n_graves), position = dodge_a) +
+  geom_text_repel(aes(label = paste0(count, " of ", n_graves)),
+                  size = 4, show.legend = FALSE,
+                  bg.color = "white", bg.r = 0.15,
+                  min.segment.length = 0, seed = 42,
+                  box.padding = 0.4,
+                  position = dodge_a) +
+  scale_color_manual(values = c(
+    "Drinking Vessel"  = colors$drinking_vessel,
+    "Secondary Burial" = colors$skulls,
+    "Hair Pin"         = colors$pin
+  )) +
+  scale_size_continuous(range = c(2, 8)) +
+  facet_wrap(~region, ncol = 1) +
+  labs(
+    title = "Burial Practice Counts Over Time by Region",
+    subtitle = "Option A: raw count with each attribute per phase; label = count of total graves in phase\nNote: variables are not mutually exclusive — a grave may appear in multiple lines",
+    x = "Broad Phase", y = "Number of Graves with Attribute",
+    color = "Variable", size = "Total Graves"
+  ) +
+  theme(legend.position = "bottom", axis.text.x = element_text(angle = 30, hjust = 1))
+```
+
+#### Option B: Proportional Calendar Time (BCE) — Proportions
+
+```{r vessels-pins-time-b, fig.width=10, fig.height=8}
+multi_phase_b_pct <- multi_phase_pct_long %>%
+  left_join(phase_cal, by = "broad_phase") %>%
+  mutate(x_plot = phase_mid_bce + case_when(
+    variable == "Drinking Vessel"  ~ -8L,
+    variable == "Secondary Burial" ~  0L,
+    variable == "Hair Pin"         ~  8L
+  ))
+
+ggplot(multi_phase_b_pct,
+       aes(x = x_plot, y = percentage, color = variable, group = variable)) +
+  geom_line(linewidth = 1.2) +
+  geom_point(aes(size = n_graves)) +
+  geom_text_repel(aes(label = paste0(round(percentage), "%")),
+                  size = 4, show.legend = FALSE,
+                  bg.color = "white", bg.r = 0.15,
+                  min.segment.length = 0, seed = 42,
+                  box.padding = 0.4) +
+  scale_color_manual(values = c(
+    "Drinking Vessel"  = colors$drinking_vessel,
+    "Secondary Burial" = colors$skulls,
+    "Hair Pin"         = colors$pin
+  )) +
+  scale_size_continuous(range = c(2, 8)) +
+  scale_y_continuous(limits = c(0, 115)) +
+  scale_x_reverse(
+    breaks = phase_cal$phase_mid_bce,
+    labels = paste0(phase_cal$phase_mid_bce, "\n(", phase_cal$broad_phase, ")")
+  ) +
+  facet_wrap(~region, ncol = 1) +
+  labs(
+    title = "Burial Practices Over Time by Region",
+    subtitle = "Option B: proportional calendar time; point size = total graves in phase; points offset ±8 yr for clarity\nNote: variables are not mutually exclusive — a grave may appear in multiple lines",
+    x = "Calendar Date BCE (phase midpoint)", y = "% of Graves in Phase",
+    color = "Variable", size = "Total Graves"
+  ) +
+  theme(legend.position = "bottom")
+```
+
+#### Option B: Raw Counts
+
+```{r vessels-pins-time-b-raw, fig.width=10, fig.height=8}
+multi_phase_b_n <- multi_phase_n_long %>%
+  left_join(phase_cal, by = "broad_phase") %>%
+  mutate(x_plot = phase_mid_bce + case_when(
+    variable == "Drinking Vessel"  ~ -8L,
+    variable == "Secondary Burial" ~  0L,
+    variable == "Hair Pin"         ~  8L
+  ))
+
+ggplot(multi_phase_b_n,
+       aes(x = x_plot, y = count, color = variable, group = variable)) +
+  geom_line(linewidth = 1.2) +
+  geom_point(aes(size = n_graves)) +
+  geom_text_repel(aes(label = paste0(count, " of ", n_graves)),
+                  size = 4, show.legend = FALSE,
+                  bg.color = "white", bg.r = 0.15,
+                  min.segment.length = 0, seed = 42,
+                  box.padding = 0.4) +
+  scale_color_manual(values = c(
+    "Drinking Vessel"  = colors$drinking_vessel,
+    "Secondary Burial" = colors$skulls,
+    "Hair Pin"         = colors$pin
+  )) +
+  scale_size_continuous(range = c(2, 8)) +
+  scale_x_reverse(
+    breaks = phase_cal$phase_mid_bce,
+    labels = paste0(phase_cal$phase_mid_bce, "\n(", phase_cal$broad_phase, ")")
+  ) +
+  facet_wrap(~region, ncol = 1) +
+  labs(
+    title = "Burial Practice Counts Over Time by Region",
+    subtitle = "Option B: raw counts; proportional calendar time; points offset ±8 yr for clarity\nNote: variables are not mutually exclusive — a grave may appear in multiple lines",
+    x = "Calendar Date BCE (phase midpoint)", y = "Number of Graves with Attribute",
+    color = "Variable", size = "Total Graves"
+  ) +
+  theme(legend.position = "bottom")
+```
+
+---
+
+### Chamber Area Over Time
+
+These boxplots show whether the **physical size of tomb chambers** changed over time within each region. Chamber area is recorded in estimated square meters. Only graves with area data are included — graves with `NA` for `area_of_chamber_estimated` are excluded; n= labels show how many graves contribute to each box. Phases with very few graves (n ≤ 3) produce unreliable boxplots where the median and quartiles are heavily influenced by individual outliers.
+
+**What to look for:** An increase in median area over time could suggest elaboration of tomb architecture; a decrease or stasis might indicate continuity or economic contraction. Tomb type also matters — tholos tombs tend to be larger than cist or pit graves — so any apparent temporal trend should be considered alongside the tomb type distribution of each phase.
+
+#### Option A: Broad Phase Categories
+
+```{r area-over-time, fig.width=14, fig.height=7}
+area_phase_data <- cups_skulls_clean %>%
+  dplyr::filter(!is.na(broad_phase) & !is.na(area_of_chamber_estimated))
+
+area_n <- area_phase_data %>%
+  group_by(region, broad_phase) %>%
+  summarise(n = n(), .groups = "drop")
+
+ggplot(area_phase_data, aes(x = broad_phase, y = area_of_chamber_estimated, fill = region)) +
+  geom_boxplot(alpha = 0.7) +
+  geom_text(data = area_n,
+            aes(x = broad_phase, y = Inf, label = paste0("n=", n)),
+            inherit.aes = FALSE, vjust = 2, size = 3.5) +
+  scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
+  facet_wrap(~region, ncol = 1) +
+  labs(
+    title = "Chamber Area Over Time by Region",
+    subtitle = "Option A: boxplots per broad phase; n= graves with area data in that phase",
+    x = "Broad Phase", y = "Chamber Area Estimated (m\u00b2)", fill = "Region"
+  ) +
+  theme(legend.position = "bottom", axis.text.x = element_text(angle = 30, hjust = 1))
+```
+
+#### Option B: Proportional Calendar Time (BCE)
+
+```{r area-over-time-b, fig.width=14, fig.height=7}
+area_phase_b <- area_phase_data %>%
+  left_join(phase_cal, by = "broad_phase")
+
+area_n_b <- area_phase_b %>%
+  group_by(region, broad_phase, phase_mid_bce) %>%
+  summarise(n = n(), .groups = "drop")
+
+ggplot(area_phase_b, aes(x = phase_mid_bce, y = area_of_chamber_estimated,
+                          group = interaction(broad_phase, region), fill = region)) +
+  geom_boxplot(aes(width = phase_duration * 0.8), alpha = 0.7) +
+  geom_text(data = area_n_b,
+            aes(x = phase_mid_bce, y = Inf, label = paste0("n=", n)),
+            inherit.aes = FALSE, vjust = 2, size = 3.5) +
+  scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
+  scale_x_reverse(
+    breaks = phase_cal$phase_start_bce,
+    labels = paste0(phase_cal$phase_start_bce, "\n(", phase_cal$broad_phase, ")")
+  ) +
+  facet_wrap(~region, ncol = 1) +
+  labs(
+    title = "Chamber Area Over Time by Region",
+    subtitle = "Option B: box widths proportional to phase duration; n= graves with area data",
+    x = "Calendar Date BCE (phase start)", y = "Chamber Area Estimated (m\u00b2)", fill = "Region"
+  ) +
+  theme(legend.position = "bottom")
+```
+
 ## Key Findings Summary
 
 ```{r findings}
@@ -617,7 +1608,12 @@ cat("   -", sum(cups_skulls_clean$has_remains == TRUE, na.rm = TRUE),
     "%) have human remains\n")
 cat("   - Skull counts recorded in", sum(!is.na(cups_skulls_clean$skulls_number)), "graves\n\n")
 
-cat("3. Burial Type Association:\n")
+cat("3. Hair Pin Prevalence:\n")
+cat("   -", sum(cups_skulls_clean$has_pin == TRUE, na.rm = TRUE),
+    "graves (", round(sum(cups_skulls_clean$has_pin == TRUE, na.rm = TRUE) / nrow(cups_skulls_clean) * 100, 1),
+    "%) have hair pins recorded\n\n")
+
+cat("4. Burial Type Association:\n")
 burial_counts <- cups_skulls_clean %>%
   count(burial_category) %>%
   arrange(desc(n))
@@ -641,7 +1637,7 @@ This section explores whether the estimated chamber area relates to the number o
 
 ```{r space-data-summary}
 space_analysis_data <- cups_skulls_clean %>%
-  filter(!is.na(area_of_chamber_estimated))
+  dplyr::filter(!is.na(area_of_chamber_estimated))
 
 cat("Graves with chamber area estimated:", nrow(space_analysis_data), "\n")
 cat("Graves with area AND skull count:", sum(!is.na(space_analysis_data$skulls_number)), "\n")
@@ -658,27 +1654,28 @@ print(space_analysis_data %>%
 
 ```{r skulls-area-scatter, fig.width=14, fig.height=6}
 skulls_area_data <- cups_skulls_clean %>%
-  filter(!is.na(area_of_chamber_estimated) & !is.na(skulls_number))
+  dplyr::filter(!is.na(area_of_chamber_estimated) & !is.na(skulls_number))
 
 ggplot(skulls_area_data, aes(x = area_of_chamber_estimated, y = skulls_number, color = region)) +
   geom_point(size = 3, alpha = 0.6) +
   geom_smooth(method = "lm", se = TRUE, alpha = 0.2) +
   scale_color_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
-  facet_wrap(~region) +
+  coord_cartesian(ylim = c(0, NA)) +
+  facet_wrap(~region, ncol = 1) +
   labs(
     title = "Relationship: Chamber Area vs Number of Skulls by Region",
     x = "Chamber Area Estimated (m²)",
     y = "Number of Skulls",
     color = "Region"
   ) +
-  theme_minimal() +
+  theme_minimal(base_size = 16) +
   theme(legend.position = "bottom")
 ```
 
 ```{r skulls-area-correlation}
 # By region
 for (reg in unique(skulls_area_data$region)) {
-  region_data <- skulls_area_data %>% filter(region == reg)
+  region_data <- skulls_area_data %>% dplyr::filter(region == reg)
   cor_val <- cor(region_data$area_of_chamber_estimated, region_data$skulls_number, use = "complete.obs")
   lm_result <- lm(skulls_number ~ area_of_chamber_estimated, data = region_data)
 
@@ -692,27 +1689,27 @@ for (reg in unique(skulls_area_data$region)) {
 
 ```{r vessels-area-scatter, fig.width=14, fig.height=6}
 vessels_area_data <- cups_skulls_clean %>%
-  filter(!is.na(area_of_chamber_estimated) & !is.na(drinking_vessel_number))
+  dplyr::filter(!is.na(area_of_chamber_estimated) & !is.na(drinking_vessel_number))
 
 ggplot(vessels_area_data, aes(x = area_of_chamber_estimated, y = drinking_vessel_number, color = region)) +
   geom_point(size = 3, alpha = 0.6) +
   geom_smooth(method = "lm", se = TRUE, alpha = 0.2) +
   scale_color_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
-  facet_wrap(~region) +
+  facet_wrap(~region, ncol = 1) +
   labs(
     title = "Relationship: Chamber Area vs Number of Drinking Vessels by Region",
     x = "Chamber Area Estimated (m²)",
     y = "Number of Drinking Vessels",
     color = "Region"
   ) +
-  theme_minimal() +
+  theme_minimal(base_size = 16) +
   theme(legend.position = "bottom")
 ```
 
 ```{r vessels-area-correlation}
 # By region
 for (reg in unique(vessels_area_data$region)) {
-  region_data <- vessels_area_data %>% filter(region == reg)
+  region_data <- vessels_area_data %>% dplyr::filter(region == reg)
   cor_val <- cor(region_data$area_of_chamber_estimated, region_data$drinking_vessel_number, use = "complete.obs")
   lm_result <- lm(drinking_vessel_number ~ area_of_chamber_estimated, data = region_data)
 
@@ -726,50 +1723,21 @@ for (reg in unique(vessels_area_data$region)) {
 
 ```{r both-area-scatter, fig.width=14, fig.height=6}
 both_area_data <- cups_skulls_clean %>%
-  filter(!is.na(area_of_chamber_estimated) & !is.na(skulls_number) & !is.na(drinking_vessel_number))
+  dplyr::filter(!is.na(area_of_chamber_estimated) & !is.na(skulls_number) & !is.na(drinking_vessel_number))
 
 ggplot(both_area_data, aes(x = area_of_chamber_estimated, y = skulls_number)) +
   geom_point(aes(color = drinking_vessel_number), size = 4, alpha = 0.7) +
-  scale_color_gradient(name = "Drinking\nVessels", low = colors$background, high = colors$drinking_vessel) +
-  facet_wrap(~region) +
+  scale_color_gradient(name = "Drinking\nVessels", low = "#2166AC", high = "#B2182B") +
+  coord_cartesian(ylim = c(0, NA)) +
+  facet_wrap(~region, ncol = 1) +
   labs(
     title = "Chamber Area vs Skulls (colored by Drinking Vessels) by Region",
     x = "Chamber Area Estimated (m²)",
     y = "Number of Skulls"
   ) +
-  theme_minimal() +
+  theme_minimal(base_size = 16) +
   theme(legend.position = "bottom")
 ```
-
----
-
-## NEXT STEPS FOR YOUR RESEARCH
-
-### You Control These Decisions:
-
-1. **Period Chronology** (`period_dictionary.csv`):
-   - How you order periods affects temporal trend detection
-   - Range periods (e.g., "LHIIA-LHIIIB") can span 50+ years
-   - Your finest/coarsest periodization choices determine analysis granularity
-
-2. **Tomb Type Ranking** (`tomb_type_dictionary.csv`):
-   - Complexity ranking reveals whether complex tombs get more/different goods
-   - Labor investment ranking shows resource correlation with practices
-   - Frequency ranking reveals site-specific burial patterns
-
-3. **Grave Type Grouping** (edit the `case_when()` in Data Cleaning):
-   - Should Pit and Cist graves be separate or grouped?
-   - Is "Other" too vague, or does it represent genuinely mixed practices?
-   - Your grouping should reflect your research questions
-
-### Possible Extensions (Once Dictionaries Are Complete):
-
-- Test whether temporal trends differ between Laconia and Messenia
-- Model drinking vessel count as a function of period + tomb complexity
-- Compare primary vs secondary burial practices across time and tomb type
-- Investigate whether larger chambers are preferred in certain periods
-
-Your research questions should drive these decisions!
 
 ## Session Info
 
