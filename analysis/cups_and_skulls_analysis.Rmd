@@ -1015,8 +1015,8 @@ graves_time <- cups_skulls_clean %>%
   mutate(grave_rank = row_number()) %>%
   ungroup()
 
-# Use single_periods with cal years (already built in period-span-chart chunk)
-sp_cal <- dplyr::filter(single_periods, !is.na(cal_start_bce))
+# Reuse the deduplicated tick table built in the period-span-chart chunk
+# (collapses codes sharing the same calendar position, e.g. "LHIII / LHIIIA / LHIIIA1")
 
 ggplot(graves_time) +
   geom_segment(
@@ -1032,13 +1032,13 @@ ggplot(graves_time) +
   ) +
   scale_color_manual(values = c("With Pin" = colors$pin, "No Pin" = colors$drinking_vessel)) +
   geom_vline(
-    data = sp_cal,
+    data = single_periods_unique,
     aes(xintercept = cal_start_bce),
     linetype = "dashed", alpha = 0.2
   ) +
   scale_x_reverse(
-    breaks = sp_cal$cal_start_bce,
-    labels = sp_cal$period_code
+    breaks = single_periods_unique$cal_start_bce,
+    labels = single_periods_unique$period_code
   ) +
   facet_wrap(~region, ncol = 1, scales = "free_y") +
   labs(
@@ -1051,7 +1051,7 @@ ggplot(graves_time) +
   theme_minimal(base_size = 14) +
   theme(
     legend.position = "bottom",
-    axis.text.x = element_text(angle = 45, hjust = 1, size = 11),
+    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 10),
     axis.text.y = element_blank(),
     axis.ticks.y = element_blank(),
     panel.grid.major.y = element_blank(),
