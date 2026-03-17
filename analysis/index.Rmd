@@ -3,9 +3,61 @@ title: "Home"
 site: workflowr::wflow_site
 output:
   workflowr::wflow_html:
-    toc: false
+    toc: true
+    toc_float: true
 editor_options:
   chunk_output_type: console
 ---
 
-Welcome to my Honors Thesis Project! 
+## Drinking Vessels, Skeletal Remains, and Hair Pins in Mycenaean Laconia and Messenia
+
+This website presents the quantitative analyses underlying an honors thesis examining funerary assemblages from Bronze Age southern Greece. The dataset comprises tomb-level records from Laconia and Messenia spanning the Middle Helladic through Late Helladic periods (approximately 2000–1070 BCE). The analyses investigate whether drinking vessels, skeletal remains, and hair pins co-occur in patterned ways within and across these two regions, and whether those patterns shift over the course of the Bronze Age.
+
+## Methods
+
+### Dataset Construction
+
+The dataset was compiled from two published regional burial catalogues: *Death in Mycenaean Laconia: A Silent Place* (Chrysanthi Gallou 2020) and *Middle Helladic and Early Mycenaean Mortuary Practices in the Southern and Western Peloponnese* (Michael J. Boyd 2002). Each row in the master spreadsheet (`laconia_messinia_cups_skulls_pins.csv`) corresponds to a single tomb or grave feature and records the site name, regional attribution, tomb type as described by the excavator, chronological period as assigned in the publication, estimated chamber area (where reported), burial practice (primary and/or secondary), the presence or absence of drinking vessels and a count of vessels where available, the presence or absence of identifiable human remains and a count of skulls where reported, and the presence or absence of hair pins. All data entry was performed by the author directly from the published sources; entries for which the published record was ambiguous or silent were recorded as missing (`NA`) rather than inferred.
+
+### Variable Coding
+
+Raw text fields were standardized into analysis-ready variables. Drinking vessel presence, skeletal remains, and hair pin presence were each recorded in the spreadsheet as "yes"/"no" fields and converted to binary logical values (`TRUE`/`FALSE`); ambiguous or unrecorded entries were retained as `NA` and excluded from any calculation where the relevant variable was required. Primary and secondary burial were similarly recoded from "present"/"absent" fields.
+
+Burial contexts were then classified into four mutually exclusive categories based on the combination of primary and secondary evidence: *Primary Only*, *Secondary Only*, *Both Primary and Secondary*, and *Unknown/Not Recorded*. Tomb types were simplified from their original descriptive labels into five structural categories — Tholos, Chamber Tomb, Cist Grave, Pit Grave, and Dromos Only — to permit comparison across sites. Graves that did not fall into these architectural categories were excluded from tomb-type analyses.
+
+### Chronological Classification
+
+Period attributions in the source publications range in precision from a single sub-phase (e.g., "LHIIIA2") to spans covering several centuries (e.g., "LHIIA–LHIIIB"). All period codes in the dataset were matched against a hand-compiled period dictionary (`period_dictionary.csv`) that records, for each code, its earliest and latest component phases and a chronological ordering number. Calendar date ranges were assigned based on the periodization chart in Tartaron (2007); see the data dictionary for specific date assignments.
+
+For broad temporal analyses, each grave was assigned to one of seven phases — MH, LH I, LH II, LH IIIA, LH IIIB, LH IIIC, and Submycenaean — based on the **earliest** component of its recorded period. This is a conservative choice: a grave dated "LHIIA–LHIIIB" is counted in the LH II phase. It avoids placing graves in later phases they may not represent, but it means that widely dated graves are anchored at the earliest possible position. Graves whose period code could not be matched to any known component, or for which no period was recorded in the source publication, were excluded from all temporal analyses.
+
+### Statistical Methods
+
+All statistical tests were chosen to match the structure of the data and the size of the available samples.
+
+**Frequency distributions and cross-tabulations** are used throughout to describe the prevalence of drinking vessels, hair pins, and skeletal remains by tomb type, burial category, and region. Counts and within-group percentages are reported for all frequency tables.
+
+**Fisher's exact test** is used to test associations between pairs of binary variables (e.g., hair pin presence and secondary burial presence). Chi-square tests were not used because the sample of pin-bearing graves is small (n = 16 total across both regions), and several expected cell counts fall below the conventional threshold of five observations required for chi-square to be valid. Fisher's exact test makes no assumption about minimum cell size and is therefore appropriate here. Results report the p-value and odds ratio.
+
+**Wilcoxon rank-sum test** (Mann–Whitney U) is used to compare chamber area distributions between graves with and without hair pins. Chamber area values are right-skewed — a small number of very large tholos tombs pull the distribution — so a non-parametric test is preferred over a t-test, which assumes approximate normality. Results report the test statistic and p-value separately for each region.
+
+**Pearson correlation and ordinary least squares regression** are used to examine the relationship between the number of drinking vessels recorded and the number of skulls recorded per grave, as a test of whether vessel deposition scales with the number of individuals interred. Regression results report the coefficient estimate, standard error, t-statistic, and p-value.
+
+Missing data are handled consistently throughout: any observation with a missing value in a variable required for a given analysis is excluded from that analysis only, without affecting other calculations. The total number of observations contributing to each test is reported alongside the result.
+
+### Visualization
+
+All figures were produced with `ggplot2`. Each chart reports raw counts alongside within-group percentages to allow direct comparison across groups of different sizes. Temporal plots are produced in two versions: one with equal spacing between broad phase categories (Option A), and one with bar widths scaled proportionally to actual phase duration in calendar years (Option B), so that the unequal lengths of successive phases are visually apparent.
+
+### Reproducibility and Data Availability
+
+All analyses were conducted in R (version 4.5) using the `workflowr` package (Blischak et al. 2019), which manages the project as a version-controlled website in which each analysis page records the Git commit hash and working-directory status at the time it was built, making it possible to reproduce any result exactly. The full project — including raw data, analysis code, and rendered outputs — is publicly archived on GitHub. Package dependencies are managed with `renv` to ensure that the precise library versions used here can be restored. Key packages include `dplyr` and `tidyr` (data manipulation), `ggplot2` (visualization), `knitr` and `kableExtra` (table formatting), and `broom` (tidy model output).
+
+## Site Contents
+
+- **[Drinking Vessels, Skeletal Remains, and Hair Pins Analysis](cups_and_skulls_analysis.html)** — All statistical analyses, figures, and tables. Code is folded by default and can be expanded for inspection.
+- **[Data Dictionary](data_dictionary.html)** — Variable definitions and coding conventions for all fields in the dataset.
+
+## Reference
+
+Blischak JD, Carbonetto P, Stephens M (2019). Creating and sharing reproducible research code the workflowr way. *F1000Research* 8:1749. doi:10.12688/f1000research.20843.1

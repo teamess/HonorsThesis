@@ -29,6 +29,9 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -229,6 +232,69 @@ $(document).ready(function () {
 
 
 
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
 
 </head>
 
@@ -236,6 +302,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -281,7 +357,7 @@ $(document).ready(function () {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-ok text-success"
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -292,8 +368,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-</a>
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -302,13 +378,13 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-02-03
+<strong>Last updated:</strong> 2026-03-17
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 1
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 0
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>HonorsThesis/</code> <span
@@ -331,33 +407,36 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate"
+<div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git
-repository, you know the exact version of the code that produced these
-results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomteamessHonorsThesistree16128ad35cd5d29c476bd0baa83a6743cc24a446targetblank16128ada">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomteamessHonorsThesistree3216d85382300abd98bb5b1def27f81fbdc9d49atargetblank3216d85a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/teamess/HonorsThesis/tree/16128ad35cd5d29c476bd0baa83a6743cc24a446" target="_blank">16128ad</a>
+<a href="https://github.com/teamess/HonorsThesis/tree/3216d85382300abd98bb5b1def27f81fbdc9d49a" target="_blank">3216d85</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomteamessHonorsThesistree16128ad35cd5d29c476bd0baa83a6743cc24a446targetblank16128ada"
+id="strongRepositoryversionstrongahrefhttpsgithubcomteamessHonorsThesistree3216d85382300abd98bb5b1def27f81fbdc9d49atargetblank3216d85a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -367,7 +446,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/teamess/HonorsThesis/tree/16128ad35cd5d29c476bd0baa83a6743cc24a446" target="_blank">16128ad</a>.
+<a href="https://github.com/teamess/HonorsThesis/tree/3216d85382300abd98bb5b1def27f81fbdc9d49a" target="_blank">3216d85</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -382,17 +461,15 @@ were generated:
 </p>
 <pre><code>
 Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .claude/
     Ignored:    renv/library/
     Ignored:    renv/staging/
 
-Untracked files:
-    Untracked:  .vscode/extensions.json
-
 Unstaged changes:
-    Modified:   .DS_Store
-    Modified:   .vscode/settings.json
-    Modified:   Data/.DS_Store
-    Modified:   README.md
+    Modified:   Data/period_dictionary.csv
+    Modified:   analysis/cups_and_skulls_analysis.Rmd
+    Modified:   analysis/index.Rmd
 
 </code></pre>
 <p>
@@ -436,6 +513,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/teamess/HonorsThesis/d3ca59f7eb376673e31dae3c679f4757652ec08b/docs/index.html" target="_blank">d3ca59f</a>
+</td>
+<td>
+tinalasisi
+</td>
+<td>
+2026-02-03
+</td>
+<td>
+Add data exploration analysis with Laconia burial data
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -494,7 +588,162 @@ Start workflowr project.
 </div>
 </div>
 </div>
-<p>Welcome to my Honors Thesis Project!</p>
+<div
+id="drinking-vessels-skeletal-remains-and-hair-pins-in-mycenaean-laconia-and-messenia"
+class="section level2">
+<h2>Drinking Vessels, Skeletal Remains, and Hair Pins in Mycenaean
+Laconia and Messenia</h2>
+<p>This website presents the quantitative analyses underlying an honors
+thesis examining funerary assemblages from Bronze Age southern Greece.
+The dataset comprises tomb-level records from Laconia and Messenia
+spanning the Middle Helladic through Late Helladic periods
+(approximately 2000–1070 BCE). The analyses investigate whether drinking
+vessels, skeletal remains, and hair pins co-occur in patterned ways
+within and across these two regions, and whether those patterns shift
+over the course of the Bronze Age.</p>
+</div>
+<div id="methods" class="section level2">
+<h2>Methods</h2>
+<div id="dataset-construction" class="section level3">
+<h3>Dataset Construction</h3>
+<p>The dataset was compiled from two published regional burial
+catalogues: <em>Death in Mycenaean Laconia: A Silent Place</em>
+(Chrysanthi Gallou 2020) and <em>Middle Helladic and Early Mycenaean
+Mortuary Practices in the Southern and Western Peloponnese</em> (Michael
+J. Boyd 2002). Each row in the master spreadsheet
+(<code>laconia_messinia_cups_skulls_pins.csv</code>) corresponds to a
+single tomb or grave feature and records the site name, regional
+attribution, tomb type as described by the excavator, chronological
+period as assigned in the publication, estimated chamber area (where
+reported), burial practice (primary and/or secondary), the presence or
+absence of drinking vessels and a count of vessels where available, the
+presence or absence of identifiable human remains and a count of skulls
+where reported, and the presence or absence of hair pins. All data entry
+was performed by the author directly from the published sources; entries
+for which the published record was ambiguous or silent were recorded as
+missing (<code>NA</code>) rather than inferred.</p>
+</div>
+<div id="variable-coding" class="section level3">
+<h3>Variable Coding</h3>
+<p>Raw text fields were standardized into analysis-ready variables.
+Drinking vessel presence, skeletal remains, and hair pin presence were
+each recorded in the spreadsheet as “yes”/“no” fields and converted to
+binary logical values (<code>TRUE</code>/<code>FALSE</code>); ambiguous
+or unrecorded entries were retained as <code>NA</code> and excluded from
+any calculation where the relevant variable was required. Primary and
+secondary burial were similarly recoded from “present”/“absent”
+fields.</p>
+<p>Burial contexts were then classified into four mutually exclusive
+categories based on the combination of primary and secondary evidence:
+<em>Primary Only</em>, <em>Secondary Only</em>, <em>Both Primary and
+Secondary</em>, and <em>Unknown/Not Recorded</em>. Tomb types were
+simplified from their original descriptive labels into five structural
+categories — Tholos, Chamber Tomb, Cist Grave, Pit Grave, and Dromos
+Only — to permit comparison across sites. Graves that did not fall into
+these architectural categories were excluded from tomb-type
+analyses.</p>
+</div>
+<div id="chronological-classification" class="section level3">
+<h3>Chronological Classification</h3>
+<p>Period attributions in the source publications range in precision
+from a single sub-phase (e.g., “LHIIIA2”) to spans covering several
+centuries (e.g., “LHIIA–LHIIIB”). All period codes in the dataset were
+matched against a hand-compiled period dictionary
+(<code>period_dictionary.csv</code>) that records, for each code, its
+earliest and latest component phases and a chronological ordering
+number. Calendar date ranges were assigned based on the periodization
+chart in Tartaron (2007); see the data dictionary for specific date
+assignments.</p>
+<p>For broad temporal analyses, each grave was assigned to one of seven
+phases — MH, LH I, LH II, LH IIIA, LH IIIB, LH IIIC, and Submycenaean —
+based on the <strong>earliest</strong> component of its recorded period.
+This is a conservative choice: a grave dated “LHIIA–LHIIIB” is counted
+in the LH II phase. It avoids placing graves in later phases they may
+not represent, but it means that widely dated graves are anchored at the
+earliest possible position. Graves whose period code could not be
+matched to any known component, or for which no period was recorded in
+the source publication, were excluded from all temporal analyses.</p>
+</div>
+<div id="statistical-methods" class="section level3">
+<h3>Statistical Methods</h3>
+<p>All statistical tests were chosen to match the structure of the data
+and the size of the available samples.</p>
+<p><strong>Frequency distributions and cross-tabulations</strong> are
+used throughout to describe the prevalence of drinking vessels, hair
+pins, and skeletal remains by tomb type, burial category, and region.
+Counts and within-group percentages are reported for all frequency
+tables.</p>
+<p><strong>Fisher’s exact test</strong> is used to test associations
+between pairs of binary variables (e.g., hair pin presence and secondary
+burial presence). Chi-square tests were not used because the sample of
+pin-bearing graves is small (n = 16 total across both regions), and
+several expected cell counts fall below the conventional threshold of
+five observations required for chi-square to be valid. Fisher’s exact
+test makes no assumption about minimum cell size and is therefore
+appropriate here. Results report the p-value and odds ratio.</p>
+<p><strong>Wilcoxon rank-sum test</strong> (Mann–Whitney U) is used to
+compare chamber area distributions between graves with and without hair
+pins. Chamber area values are right-skewed — a small number of very
+large tholos tombs pull the distribution — so a non-parametric test is
+preferred over a t-test, which assumes approximate normality. Results
+report the test statistic and p-value separately for each region.</p>
+<p><strong>Pearson correlation and ordinary least squares
+regression</strong> are used to examine the relationship between the
+number of drinking vessels recorded and the number of skulls recorded
+per grave, as a test of whether vessel deposition scales with the number
+of individuals interred. Regression results report the coefficient
+estimate, standard error, t-statistic, and p-value.</p>
+<p>Missing data are handled consistently throughout: any observation
+with a missing value in a variable required for a given analysis is
+excluded from that analysis only, without affecting other calculations.
+The total number of observations contributing to each test is reported
+alongside the result.</p>
+</div>
+<div id="visualization" class="section level3">
+<h3>Visualization</h3>
+<p>All figures were produced with <code>ggplot2</code>. Each chart
+reports raw counts alongside within-group percentages to allow direct
+comparison across groups of different sizes. Temporal plots are produced
+in two versions: one with equal spacing between broad phase categories
+(Option A), and one with bar widths scaled proportionally to actual
+phase duration in calendar years (Option B), so that the unequal lengths
+of successive phases are visually apparent.</p>
+</div>
+<div id="reproducibility-and-data-availability" class="section level3">
+<h3>Reproducibility and Data Availability</h3>
+<p>All analyses were conducted in R (version 4.5) using the
+<code>workflowr</code> package (Blischak et al. 2019), which manages the
+project as a version-controlled website in which each analysis page
+records the Git commit hash and working-directory status at the time it
+was built, making it possible to reproduce any result exactly. The full
+project — including raw data, analysis code, and rendered outputs — is
+publicly archived on GitHub. Package dependencies are managed with
+<code>renv</code> to ensure that the precise library versions used here
+can be restored. Key packages include <code>dplyr</code> and
+<code>tidyr</code> (data manipulation), <code>ggplot2</code>
+(visualization), <code>knitr</code> and <code>kableExtra</code> (table
+formatting), and <code>broom</code> (tidy model output).</p>
+</div>
+</div>
+<div id="site-contents" class="section level2">
+<h2>Site Contents</h2>
+<ul>
+<li><strong><a href="cups_and_skulls_analysis.html">Drinking Vessels,
+Skeletal Remains, and Hair Pins Analysis</a></strong> — All statistical
+analyses, figures, and tables. Code is folded by default and can be
+expanded for inspection.</li>
+<li><strong><a href="data_dictionary.html">Data Dictionary</a></strong>
+— Variable definitions and coding conventions for all fields in the
+dataset.</li>
+</ul>
+</div>
+<div id="reference" class="section level2">
+<h2>Reference</h2>
+<p>Blischak JD, Carbonetto P, Stephens M (2019). Creating and sharing
+reproducible research code the workflowr way. <em>F1000Research</em>
+8:1749. <a href="doi:10.12688/f1000research.20843.1"
+class="uri">doi:10.12688/f1000research.20843.1</a></p>
+</div>
 </div>
 </div>
 </div>
@@ -517,6 +766,8 @@ footer is added to webpages before the MathJax javascript. -->
 
 
 
+</div>
+</div>
 
 </div>
 
@@ -549,6 +800,35 @@ $(document).ready(function () {
 
 <!-- code folding -->
 
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

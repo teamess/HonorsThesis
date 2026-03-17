@@ -12,21 +12,11 @@ editor_options:
   chunk_output_type: inline
 ---
 
-## About This Analysis
-
-This analysis examines funerary assemblage patterns in Laconia and Messinia, including:
-
-- **Distribution comparisons** between Laconia and Messenia
-- **Temporal trends** in burial practices across periods
-- **Hair pin** presence and its relationship to secondary burial, drinking vessels, and tomb size
-- **Regional differences** in how graves are used
-- **Relationships** between chamber size, drinking vessels, skeletal remains, and hair pins
-
----
-
 ## Introduction
 
-This analysis examines the relationship between drinking vessels, human skeletal remains, and hair pins in Laconian and Messinian tholos and chamber tombs. The data focuses on grave contexts where drinking vessels and hair pins are recorded alongside information about primary and secondary burials.
+This document presents the quantitative analyses underlying the thesis. The dataset comprises funerary contexts from Laconia and Messenia spanning the Middle Helladic through Late Helladic periods (approximately 2000–1070 BCE). Each record corresponds to a single tomb or grave feature and includes information on tomb type, chronological attribution, burial practice, and the presence of drinking vessels, skeletal remains, and hair pins.
+
+The analyses address four main questions: (1) how tomb types and burial practices are distributed across the two regions; (2) whether drinking vessels and skeletal remains co-occur in patterned ways; (3) whether hair pins cluster with particular burial practices, vessel assemblages, or tomb sizes; and (4) how these variables change over the course of the Bronze Age. All code is folded by default and can be expanded for inspection.
 
 ## Load Libraries
 
@@ -39,19 +29,12 @@ library(tidyr)
 library(stringr)
 library(janitor)
 library(knitr)
+library(kableExtra)
+library(broom)
 library(ggrepel)
 ```
 
-## Color Customization
-
-**YOU CAN EDIT THIS SECTION:** Customize colors for the analyses. Edit the hex codes below to use your preferred colors.
-
-All plots throughout this analysis will use these colors, so if you change them here, the change applies everywhere automatically.
-
-**Color choices affect:**
-- Regional comparisons (Laconia vs Messenia)
-- Visualization clarity and accessibility
-- How different variables stand out in plots
+## Visualization Settings
 
 ```{r color-palette}
 # Set your color palette here
@@ -80,7 +63,7 @@ theme_update(
 )
 ```
 
-## Load Data
+## Data Source
 
 ```{r load-data}
 # Load the CSV data
@@ -94,9 +77,13 @@ cat("Dataset dimensions:", nrow(cups_skulls), "graves ×", ncol(cups_skulls), "c
 glimpse(cups_skulls)
 ```
 
-## Data Cleaning
+## Data Preparation
 
-**NOTE:** The code below simplifies the complex grave type names into broader categories. If you want to group grave types differently, you can edit the `case_when()` statements in this chunk. For example, you might want to keep "Pit Grave" and "Cist Grave" separate, or group them together.
+### Variable Coding
+
+Raw text fields were recoded into analysis-ready variables. Drinking vessel presence, skeletal remains, and hair pin presence were each recorded as binary yes/no fields in the spreadsheet and converted to logical values (`TRUE`/`FALSE`); entries that could not be classified were retained as `NA` and excluded from relevant calculations. Primary and secondary burial were coded from "present"/"absent" fields in the same way.
+
+Burial contexts were then classified into four mutually exclusive categories based on the combination of primary and secondary burial evidence: *Primary Only*, *Secondary Only*, *Both Primary and Secondary*, and *Unknown/Not Recorded*. Tomb types were simplified from their original descriptive labels into five structural categories — Tholos, Chamber Tomb, Cist Grave, Pit Grave, and Dromos Only — to allow comparison across sites where nomenclature varies.
 
 ```{r clean-data}
 cups_skulls_clean <- cups_skulls %>%
@@ -164,9 +151,9 @@ cups_skulls_clean <- cups_skulls %>%
 glimpse(cups_skulls_clean)
 ```
 
-## Import and Process Data Dictionaries
+### Chronological Classification
 
-This section loads the period and tomb type dictionaries and applies chronological and complexity orderings to the data.
+Period strings as recorded in the original dataset (e.g., "LHIIA," "LHI–LHIII") were matched against a period dictionary that assigns each code an earliest and latest component phase. Calendar date ranges were then attached by joining against a lookup table of BCE start and end dates for each component phase, based on conventional Aegean Bronze Age chronology. The period dictionary and calendar date table are loaded and applied below.
 
 ```{r load-dictionaries, eval=TRUE}
 # NOTE: Set eval=TRUE once the student has completed the dictionaries
@@ -325,7 +312,7 @@ cat("  - period_ordered: ordered factor for periods\n")
 
 ### Basic Statistics
 
-These are descriptive statistics of your dataset. They won't change based on your dictionaries, but they provide context for all analyses below.
+The table below summarizes overall dataset coverage and identifies variables with missing observations. Missing data reflect the state of the archaeological record and publication — not all excavated tombs have complete information on all variables — and are excluded from any calculation where the relevant variable is unknown.
 
 ```{r summary-stats}
 cat("=== Dataset Summary ===\n\n")
@@ -352,31 +339,39 @@ sites_summary <- cups_skulls_clean %>%
   count(site, region, name = "n_graves") %>%
   arrange(desc(n_graves))
 
-cat("Number of sites:", n_distinct(cups_skulls_clean$site), "\n")
-cat("Sites represented:\n\n")
-print(sites_summary, n = 30)
+cat("Number of sites:", n_distinct(cups_skulls_clean$site), "\n\n")
+kable(sites_summary,
+      col.names = c("Site", "Region", "Number of Graves"),
+      caption = "Sites Represented in the Dataset") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 ```
 
 ## Grave Type Distribution
 
-**HOW YOUR CHOICES AFFECT THIS:**
-- The groupings in the "Data Cleaning" section determine what you see here
-- If you edit `grave_type_simple` to create different categories, these plots will change
-- Once you complete `tomb_type_dictionary.csv`, you can run additional analyses on tomb complexity
+Tomb types are compared across regions to establish the structural composition of each sample. Because tholos tombs, chamber tombs, cist graves, and pit graves represent different investments of labor and architectural elaboration, regional differences in tomb type distribution provide context for interpreting other patterns in the assemblage data.
 
 ```{r grave-types}
 grave_type_summary <- cups_skulls_clean %>%
   count(region, grave_type_simple, name = "count") %>%
   arrange(region, desc(count))
 
-print(grave_type_summary)
+kable(grave_type_summary,
+      col.names = c("Region", "Grave Type", "Count"),
+      caption = "Grave Type Distribution by Region") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 ```
 
 ```{r grave-type-plot, fig.width=12, fig.height=6}
+grave_type_summary <- grave_type_summary %>%
+  group_by(region) %>%
+  mutate(pct = round(count / sum(count) * 100, 1)) %>%
+  ungroup()
+
 ggplot(grave_type_summary, aes(x = reorder(grave_type_simple, -count), y = count, fill = region)) +
   geom_col(position = "dodge", width = 0.7) +
   scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
-  geom_text(aes(label = count), position = position_dodge(width = 0.7), vjust = -0.3, size = 4) +
+  geom_text(aes(label = paste0(count, "\n(", pct, "%)")), position = position_dodge(width = 0.7), vjust = -0.3, size = 3.5) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.25))) +
   labs(
     title = "Distribution of Grave Types by Region",
     x = "Grave Type",
@@ -390,6 +385,8 @@ ggplot(grave_type_summary, aes(x = reorder(grave_type_simple, -count), y = count
 ## Burial Types
 
 ### Primary vs Secondary Burials
+
+*Primary burial* refers to the original, articulated interment of a body. *Secondary burial* refers to the later re-deposition of skeletal material — typically disarticulated bones that have been moved, often to make space for a subsequent interment. A single tomb can contain evidence for both. The distribution of these burial categories across regions is examined here as a baseline for later analyses that test whether drinking vessels and hair pins associate preferentially with one burial mode over another.
 
 ```{r burial-type-summary}
 burial_type_summary <- cups_skulls_clean %>%
@@ -407,18 +404,26 @@ burial_type_summary <- cups_skulls_clean %>%
     pct_both = round(both / total * 100, 1)
   )
 
-print(burial_type_summary)
+kable(burial_type_summary,
+      col.names = c("Total", "With Primary", "With Secondary", "Both", "Neither", "Unknown",
+                    "% Primary", "% Secondary", "% Both"),
+      caption = "Primary vs Secondary Burial Summary") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 ```
 
 ```{r burial-plot, fig.width=12, fig.height=6}
 burial_category_data_region <- cups_skulls_clean %>%
   count(region, burial_category) %>%
+  group_by(region) %>%
+  mutate(pct = round(n / sum(n) * 100, 1)) %>%
+  ungroup() %>%
   arrange(region, desc(n))
 
 ggplot(burial_category_data_region, aes(x = reorder(burial_category, -n), y = n, fill = region)) +
   geom_col(position = "dodge", width = 0.7) +
   scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
-  geom_text(aes(label = n), position = position_dodge(width = 0.7), vjust = -0.3, size = 4) +
+  geom_text(aes(label = paste0(n, "\n(", pct, "%)")), position = position_dodge(width = 0.7), vjust = -0.3, size = 3.5) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.25))) +
   labs(
     title = "Distribution of Burial Types by Region",
     x = "Burial Type",
@@ -430,6 +435,8 @@ ggplot(burial_category_data_region, aes(x = reorder(burial_category, -n), y = n,
 ```
 
 ## Drinking Vessels Analysis
+
+Drinking vessels — cups, kylikes, and related forms — are among the most commonly recorded ceramic finds in Mycenaean funerary contexts and have been interpreted as indicators of feasting, libation, or other mortuary ritual. This section documents the prevalence of drinking vessels across the dataset, disaggregates that prevalence by tomb type and burial category, and compares patterns between Laconia and Messenia.
 
 ### Overall Drinking Vessel Presence
 
@@ -446,7 +453,10 @@ dv_summary <- cups_skulls_clean %>%
     avg_vessels_recorded = round(mean(cups_skulls_clean$drinking_vessel_number, na.rm = TRUE), 2)
   )
 
-print(dv_summary)
+kable(dv_summary,
+      col.names = c("Total Graves", "With Vessels", "Without Vessels", "Unknown", "% With Vessels", "Avg Vessel Count"),
+      caption = "Drinking Vessel Presence Summary") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 ```
 
 ### Drinking Vessels by Grave Type
@@ -462,7 +472,10 @@ dv_by_type <- cups_skulls_clean %>%
   ) %>%
   arrange(desc(with_vessels))
 
-print(dv_by_type)
+kable(dv_by_type,
+      col.names = c("Grave Type", "Total Graves", "With Vessels", "% With Vessels", "Avg Vessel Count"),
+      caption = "Drinking Vessels by Grave Type") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 ```
 
 ```{r dv-by-type-plot, fig.width=12, fig.height=6}
@@ -482,6 +495,7 @@ ggplot(dv_by_type_region, aes(x = reorder(grave_type_simple, -with_vessels), y =
   scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
   geom_text(aes(label = paste0(with_vessels, " (", pct_with_vessels, "%)")),
             position = position_dodge(width = 0.7), vjust = -0.3, size = 3.5) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.2))) +
   labs(
     title = "Graves with Drinking Vessels by Grave Type and Region",
     x = "Grave Type",
@@ -505,7 +519,10 @@ dv_by_burial <- cups_skulls_clean %>%
   ) %>%
   arrange(desc(with_vessels))
 
-print(dv_by_burial)
+kable(dv_by_burial,
+      col.names = c("Burial Type", "Total Graves", "With Vessels", "% With Vessels", "Avg Vessel Count"),
+      caption = "Drinking Vessels by Burial Type") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 ```
 
 ```{r dv-by-burial-plot, fig.width=12, fig.height=6}
@@ -525,6 +542,7 @@ ggplot(dv_by_burial_region, aes(x = reorder(burial_category, -with_vessels), y =
   scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
   geom_text(aes(label = paste0(with_vessels, " (", pct_with_vessels, "%)")),
             position = position_dodge(width = 0.7), vjust = -0.3, size = 3.5) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.2))) +
   labs(
     title = "Graves with Drinking Vessels by Burial Type and Region",
     x = "Burial Type",
@@ -536,6 +554,8 @@ ggplot(dv_by_burial_region, aes(x = reorder(burial_category, -with_vessels), y =
 ```
 
 ## Hair Pin Analysis
+
+Hair pins are personal ornaments found in a small subset of Laconian and Messenian graves. Their presence has been associated with female burials and with certain phases of the Bronze Age, though the sample is too small to support strong generalizations. This section documents overall hair pin prevalence and its regional distribution as a basis for the subsequent analyses examining co-occurrence with secondary burial, drinking vessels, and tomb size.
 
 ### Overall Hair Pin Presence
 
@@ -549,7 +569,10 @@ pin_summary <- cups_skulls_clean %>%
   ) %>%
   mutate(pct_with = round(with_pins / total_graves * 100, 1))
 
-print(pin_summary)
+kable(pin_summary,
+      col.names = c("Total Graves", "With Pins", "Without Pins", "Unknown", "% With Pins"),
+      caption = "Hair Pin Presence Summary") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 ```
 
 ### Hair Pins by Region
@@ -568,6 +591,7 @@ ggplot(pin_by_region, aes(x = region, y = with_pins, fill = region)) +
   geom_col(width = 0.6) +
   scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
   geom_text(aes(label = paste0(with_pins, " (", pct_with_pins, "%)")), vjust = -0.3, size = 4) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.2))) +
   labs(
     title = "Graves with Hair Pins by Region",
     x = "Region",
@@ -578,11 +602,13 @@ ggplot(pin_by_region, aes(x = region, y = with_pins, fill = region)) +
   theme(legend.position = "bottom")
 ```
 
-## Secondary Entombment and Hair Pins
+## Secondary Burial and Hair Pins
 
-### Secondary Burial x Hair Pin Presence by Region
+### Co-occurrence by Region
 
-**Note:** Hair pins are present in only a small number of graves (n=16), so results should be interpreted with caution.
+This section tests whether hair pins are more commonly found in graves with evidence of secondary burial. If pins are associated with specific individuals whose remains were later moved or disturbed, they might be expected to cluster with secondary contexts. Conversely, if pins are associated with the initial primary interment, they might appear more often in graves without secondary activity.
+
+Because the sample of pin-bearing graves is small (n = 16 total), conventional chi-square tests would violate the assumption of adequate cell counts. Fisher's exact test is used instead, as it is appropriate for contingency tables with small expected frequencies. Results are reported separately for each region.
 
 ```{r secondary-pins-table}
 secondary_pins <- cups_skulls_clean %>%
@@ -619,6 +645,7 @@ ggplot(secondary_pins_pct, aes(x = secondary_label, y = pct_with_pin, fill = reg
   scale_fill_manual(values = c(laconia = colors$laconia, messenia = colors$messenia)) +
   geom_text(aes(label = paste0(with_pin, "/", total, "\n(", pct_with_pin, "%)")),
             position = position_dodge(width = 0.7), vjust = -0.3, size = 3.5) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.25))) +
   labs(
     title = "Hair Pin Presence by Secondary Burial Status and Region",
     x = "Secondary Burial Status",
@@ -638,7 +665,9 @@ for (reg in unique(cups_skulls_clean$region)) {
   contingency <- table(region_data$secondary_burial, region_data$has_pin)
 
   cat("\n===", toupper(reg), "===\n")
-  print(contingency)
+  print(kable(as.data.frame.matrix(contingency),
+              caption = paste("Contingency Table:", toupper(reg))) %>%
+    kable_styling(bootstrap_options = c("striped", "hover", "condensed")))
 
   if (all(dim(contingency) == c(2, 2))) {
     fisher_result <- fisher.test(contingency)
@@ -653,6 +682,8 @@ for (reg in unique(cups_skulls_clean$region)) {
 ## Drinking Vessels, Secondary Burial, and Hair Pins
 
 ### Three-Way Cross-Tabulation by Region
+
+To examine whether drinking vessels, secondary burial, and hair pins co-occur beyond chance, a three-way cross-tabulation is constructed separately for each region. This allows identification of any combinations of these three variables that appear disproportionately often or rarely. Given the small total number of pin-bearing graves, this analysis is primarily descriptive; cell counts are reported alongside the visualization.
 
 ```{r three-way-table}
 three_way <- cups_skulls_clean %>%
@@ -683,6 +714,7 @@ ggplot(three_way_summary, aes(x = secondary_label, y = n, fill = pin_label)) +
   scale_fill_manual(values = c("With Pin" = colors$pin, "No Pin" = "grey70")) +
   facet_grid(vessel_label ~ region) +
   geom_text(aes(label = n), position = position_dodge(width = 0.7), vjust = -0.3, size = 3) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.2))) +
   labs(
     title = "Hair Pins by Secondary Burial Status and Drinking Vessel Presence",
     subtitle = "Rows: Drinking Vessel status | Columns: Region",
@@ -696,7 +728,11 @@ ggplot(three_way_summary, aes(x = secondary_label, y = n, fill = pin_label)) +
 
 ## Hair Pins and Chamber Size
 
-### Do graves with hair pins tend to be larger?
+Larger tomb chambers may reflect greater investment in funerary architecture, which could correlate with higher-status or more elaborately furnished burials. This section examines whether graves containing hair pins have systematically larger estimated chamber areas than those without. Chamber area is available for a subset of graves and is expressed in estimated square meters.
+
+Because chamber area distributions are right-skewed and may not be normally distributed, a non-parametric Wilcoxon rank-sum test is used to compare the distributions of chamber area between pin-bearing and non-pin-bearing graves within each region. Boxplots are provided to visualize the distributions directly.
+
+### Chamber Area by Hair Pin Presence
 
 ```{r pins-area-summary}
 pins_area_data <- cups_skulls_clean %>%
@@ -754,6 +790,8 @@ for (reg in unique(pins_area_data$region)) {
 
 ## Skeletal Remains Analysis
 
+The presence of identifiable human remains — particularly skulls, which are the most commonly recorded skeletal element — provides a partial window into how many individuals were interred and whether bones were disturbed or removed. This section describes overall remains prevalence and skull counts, which are used in subsequent analyses of the relationship between drinking vessels and the physical presence of the dead.
+
 ### Remains Distribution
 
 ```{r remains-summary}
@@ -766,7 +804,10 @@ remains_summary <- cups_skulls_clean %>%
   ) %>%
   mutate(pct_with_remains = round(with_remains / total_graves * 100, 1))
 
-print(remains_summary)
+kable(remains_summary,
+      col.names = c("Total Graves", "With Remains", "Without Remains", "Unknown", "% With Remains"),
+      caption = "Skeletal Remains Presence Summary") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 ```
 
 ### Skulls Recorded
@@ -782,7 +823,10 @@ skulls_stats <- cups_skulls_clean %>%
     max_skulls = max(skulls_number, na.rm = TRUE)
   )
 
-print(skulls_stats)
+kable(skulls_stats,
+      col.names = c("Graves with Skull Count", "Total Skulls", "Avg Skulls", "Min", "Max"),
+      caption = "Skull Count Statistics") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 ```
 
 ```{r skulls-distribution}
@@ -791,12 +835,17 @@ skulls_by_count <- cups_skulls_clean %>%
   count(skulls_number, name = "graves") %>%
   arrange(skulls_number)
 
-print(skulls_by_count)
+kable(skulls_by_count,
+      col.names = c("Skulls Recorded", "Number of Graves"),
+      caption = "Distribution of Skull Counts per Grave") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 ```
 
-## Cross-Analysis: Drinking Vessels and Remains
+## Drinking Vessels and Skeletal Remains
 
-### Do graves with drinking vessels tend to have remains?
+A central question for this thesis is whether drinking vessels are more likely to be deposited when human remains are present in the tomb — suggesting a direct relationship between the objects and the body — or whether they appear regardless of skeletal preservation. This section cross-tabulates drinking vessel presence against skeletal remains presence, and examines whether the number of drinking vessels correlates with the number of skulls recorded (as a proxy for the number of individuals interred).
+
+### Drinking Vessel Presence and Remains Co-occurrence
 
 ```{r vessels-and-remains}
 vessels_remains_cross <- cups_skulls_clean %>%
@@ -805,8 +854,14 @@ vessels_remains_cross <- cups_skulls_clean %>%
   pivot_wider(names_from = has_remains, values_from = n, values_fill = 0) %>%
   rename(no_remains = `FALSE`, with_remains = `TRUE`)
 
-rownames(vessels_remains_cross) <- c("No Drinking Vessels", "With Drinking Vessels")
-print(vessels_remains_cross)
+vessels_remains_cross <- vessels_remains_cross %>%
+  mutate(vessel_status = ifelse(has_drinking_vessel, "With Drinking Vessels", "No Drinking Vessels")) %>%
+  select(vessel_status, no_remains, with_remains)
+
+kable(vessels_remains_cross,
+      col.names = c("Vessel Status", "No Remains", "With Remains"),
+      caption = "Cross-Tabulation: Drinking Vessels and Skeletal Remains") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 ```
 
 ```{r vessels-and-remains-analysis}
@@ -844,9 +899,11 @@ ggplot(vessels_skulls_data, aes(x = drinking_vessel_number, y = skulls_number, c
   theme(legend.position = "bottom")
 ```
 
-## Regional Analysis
+## Regional Comparison
 
-### Laconia vs Other Regions
+This section brings together the key assemblage variables into a single regional summary, directly comparing Laconia and Messenia on drinking vessel prevalence, skeletal remains presence, and average skull count per grave. Differences between regions are relevant for interpreting whether patterns observed in the full dataset are driven primarily by one region or reflect a broader Mycenaean phenomenon.
+
+### Summary by Region
 
 ```{r regional-summary}
 regional_summary <- cups_skulls_clean %>%
@@ -860,12 +917,18 @@ regional_summary <- cups_skulls_clean %>%
     avg_skulls = round(mean(skulls_number, na.rm = TRUE), 2)
   )
 
-print(regional_summary)
+kable(regional_summary,
+      col.names = c("Region", "Total Graves", "With Drinking Vessels", "% With Vessels",
+                    "With Remains", "% With Remains", "Avg Skulls"),
+      caption = "Regional Summary: Drinking Vessels and Skeletal Remains") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 ```
 
 ## Chronological Overview
 
-### Periods Represented
+### Periods Represented in the Dataset
+
+Graves in this dataset carry period attributions that range in precision from a single sub-phase (e.g., "LHIIIA2") to broad spans covering several centuries (e.g., "MH–LHIIIC"). The table below summarizes how many graves fall into broad period categories. Graves with no recorded period are retained in all non-temporal analyses but excluded from analyses that require chronological assignment.
 
 ```{r period-distribution}
 period_summary <- cups_skulls_clean %>%
@@ -883,18 +946,17 @@ period_summary <- cups_skulls_clean %>%
   count(period_category, name = "graves") %>%
   arrange(desc(graves))
 
-print(period_summary)
+kable(period_summary,
+      col.names = c("Period Category", "Number of Graves"),
+      caption = "Graves by Period Category") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 ```
 
 ### Period Span Analysis
 
-The following chart shows how each **period code in the dataset** maps onto the Bronze Age calendar. The x-axis is proportional to actual calendar years (BCE), so visually wider rows represent longer date ranges.
+The chart below maps each period code used in the dataset onto the Bronze Age calendar. The x-axis is proportional to actual calendar years (BCE), making the width of each row a direct representation of chronological uncertainty. Range periods (e.g., "LHIIA–LHIIIB") appear as horizontal segments; single-phase codes (e.g., "LHIIIA2") appear as points. Dashed vertical lines mark the start of each major phase; tick labels that combine multiple codes (e.g., "LHIII / LHIIIA / LHIIIA1") reflect phases whose calendar start dates coincide.
 
-- **Range periods** (e.g., "LHIIA–LHIIIB") appear as horizontal segments. These indicate that the scholarly record only places the grave within a span of phases — the grave could date to any point within that range.
-- **Single-period codes** (e.g., "LHIIIA2") appear as single points — more precisely dated graves.
-- The **dashed vertical lines** mark the start of each major phase. Tick labels that combine multiple codes (e.g., "LHIII / LHIIIA / LHIIIA1") indicate phase boundaries that coincide on the calendar.
-
-**For temporal analyses:** Graves with wide-spanning period codes (long bars) are assigned to the broad phase of their *earliest* endpoint. This is the most conservative choice but means a grave recorded as "MH–LHIIIC" (spanning nearly 1,000 years) is counted as an MH-phase grave, even though it may represent a much later context.
+This visualization is intended to make the degree of chronological imprecision in the dataset transparent before the temporal analyses that follow.
 
 ```{r period-span-chart, fig.width=16, fig.height=14}
 # Identify single-component periods and attach calendar years
@@ -1000,9 +1062,9 @@ if (nrow(wide_spans) > 0) {
 }
 ```
 
-### Individual Graves by Period and Region
+### Individual Graves by Period Span and Region
 
-Each line represents a single grave, spanning its period range. Graves are colored by whether hair pins were found. This shows how graves cluster across time and whether pin-bearing graves concentrate in particular periods.
+Each line represents a single grave plotted against calendar time, spanning its full attributed date range. Graves are colored by hair pin presence, allowing visual inspection of whether pin-bearing graves are concentrated in particular periods or distributed broadly across the sequence. Graves without datable period codes are excluded.
 
 ```{r graves-by-period-region, fig.width=16, fig.height=14}
 # Prepare individual grave data with calendar year spans
@@ -1061,39 +1123,28 @@ ggplot(graves_time) +
 
 ## Temporal Analyses
 
-The purpose of this section is to examine whether funerary practices — burial type, presence of drinking vessels, hair pins, and tomb size — changed over the course of the Bronze Age and whether those changes differed between Laconia and Messenia.
+These analyses examine whether funerary practices — burial type, drinking vessel presence, hair pin presence, and tomb size — changed over the course of the Bronze Age, and whether any such changes differed between Laconia and Messenia.
 
-### How Graves Are Assigned to Phases
+### Phase Assignment
 
-Graves in this dataset are often given **date ranges** rather than a single period (e.g., a grave might be recorded as "LHIIA–LHIIIB," meaning it could date anywhere within that span). For the temporal plots below, each grave is assigned to the **7-phase broad phase scheme** (MH → SM) based on its **earliest** period component. A grave dated LHIIA–LHIIIB, for instance, is counted in "LH II" — its earliest possible phase.
+Because most graves carry date ranges rather than precise phase attributions, each grave is assigned to a broad phase based on the **earliest** component of its recorded period. A grave dated "LHIIA–LHIIIB," for instance, is counted in the LH II phase. This is a conservative choice: it avoids assigning a grave to a later phase it may not actually represent, but it means that graves with wide date ranges are anchored at their earliest possible position. Any apparent trends toward earlier phases should be read with this in mind.
 
-**What this means for interpretation:** A grave assigned to an early phase may actually be a later burial; the assignment is conservative (if anything, it understates change over time). Graves spanning many centuries are the most ambiguous, and their placement in the earliest phase is a simplification.
+Seven broad phases are used: MH, LH I, LH II, LH III, LH IIIA, LH IIIB, and LH IIIC/Submycenaean. Graves whose period code could not be matched to any known component receive `NA` and are excluded from all temporal plots. Graves recorded only as the undifferentiated "LH" code are assigned to LH I.
 
-**Excluded graves:** Graves whose period code could not be matched to any known component (i.e., those with unusual or incomplete period designations) receive `NA` for `broad_phase` and are **excluded from all temporal plots**. The table below shows how many graves fall into each phase, including the NA count. Additionally, graves recorded only as the generic undifferentiated "LH" code are assigned to "LH I" (the earliest LH sub-phase), which may slightly inflate that category.
-
-Two display options are shown for each plot:
-
-- **Option A** — Ordered categorical x-axis (7 broad phases as labels, equal spacing)
-- **Option B** — Proportional calendar x-axis (BCE years, bar widths scaled to actual phase duration)
+Each temporal plot is shown in two versions: **Option A** uses an ordered categorical x-axis with equal spacing between phases; **Option B** uses a proportional calendar x-axis where bar widths are scaled to actual phase duration in calendar years. Option B better represents the unequal lengths of the phases but can be harder to read when phases have few graves.
 
 ```{r phase-coverage}
-cat("Graves assigned to broad phases:\n")
-print(table(cups_skulls_clean$broad_phase, useNA = "ifany"))
+phase_table <- as.data.frame(table(cups_skulls_clean$broad_phase, useNA = "ifany"))
+names(phase_table) <- c("Broad Phase", "Number of Graves")
+kable(phase_table, caption = "Graves Assigned to Broad Phases") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 ```
 
 ---
 
 ### Burial Type Composition Over Time
 
-These charts show whether the **mix of primary and secondary burials** changed over time within each region. Primary burial refers to an intact, articulated interment of a body; secondary burial refers to the later re-deposition of skeletal remains (typically disarticulated bones moved to make room for new burials). A single grave can contain both.
-
-Each grave is classified into one of four **mutually exclusive** categories:
-- **Primary only** — evidence for primary burial, no secondary
-- **Both** — evidence for both primary and secondary burials
-- **Secondary only** — evidence for secondary burial only
-- **Neither/Unknown** — no burial type recorded
-
-Bars show **100% of graves dated to that phase in that region**; n= total graves in the phase. The "Neither/Unknown" segment is important: it reflects gaps in the recording — graves where burial type was not noted, not necessarily graves without burials. A large "Neither/Unknown" segment in a phase indicates the available data for that period is limited.
+These charts track whether the proportion of primary-only, secondary-only, mixed, and unrecorded burials changed across the Bronze Age sequence within each region. Stacked bars represent 100% of graves assigned to each phase, so the chart shows relative composition rather than absolute counts. The "Neither/Unknown" category reflects graves for which burial type was not recorded in the published sources; its size in any given phase indicates the limits of the available evidence for that period rather than the absence of burials.
 
 #### Option A: Broad Phase Categories — Proportions
 
@@ -1533,9 +1584,7 @@ ggplot(multi_phase_b_n,
 
 ### Chamber Area Over Time
 
-These boxplots show whether the **physical size of tomb chambers** changed over time within each region. Chamber area is recorded in estimated square meters. Only graves with area data are included — graves with `NA` for `area_of_chamber_estimated` are excluded; n= labels show how many graves contribute to each box. Phases with very few graves (n ≤ 3) produce unreliable boxplots where the median and quartiles are heavily influenced by individual outliers.
-
-**What to look for:** An increase in median area over time could suggest elaboration of tomb architecture; a decrease or stasis might indicate continuity or economic contraction. Tomb type also matters — tholos tombs tend to be larger than cist or pit graves — so any apparent temporal trend should be considered alongside the tomb type distribution of each phase.
+These boxplots examine whether estimated tomb chamber size changed across the Bronze Age sequence. Chamber area is expressed in square meters and is available for a subset of graves; sample sizes per phase are noted above each box. Phases with three or fewer graves produce unreliable box statistics and should be interpreted cautiously. Because tholos tombs are structurally larger than cist or pit graves, any apparent temporal trend in chamber size should be read alongside the tomb type distribution shown earlier.
 
 #### Option A: Broad Phase Categories
 
@@ -1592,7 +1641,7 @@ ggplot(area_phase_b, aes(x = phase_mid_bce, y = area_of_chamber_estimated,
   theme(legend.position = "bottom")
 ```
 
-## Key Findings Summary
+## Dataset Summary Statistics
 
 ```{r findings}
 cat("=== KEY FINDINGS ===\n\n")
@@ -1624,14 +1673,7 @@ for (i in 1:nrow(burial_counts)) {
 
 ## Chamber Space and Burial Goods
 
-### Do larger chambers have more skulls and drinking vessels?
-
-This section explores whether the estimated chamber area relates to the number of skulls and drinking vessels found.
-
-**HOW YOUR PERIOD DICTIONARY WILL ENHANCE THIS:**
-- Once you complete `period_dictionary.csv` and enable the dictionary loading code, we can add temporal layers
-- You'll be able to see if these relationships change across periods
-- Time-based patterns can reveal ritual practice evolution
+Larger tomb chambers could accommodate more burials over time, which might predict higher skull counts, more accumulated grave goods, and thus more drinking vessels. This section examines whether chamber area correlates with skull count and drinking vessel count using Pearson correlation and simple linear regression, conducted separately for each region. Scatter plots with fitted regression lines are provided alongside the statistical results.
 
 #### Data Availability
 
@@ -1644,10 +1686,10 @@ cat("Graves with area AND skull count:", sum(!is.na(space_analysis_data$skulls_n
 cat("Graves with area AND vessel count:", sum(!is.na(space_analysis_data$drinking_vessel_number)), "\n\n")
 
 # Summary statistics for chamber area
-cat("Chamber Area Summary (m²):\n")
-print(space_analysis_data %>%
-  pull(area_of_chamber_estimated) %>%
-  summary())
+area_stats <- summary(space_analysis_data$area_of_chamber_estimated)
+kable(data.frame(Statistic = names(area_stats), Value = round(as.numeric(area_stats), 2)),
+      caption = "Chamber Area Summary (m²)") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 ```
 
 #### Skulls vs Chamber Area
@@ -1676,12 +1718,15 @@ ggplot(skulls_area_data, aes(x = area_of_chamber_estimated, y = skulls_number, c
 # By region
 for (reg in unique(skulls_area_data$region)) {
   region_data <- skulls_area_data %>% dplyr::filter(region == reg)
-  cor_val <- cor(region_data$area_of_chamber_estimated, region_data$skulls_number, use = "complete.obs")
+  cor_result <- cor.test(region_data$area_of_chamber_estimated, region_data$skulls_number)
   lm_result <- lm(skulls_number ~ area_of_chamber_estimated, data = region_data)
 
   cat("\n===", toupper(reg), "===\n")
-  cat("Pearson correlation (r):", round(cor_val, 3), "\n")
-  print(summary(lm_result))
+  cat("Pearson correlation (r):", round(cor_result$estimate, 3),
+      "| p-value:", round(cor_result$p.value, 4), "\n")
+  print(kable(tidy(lm_result), digits = 3,
+              caption = paste("Linear Regression — Skulls ~ Chamber Area:", toupper(reg))) %>%
+    kable_styling(bootstrap_options = c("striped", "hover", "condensed")))
 }
 ```
 
@@ -1710,12 +1755,15 @@ ggplot(vessels_area_data, aes(x = area_of_chamber_estimated, y = drinking_vessel
 # By region
 for (reg in unique(vessels_area_data$region)) {
   region_data <- vessels_area_data %>% dplyr::filter(region == reg)
-  cor_val <- cor(region_data$area_of_chamber_estimated, region_data$drinking_vessel_number, use = "complete.obs")
+  cor_result <- cor.test(region_data$area_of_chamber_estimated, region_data$drinking_vessel_number)
   lm_result <- lm(drinking_vessel_number ~ area_of_chamber_estimated, data = region_data)
 
   cat("\n===", toupper(reg), "===\n")
-  cat("Pearson correlation (r):", round(cor_val, 3), "\n")
-  print(summary(lm_result))
+  cat("Pearson correlation (r):", round(cor_result$estimate, 3),
+      "| p-value:", round(cor_result$p.value, 4), "\n")
+  print(kable(tidy(lm_result), digits = 3,
+              caption = paste("Linear Regression — Vessels ~ Chamber Area:", toupper(reg))) %>%
+    kable_styling(bootstrap_options = c("striped", "hover", "condensed")))
 }
 ```
 

@@ -3,6 +3,7 @@ NA,NA,NA,NA,NA
 MH,Middle Helladic,1,MH,MH
 MH-LHI,Middle Helladic-Late Helladic I,2,MH,LHI
 MH-LHIII,Middle Helladic-Late Helladic III,3,MH,LHIII
+MH-LHIIIC,Middle Helladic-Late Helladic IIIC,3.5,MH,LHIIIC
 MH-LHIIIA1,Middle Helladic-Late Helladic IIIA1,4,MH,LHIIIA1
 MHII,Middle Helladic II,5,MHII,MHII
 MHII-MHIII,Middle Helladic II-Middle Helladic III,6,MHII,MHIII
@@ -21,6 +22,7 @@ LHI- LHIIIC,Late Helladic I-Late Helladic IIIC,17,LHI,LHIIIC
 LHI-submycenaean,Late Helladic I-submycenaean,18,LHI,submycenaean
 LHII,Late Helladic II,19,LHII,LHII
 LH II,Late Helladic II,19,LHII,LHII
+LHII-LHIII,Late Helladic II-Late Helladic III,20.5,LHII,LHIII
 LHII-LHIIIA1,Late Helladic II-Late Helladic IIIA1,20,LHII,LHIIIA1
 LHIIA,Late Helladic IIA,21,LHIIA,LHIIA
 LHIIA-LHIII,Late Helladic IIA-Late Helladic III,22,LHIIA,LHIII
